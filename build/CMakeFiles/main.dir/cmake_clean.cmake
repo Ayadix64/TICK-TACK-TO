@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/main.dir/link.d"
+  "CMakeFiles/main.dir/batch.cpp.o"
+  "CMakeFiles/main.dir/batch.cpp.o.d"
   "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o"
   "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o.d"
   "CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o"

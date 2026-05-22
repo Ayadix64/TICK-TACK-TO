@@ -14,6 +14,8 @@
 #include "vertexarray.h"
 #include "shader.h"
 #include "texture.hpp"
+#include "batch.hpp"
+
 #include "externel/imgui/imgui.h"
 #include "externel/imgui/imgui_impl_glfw.h"
 #include "externel/imgui/imgui_impl_opengl3.h"
@@ -87,7 +89,6 @@ int main(){
 
 		}
 	}
-	glm::mat4 proj = glm::ortho(-1.0,1.0,-0.75,0.75,1.0,-1.0);
 
 	glViewport(0, 0, 800, 600);
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
@@ -96,17 +97,18 @@ int main(){
 	
 	ImGuiInit(window);
 	
-
+	BatchRendrer<float> batch(4);
+	
 	float buffData[]{
 		-0.5,  0.5, 0.0,1.0,//0
 		 0.5,  0.5, 1.0,1.0,//1
 		-0.5, -0.5, 0.0,0.0,//2
-		 0.5, -0.5, 1.0,0.0 //3
+		 0.5, -0.5, 1.0,0.0, //3
 		
-		 //0.0,  0.5,0.0,//4
-		 //0.0, -0.5,0.0,//5
-		 //0.5,  0.0,0.0,//6
-		 //-0.5,  0.0,0.0//7
+		 -0.5+1.0,  0.5+1.0, 0.0,1.0,//0
+		 0.5+1.0,  0.5+1.0, 1.0,1.0,//1
+		-0.5+1.0, -0.5+1.0, 0.0,0.0,//2
+		 0.5+1.0, -0.5+1.0, 1.0,0.0, //3
 	};
 	unsigned int indecs[]{
 		//0,4,7,
@@ -114,8 +116,26 @@ int main(){
 		//2,5,7,
 		//3,5,6
 		0,1,2,
+		1,2,3,
+		0+4,1+4,2+4,
+		1+4,2+4,3+4
+	};
+	
+
+	batch.Push(buffData, sizeof(buffData)/sizeof(float), indecs, sizeof(indecs));
+
+
+	float buffData2[]{
+		-0.5+1.0,  0.5, 0.0,1.0,//0
+		 0.5+1.0,  0.5, 1.0,1.0,//1
+		-0.5+1.0, -0.5, 0.0,0.0,//2
+		 0.5+1.0, -0.5, 1.0,0.0, //3
+	};
+	unsigned int indecs2[]{
+		0,1,2,
 		1,2,3
 	};
+	batch.Push(buffData2, sizeof(buffData2)/sizeof(float), indecs2,sizeof(indecs2)/sizeof(unsigned int));
 	
 	VertexArray vao;
 	vao.Bind();	
@@ -123,13 +143,12 @@ int main(){
 	vao.AddElement<float>(2);
 	vao.AddElement<float>(2);
 
-	VertexBuff vb(buffData,sizeof(buffData));
-	
+	VertexBuff vb = batch.GetVertrex();
+	vb.Bind();	
 	vao.Layout();
 	
-
+	IndexBuff ib= batch.GetIndex();
 	
-	IndexBuff ib(indecs,sizeof(indecs)/sizeof(unsigned int));
 	unsigned char* buff = (unsigned char*)malloc(640*480*4);	
 	for(int i = 0 ; i < 640*480*4 ; i+=4){
 		buff[i] = 255;
@@ -158,15 +177,17 @@ int main(){
 	
 	
 	float clc=0.0;
+	
+	glm::mat4 proj = glm::ortho(-1.0,1.0,-0.75,0.75,-10.0,10.0);
 	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	float x=0.0,y=0.0,z=1.0;
 	
 	Uniform u_mvp("u_MVP",shader);
-
+	Uniform u_z("u_z",shader);
 	while(!glfwWindowShouldClose(window)){
-		glm::mat4 model = proj*trans;
+		glm::mat4 model = trans*proj;
 		u_mvp.SetMat4f(model);
-		
+		u_z.Set1f(z);
 		ImGuiNewFrame();
 		int w , h;
 		glfwGetFramebufferSize(window, &w, &h);
@@ -184,7 +205,8 @@ int main(){
 		
 		ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
 		ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
-		trans = glm::translate(glm::mat4(1.0), {x,y,z});
+		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
+		trans = glm::translate(glm::mat4(1.0), {x,y,1.0});
 
 		ImGui::End();
 		ImGui::Render();

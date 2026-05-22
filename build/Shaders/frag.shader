@@ -9,6 +9,6 @@ in vec2 v_textCoord;
 uniform sampler2D u_Texture;
 
 void main(){
-	vec4 cl = texture(u_Texture,v_textCoord);
+	vec4 cl =  texture(u_Texture,v_textCoord);
 	outcl =cl;
 }

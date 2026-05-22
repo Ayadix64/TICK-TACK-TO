@@ -189,33 +189,39 @@ Uniform::Uniform(const char* unif, Shader& shader ){
 
 
 void Uniform::Set1f(float f1){
+	m_shader->Binde();
 	if(Check(f1)){
 		glUniform1f(m_location, f1);
 	}
 }
 void Uniform::Set2f(float f1, float f2){
+	m_shader->Binde();
 	if(Check(f1,f2)){
 		glUniform2f(m_location, f1,f2);
 	}
 }
 void Uniform::Set3f(float f1, float f2, float f3){
+	m_shader->Binde();
 	if(Check(f1,f2,f3)){
 		glUniform3f(m_location, f1,f2,f3);
 	}
 }
 void Uniform::Set4f(float f1, float f2, float f3, float f4){
+	m_shader->Binde();
 	if(Check(f1,f2,f3,f4)){
 		glUniform4f(m_location, f1,f2,f3,f4);
 	}
 }
 
 void Uniform::Set1i(int i1){
+	m_shader->Binde();
 	if(Check(i1)){
 		glUniform1i(m_location,i1);
 	}
 }
 
 void Uniform::SetMat4f(glm::mat4& m4){
+	m_shader->Binde();
 	if(Check(m4)){
 		glUniformMatrix4fv(m_location,1,GL_FALSE,&m4[0][0]);
 	}

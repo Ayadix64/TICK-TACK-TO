@@ -8,6 +8,7 @@ main: \
   CMakeFiles/main.dir/indexbuff.cpp.o \
   CMakeFiles/main.dir/vertexarray.cpp.o \
   CMakeFiles/main.dir/texture.cpp.o \
+  CMakeFiles/main.dir/batch.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o \
@@ -92,6 +93,8 @@ CMakeFiles/main.dir/indexbuff.cpp.o:
 CMakeFiles/main.dir/vertexarray.cpp.o:
 
 CMakeFiles/main.dir/texture.cpp.o:
+
+CMakeFiles/main.dir/batch.cpp.o:
 
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o:
 

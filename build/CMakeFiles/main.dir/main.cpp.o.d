@@ -337,6 +337,7 @@ CMakeFiles/main.dir/main.cpp.o: \
  /home/Ayadi/Desktop/projects/TIC-TACK-TO/vertexarray.h \
  /home/Ayadi/Desktop/projects/TIC-TACK-TO/shader.h \
  /home/Ayadi/Desktop/projects/TIC-TACK-TO/texture.hpp \
+ /home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.hpp \
  /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui.h \
  /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imconfig.h \
  /usr/include/string.h /usr/include/strings.h \
