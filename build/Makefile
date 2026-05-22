@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+batch.o: batch.cpp.o
+.PHONY : batch.o
+
+# target to build an object file
+batch.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.o
+.PHONY : batch.cpp.o
+
+batch.i: batch.cpp.i
+.PHONY : batch.i
+
+# target to preprocess a source file
+batch.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.i
+.PHONY : batch.cpp.i
+
+batch.s: batch.cpp.s
+.PHONY : batch.s
+
+# target to generate assembly for a file
+batch.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.s
+.PHONY : batch.cpp.s
+
 externel/imgui/imgui.o: externel/imgui/imgui.cpp.o
 .PHONY : externel/imgui/imgui.o
 
@@ -450,6 +474,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... batch.o"
+	@echo "... batch.i"
+	@echo "... batch.s"
 	@echo "... externel/imgui/imgui.o"
 	@echo "... externel/imgui/imgui.i"
 	@echo "... externel/imgui/imgui.s"

@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.cpp" "CMakeFiles/main.dir/batch.cpp.o" "gcc" "CMakeFiles/main.dir/batch.cpp.o.d"
   "/home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui.cpp" "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o" "gcc" "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o.d"
   "/home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_demo.cpp" "CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o" "gcc" "CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o.d"
   "/home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_draw.cpp" "CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o" "gcc" "CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o.d"

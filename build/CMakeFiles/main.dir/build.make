@@ -156,10 +156,24 @@ CMakeFiles/main.dir/texture.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/texture.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/Ayadi/Desktop/projects/TIC-TACK-TO/texture.cpp -o CMakeFiles/main.dir/texture.cpp.s
 
+CMakeFiles/main.dir/batch.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/batch.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.cpp
+CMakeFiles/main.dir/batch.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/main.dir/batch.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/batch.cpp.o -MF CMakeFiles/main.dir/batch.cpp.o.d -o CMakeFiles/main.dir/batch.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.cpp
+
+CMakeFiles/main.dir/batch.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/batch.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.cpp > CMakeFiles/main.dir/batch.cpp.i
+
+CMakeFiles/main.dir/batch.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/batch.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/Ayadi/Desktop/projects/TIC-TACK-TO/batch.cpp -o CMakeFiles/main.dir/batch.cpp.s
+
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui.cpp
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/main.dir/externel/imgui/imgui.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_demo.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_demo.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.i: cmake_force
@@ -187,7 +201,7 @@ CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_draw.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_draw.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.i: cmake_force
@@ -201,7 +215,7 @@ CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_tables.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_tables.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.i: cmake_force
@@ -215,7 +229,7 @@ CMakeFiles/main.dir/externel/imgui/imgui_tables.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_widgets.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_widgets.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.i: cmake_force
@@ -229,7 +243,7 @@ CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.i: cmake_force
@@ -243,7 +257,7 @@ CMakeFiles/main.dir/externel/imgui/imgui_impl_glfw.cpp.s: cmake_force
 CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o: /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.cpp
 CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.o -c /home/Ayadi/Desktop/projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.cpp
 
 CMakeFiles/main.dir/externel/imgui/imgui_impl_opengl3.cpp.i: cmake_force
@@ -262,6 +276,7 @@ main_OBJECTS = \
 "CMakeFiles/main.dir/indexbuff.cpp.o" \
 "CMakeFiles/main.dir/vertexarray.cpp.o" \
 "CMakeFiles/main.dir/texture.cpp.o" \
+"CMakeFiles/main.dir/batch.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o" \
@@ -279,6 +294,7 @@ main: CMakeFiles/main.dir/vertexbuff.cpp.o
 main: CMakeFiles/main.dir/indexbuff.cpp.o
 main: CMakeFiles/main.dir/vertexarray.cpp.o
 main: CMakeFiles/main.dir/texture.cpp.o
+main: CMakeFiles/main.dir/batch.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o
@@ -294,7 +310,7 @@ main: /usr/lib/libm.so
 main: /usr/lib/libGLX.so
 main: /usr/lib/libOpenGL.so
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/Ayadi/Desktop/projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

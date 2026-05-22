@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TICK_VERTAX_ARRAY
 #define TICK_VERTAX_ARRAY
 #include "utils.h"
