@@ -36,7 +36,7 @@ public:
 
 };
 
-unsigned int SizeOfType(unsigned int type);
+constexpr unsigned int SizeOfType(unsigned int type);
 
 
 #endif

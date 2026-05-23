@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
+#include <cstdlib>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -35,31 +36,11 @@ void RnedrerDraw(VertexArray& va, IndexBuff& ib,Shader& sh){
 	return;
 }
 
-void inline ImGuiInit(GLFWwindow* window){
-	ImGui::CreateContext();
-	ImGuiIO &io =  ImGui::GetIO();(void)io;
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init();
-	ImGui::StyleColorsDark();
-	return;
 
-}
 
-void inline ImGuiNewFrame() {
-	ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-	return;
-}
-
-void inline ImGuiStop(){
-	ImGui_ImplGlfw_Shutdown();
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui::DestroyContext();
-	return;
-}
 
 int main(){
+	/****************************Init*************************/
 	if(!glfwInit()){
 		Eloge("GLFW not init");
 		return 1;
@@ -70,55 +51,29 @@ int main(){
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 	
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL); 
-	if(!window){
-		Eloge("in window intulsing");
-		glfwTerminate();
-		return 1;
-	}
+	GLFWwindow* window = CreatWindow("window", 800, 600);
+	GlewInit();	
+		
 
-	glfwMakeContextCurrent(window);
-
-	const char* runOnWayland = getenv("WAYLAND_DISPLAY");	
-	GLenum glewVal = glewInit();
-	if(glewVal!=GLEW_OK){
-		if(!(glewVal == GLEW_ERROR_NO_GLX_DISPLAY && runOnWayland)){ // a linux guy was her
-			Eloge("GLEW not init");
-			std::cout << glewGetErrorString(glewVal)<<"\n";
-			return 1;
-
-		}
-	}
-
-	glViewport(0, 0, 800, 600);
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
 	ImGuiInit(window);
+	/**********************************************************/
 	
+
 	BatchRendrer<float> batch(4);
 	
 	float buffData[]{
-		-0.5,  0.5, 0.0,1.0,//0
-		 0.5,  0.5, 1.0,1.0,//1
-		-0.5, -0.5, 0.0,0.0,//2
-		 0.5, -0.5, 1.0,0.0, //3
+		-0.5,-0.5,0.0,0.0,
+		 0.5,-0.5,1.0,0.0,
+		-0.5,0.5 ,0.0,1.0,
+		 0.5,0.5 ,1.0,1.0,
 		
-		 -0.5+1.0,  0.5+1.0, 0.0,1.0,//0
-		 0.5+1.0,  0.5+1.0, 1.0,1.0,//1
-		-0.5+1.0, -0.5+1.0, 0.0,0.0,//2
-		 0.5+1.0, -0.5+1.0, 1.0,0.0, //3
 	};
 	unsigned int indecs[]{
-		//0,4,7,
-		//1,4,6,
-		//2,5,7,
-		//3,5,6
 		0,1,2,
 		1,2,3,
-		0+4,1+4,2+4,
-		1+4,2+4,3+4
 	};
 	
 
@@ -180,7 +135,7 @@ int main(){
 	
 	glm::mat4 proj = glm::ortho(-1.0,1.0,-0.75,0.75,-10.0,10.0);
 	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
-	float x=0.0,y=0.0,z=1.0;
+	float x=-0.5f,y=-0.5f,z=1.0f;
 	
 	Uniform u_mvp("u_MVP",shader);
 	Uniform u_z("u_z",shader);
@@ -195,10 +150,10 @@ int main(){
 			glViewport(0, 0, w,h);
 			pw=w;
 			ph=h;
+			proj=glm::ortho(-1.0f,1.0f,(float)(-(float)h/(float)w),(float)((float)h/(float)w),-10.0f,10.0f);
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);
-			
+		glClear(GL_COLOR_BUFFER_BIT);	
 		RnedrerDraw(vao,ib);
 		ImGui::Begin("Hello TICK-TACK-TO");
 		ImGui::Text("Hi, he , hallo, hi");
@@ -206,7 +161,21 @@ int main(){
 		ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
 		ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
-		trans = glm::translate(glm::mat4(1.0), {x,y,1.0});
+		
+		
+		vb.Set<float>(x, 0);
+		vb.Set<float>(y, 1);
+		
+		vb.Set<float>(x+1.0, 4);
+		vb.Set<float>(y, 5);
+		
+		vb.Set<float>(x, 8);
+		vb.Set<float>(y+1.0, 9);
+		
+		vb.Set<float>(x+1.0, 12);
+		vb.Set<float>(y+1.0, 13);
+		
+		//trans = glm::translate(glm::mat4(1.0), {x,y,1.0});
 
 		ImGui::End();
 		ImGui::Render();

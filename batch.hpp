@@ -4,6 +4,8 @@
 #include "shader.h"
 #include "vertexbuff.h"
 #include "indexbuff.h"
+#include <cassert>
+#include <random>
 #include <vector>
 
 
@@ -22,6 +24,10 @@ public:
 
 	VertexBuff GetVertrex();
 	IndexBuff GetIndex();
+	/*T& operator[](unsigned int n){
+		assert(n<m_Vertex.size());
+		return &m_Vertex[n];
+	}*/
 
 };
 
