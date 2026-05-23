@@ -1,7 +1,7 @@
 #include "indexbuff.h"
 #include "utils.h"
 #include "vertexarray.h"
-unsigned int SizeOfType(unsigned int type){
+constexpr unsigned int SizeOfType(unsigned int type){
 	switch (type) {
 		case GL_FLOAT:
 			return sizeof(float);
