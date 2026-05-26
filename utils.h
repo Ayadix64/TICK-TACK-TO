@@ -11,6 +11,10 @@
 #include <GLFW/glfw3.h>
 
 #define DEBUG_MODE
+typedef unsigned char  u8 ;
+typedef unsigned short u16;
+typedef unsigned int   u32;
+typedef unsigned long  u64;
 
 static void loge(std::string lg , std::string ms = ""){
 	std::cout << "[" << lg << "] " << ms << ".\n";

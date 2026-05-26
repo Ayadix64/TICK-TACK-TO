@@ -3,7 +3,7 @@
 #include "vertexbuff.h"
 
 template <class T>
-BatchRendrer<T>::BatchRendrer(unsigned int steps):m_steps(steps){
+BatchRendrer<T>::BatchRendrer(u32 steps):m_steps(steps){
 	m_Vertex.resize(1024);
 	m_Index .resize(1024);
 }
@@ -15,7 +15,7 @@ BatchRendrer<T>::~BatchRendrer(){
 
 
 template <class T>
-void BatchRendrer<T>::PushIndex(unsigned int indec){
+void BatchRendrer<T>::PushIndex(u32 indec){
 	if(m_IndexPtr>=m_Index.size()){
 		m_Index.resize(m_Index.size()+1024);
 	}
@@ -49,11 +49,11 @@ void BatchRendrer<T>::PushVertex(T& vert){
 
 
 template <class T>
-void BatchRendrer<T>::Push(T* vertex, unsigned int countofVertex, unsigned int* index, unsigned int countofIndex){
-	for(unsigned int i = 0 ; i < countofIndex; i++){
+void BatchRendrer<T>::Push(T* vertex, u32 countofVertex, unsigned int* index, unsigned int countofIndex){
+	for(u32 i = 0 ; i < countofIndex; i++){
 		PushIndex(index[i]+m_VertexPtr/m_steps);
 	}
-	for(unsigned int i = 0 ; i < countofVertex; i++){
+	for(u32 i = 0 ; i < countofVertex; i++){
 		PushVertex(vertex[i]);
 	}
 	return;	
@@ -63,15 +63,15 @@ void BatchRendrer<T>::Push(T* vertex, unsigned int countofVertex, unsigned int* 
 
 
 template <class T>
-void BatchRendrer<T>::Push(T* vertex, unsigned int countofVertex, unsigned int& VertexOffset, unsigned int* index, unsigned int countofIndex,unsigned int& IndexOffset)
+void BatchRendrer<T>::Push(T* vertex, u32 countofVertex, unsigned int& VertexOffset, unsigned int* index, unsigned int countofIndex,unsigned int& IndexOffset)
 {
 	IndexOffset=m_IndexPtr;
-	for(unsigned int i = 0 ; i < countofIndex; i++){
+	for(u32 i = 0 ; i < countofIndex; i++){
 		PushIndex(index[i]+m_VertexPtr/m_steps);
 	}
 	
 	VertexOffset=m_VertexPtr;
-	for(unsigned int i = 0 ; i < countofVertex; i++){
+	for(u32 i = 0 ; i < countofVertex; i++){
 		PushVertex(vertex[i]);
 	}
 }
@@ -88,7 +88,7 @@ VertexBuff BatchRendrer<T>::GetVertrex(){
 template<class T>
 
 IndexBuff BatchRendrer<T>::GetIndex(){
-	return IndexBuff(m_Index.data(), m_IndexPtr*sizeof(unsigned int));
+	return IndexBuff(m_Index.data(), m_IndexPtr*sizeof(u32));
 }
 
 
@@ -106,15 +106,15 @@ void BatchRendrer<T>::resetPointers(){
 
 template<class T>
 
-unsigned int BatchRendrer<T>::getVertexUsedMemory(){
+u32 BatchRendrer<T>::getVertexUsedMemory(){
 	return m_Vertex.size()*sizeof(T);
 }
 
 
 template<class T>
 
-unsigned int BatchRendrer<T>::getIndexUsedMemory(){
-	return m_Index.size()*sizeof(unsigned int);
+u32 BatchRendrer<T>::getIndexUsedMemory(){
+	return m_Index.size()*sizeof(u32);
 }
 
 
@@ -145,9 +145,17 @@ template<class T>
 bool BatchRendrer<T>::isVertexChanged(){
 	return m_VertexChanged;
 }
+template<class T>
+
+T* BatchRendrer<T>::GetVertexData(u32& count){return m_Vertex.data();}
+
+
+template<class T>
+
+u32* BatchRendrer<T>::GetIndexData(u32& count){return m_Index.data();}
 
 
 
 template class BatchRendrer<float>;
 template class BatchRendrer<int>;
-template class BatchRendrer<unsigned int>;
+template class BatchRendrer<u32>;
