@@ -5,7 +5,7 @@ IndexBuff::IndexBuff(unsigned int * data, unsigned int count){
 	this->m_count = count;
 	CHECK_GL_ERORR(glGenBuffers(1,&m_indexID));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_indexID));
-	CHECK_GL_ERORR(glBufferData(GL_ELEMENT_ARRAY_BUFFER,count*sizeof(unsigned int),data,GL_STATIC_DRAW));
+	CHECK_GL_ERORR(glBufferData(GL_ELEMENT_ARRAY_BUFFER,count*sizeof(unsigned int),data,GL_DYNAMIC_DRAW));
 	return;
 }
 

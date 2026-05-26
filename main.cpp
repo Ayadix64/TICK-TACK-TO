@@ -39,6 +39,10 @@ void RnedrerDraw(VertexArray& va, IndexBuff& ib,Shader& sh){
 
 
 
+
+
+
+
 int main(){
 	/****************************Init*************************/
 	if(!glfwInit()){
@@ -77,7 +81,7 @@ int main(){
 	};
 	
 
-	batch.Push(buffData, sizeof(buffData)/sizeof(float), indecs, sizeof(indecs));
+	batch.Push(buffData, sizeof(buffData)/sizeof(float), indecs, sizeof(indecs)/sizeof(unsigned int));
 
 
 	float buffData2[]{
@@ -93,7 +97,7 @@ int main(){
 	batch.Push(buffData2, sizeof(buffData2)/sizeof(float), indecs2,sizeof(indecs2)/sizeof(unsigned int));
 	
 	VertexArray vao;
-	vao.Bind();	
+	vao.Bind();
 	
 	vao.AddElement<float>(2);
 	vao.AddElement<float>(2);
@@ -152,7 +156,6 @@ int main(){
 			ph=h;
 			proj=glm::ortho(-1.0f,1.0f,(float)(-(float)h/(float)w),(float)((float)h/(float)w),-10.0f,10.0f);
 		}
-
 		glClear(GL_COLOR_BUFFER_BIT);	
 		RnedrerDraw(vao,ib);
 		ImGui::Begin("Hello TICK-TACK-TO");
@@ -161,7 +164,6 @@ int main(){
 		ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
 		ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
-		
 		
 		vb.Set<float>(x, 0);
 		vb.Set<float>(y, 1);
@@ -179,7 +181,19 @@ int main(){
 
 		ImGui::End();
 		ImGui::Render();
-
+		
+		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+			x+=0.05;
+		}
+		if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+			x-=0.05;
+		}
+		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+			y+=0.05;
+		}
+		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+			y-=0.05;
+		}
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
 		glfwSwapBuffers(window);
