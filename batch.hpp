@@ -13,34 +13,33 @@ template<typename T>
 class BatchRendrer{
 private:
 	std::vector<T> m_Vertex;
-	std::vector<unsigned int> m_Index;
-	unsigned int m_steps = 0;//the cont of elements betwen evry vertex
-	unsigned int m_IndexPtr =0, m_VertexPtr=0;
+	std::vector<u32> m_Index;
+	u32 m_steps = 0;//the cont of elements betwen evry vertex
+	u32 m_IndexPtr =0, m_VertexPtr=0;
 	bool m_VertexChanged=false;
 	bool m_IndexChanged=false;
 private:
-	void PushIndex(unsigned int index);
+	void PushIndex(u32 index);
 	void PushVertex(T& vert);
 
 public:
-	BatchRendrer(unsigned int steps);
+	BatchRendrer(u32 steps);
 	~BatchRendrer();
-	void Push(T* vertex, unsigned int countofVertex, unsigned int* index, unsigned int countofIndex);
-	void Push(T* vertex, unsigned int countofVertex, unsigned int& VertexOffset, unsigned int* index, unsigned int countofIndex,unsigned int& IndexOffset);
+	void Push(T* vertex, u32 countofVertex, u32* index, u32 countofIndex);
+	void Push(T* vertex, u32 countofVertex, u32& VertexOffset, u32* index, u32 countofIndex,u32& IndexOffset);
 
 	VertexBuff GetVertrex();
 	IndexBuff GetIndex();
 	void resetPointers();
-	unsigned int getVertexUsedMemory();//to make the api knows when it want to freeup lelory and is it worth it.
-	unsigned int getIndexUsedMemory();
+	u32 getVertexUsedMemory();//to make the api knows when it want to freeup lelory and is it worth it.
+	u32 getIndexUsedMemory();
 	void FreeUpVertexMemory();
 	void FreeUpIndexMemory();
 	bool isIndexChanged();
 	bool isVertexChanged();
-	/*T& operator[](unsigned int n){
-		assert(n<m_Vertex.size());
-		return &m_Vertex[n];
-	}*/
+	T* GetVertexData(u32& count);
+	u32* GetIndexData(u32& count);
+
 
 };
 
