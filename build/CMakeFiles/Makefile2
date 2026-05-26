@@ -76,13 +76,14 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/main.dir/clean
+clean: CMakeFiles/shaders.dir/clean
 .PHONY : clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/main.dir
 
 # All Build rule for target.
-CMakeFiles/main.dir/all:
+CMakeFiles/main.dir/all: CMakeFiles/shaders.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target main"
@@ -90,7 +91,7 @@ CMakeFiles/main.dir/all:
 
 # Build rule for subdir invocation for target.
 CMakeFiles/main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles 16
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles 17
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles 0
 .PHONY : CMakeFiles/main.dir/rule
@@ -100,7 +101,7 @@ main: CMakeFiles/main.dir/rule
 .PHONY : main
 
 # codegen rule for target.
-CMakeFiles/main.dir/codegen:
+CMakeFiles/main.dir/codegen: CMakeFiles/shaders.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/codegen
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 "Finished codegen for target main"
 .PHONY : CMakeFiles/main.dir/codegen
@@ -109,6 +110,38 @@ CMakeFiles/main.dir/codegen:
 CMakeFiles/main.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
 .PHONY : CMakeFiles/main.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/shaders.dir
+
+# All Build rule for target.
+CMakeFiles/shaders.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shaders.dir/build.make CMakeFiles/shaders.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shaders.dir/build.make CMakeFiles/shaders.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=17 "Built target shaders"
+.PHONY : CMakeFiles/shaders.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/shaders.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles 1
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/shaders.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles 0
+.PHONY : CMakeFiles/shaders.dir/rule
+
+# Convenience name for target.
+shaders: CMakeFiles/shaders.dir/rule
+.PHONY : shaders
+
+# codegen rule for target.
+CMakeFiles/shaders.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shaders.dir/build.make CMakeFiles/shaders.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=17 "Finished codegen for target shaders"
+.PHONY : CMakeFiles/shaders.dir/codegen
+
+# clean rule for target.
+CMakeFiles/shaders.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shaders.dir/build.make CMakeFiles/shaders.dir/clean
+.PHONY : CMakeFiles/shaders.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
