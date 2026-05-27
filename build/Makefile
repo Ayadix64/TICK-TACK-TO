@@ -382,6 +382,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+rendrer.o: rendrer.cpp.o
+.PHONY : rendrer.o
+
+# target to build an object file
+rendrer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.o
+.PHONY : rendrer.cpp.o
+
+rendrer.i: rendrer.cpp.i
+.PHONY : rendrer.i
+
+# target to preprocess a source file
+rendrer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.i
+.PHONY : rendrer.cpp.i
+
+rendrer.s: rendrer.cpp.s
+.PHONY : rendrer.s
+
+# target to generate assembly for a file
+rendrer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.s
+.PHONY : rendrer.cpp.s
+
 shader.o: shader.cpp.o
 .PHONY : shader.o
 
@@ -542,6 +566,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... rendrer.o"
+	@echo "... rendrer.i"
+	@echo "... rendrer.s"
 	@echo "... shader.o"
 	@echo "... shader.i"
 	@echo "... shader.s"

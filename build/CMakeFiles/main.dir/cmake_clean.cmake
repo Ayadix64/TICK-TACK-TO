@@ -20,6 +20,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/indexbuff.cpp.o.d"
   "CMakeFiles/main.dir/main.cpp.o"
   "CMakeFiles/main.dir/main.cpp.o.d"
+  "CMakeFiles/main.dir/rendrer.cpp.o"
+  "CMakeFiles/main.dir/rendrer.cpp.o.d"
   "CMakeFiles/main.dir/shader.cpp.o"
   "CMakeFiles/main.dir/shader.cpp.o.d"
   "CMakeFiles/main.dir/texture.cpp.o"

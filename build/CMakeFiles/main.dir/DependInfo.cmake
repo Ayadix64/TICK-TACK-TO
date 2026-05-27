@@ -18,6 +18,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_widgets.cpp" "CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o" "gcc" "CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.o.d"
   "/home/Ayadi/Projects/TIC-TACK-TO/indexbuff.cpp" "CMakeFiles/main.dir/indexbuff.cpp.o" "gcc" "CMakeFiles/main.dir/indexbuff.cpp.o.d"
   "/home/Ayadi/Projects/TIC-TACK-TO/main.cpp" "CMakeFiles/main.dir/main.cpp.o" "gcc" "CMakeFiles/main.dir/main.cpp.o.d"
+  "/home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp" "CMakeFiles/main.dir/rendrer.cpp.o" "gcc" "CMakeFiles/main.dir/rendrer.cpp.o.d"
   "/home/Ayadi/Projects/TIC-TACK-TO/shader.cpp" "CMakeFiles/main.dir/shader.cpp.o" "gcc" "CMakeFiles/main.dir/shader.cpp.o.d"
   "/home/Ayadi/Projects/TIC-TACK-TO/texture.cpp" "CMakeFiles/main.dir/texture.cpp.o" "gcc" "CMakeFiles/main.dir/texture.cpp.o.d"
   "/home/Ayadi/Projects/TIC-TACK-TO/utils.cpp" "CMakeFiles/main.dir/utils.cpp.o" "gcc" "CMakeFiles/main.dir/utils.cpp.o.d"

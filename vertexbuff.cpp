@@ -42,6 +42,7 @@ void VertexBuff::reFull(void* buff, u32 sz){
 	}
 	Bind();
 	CHECK_GL_ERORR(glBufferSubData(GL_ARRAY_BUFFER,0,sz,buff));
+	
 	return;
 }
 

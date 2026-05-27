@@ -48,7 +48,9 @@ void Texture::UnBinde(){
 ImageTexture::ImageTexture(std::string path):m_path(path){
 	stbi_set_flip_vertically_on_load(1);
 	this->image = stbi_load((const char*)m_path.c_str(), (int*)&m_w, (int*)&m_h, (int*)&m_bpp, (int)4);
-		
+	if(!this->image){
+		Eloge("Cant Load "+ path +" , "+std::string(stbi_failure_reason()));
+	}	
 	this->m_texture= new Texture(this->image,m_w,m_h,m_bpp);
 
 	stbi_image_free(image);

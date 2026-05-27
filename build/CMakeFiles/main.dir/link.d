@@ -10,6 +10,7 @@ main: \
   CMakeFiles/main.dir/texture.cpp.o \
   CMakeFiles/main.dir/batch.cpp.o \
   CMakeFiles/main.dir/utils.cpp.o \
+  CMakeFiles/main.dir/rendrer.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o \
@@ -82,6 +83,8 @@ CMakeFiles/main.dir/texture.cpp.o:
 CMakeFiles/main.dir/batch.cpp.o:
 
 CMakeFiles/main.dir/utils.cpp.o:
+
+CMakeFiles/main.dir/rendrer.cpp.o:
 
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o:
 

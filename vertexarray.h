@@ -32,6 +32,7 @@ public:
 	void AddElement(unsigned int cont){
 		loge("VertexArray Erorr", "UnAllowed type");
 	}
+	void rebuild();
 
 
 };

@@ -110,3 +110,12 @@ void VertexArray::AddElement<char>(unsigned int cont){
 	m_elements.push_back({GL_BYTE,cont,GL_FALSE});
 	m_stride += sizeof(char)*cont;
 }
+
+void VertexArray::rebuild(){
+	if(m_vaoID){
+		CHECK_GL_ERORR(glDeleteVertexArrays(1,&m_vaoID));
+	}
+	CHECK_GL_ERORR(glGenVertexArrays(1,&m_vaoID));
+	CHECK_GL_ERORR(glBindVertexArray(m_vaoID));
+	return;
+}
