@@ -279,6 +279,7 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/ext/matrix_projection.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
+ /home/Ayadi/Projects/TIC-TACK-TO/basics.hpp \
  /home/Ayadi/Projects/TIC-TACK-TO/utils.h /usr/include/c++/16.1.1/complex \
  /usr/include/c++/16.1.1/sstream /usr/include/c++/16.1.1/istream \
  /usr/include/c++/16.1.1/ios /usr/include/c++/16.1.1/exception \
@@ -343,6 +344,8 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/c++/16.1.1/bits/stl_numeric.h \
  /usr/include/c++/16.1.1/pstl/glue_numeric_defs.h \
  /usr/include/c++/16.1.1/pstl/execution_defs.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/rendrer.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp \
  /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.h \
  /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imconfig.h \
  /usr/include/string.h /usr/include/strings.h \

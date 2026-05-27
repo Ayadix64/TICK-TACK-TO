@@ -1,5 +1,13 @@
 #ifndef TICK_BASICS
 #define TICK_BASICS
+#include "utils.h"
+void TickInit();
 
+void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1___v2
+									  //  |   |
+									  //  |   |
+									  // v3"""v4
 
+void DrawRectangel(float x, float y , float w , float h,Vec4c cl);
+void TickRendre();
 #endif

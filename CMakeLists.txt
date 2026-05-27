@@ -9,7 +9,7 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 3.4 REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_executable(main main.cpp shader.cpp vertexbuff.cpp indexbuff.cpp vertexarray.cpp texture.cpp batch.cpp utils.cpp
+add_executable(main main.cpp shader.cpp vertexbuff.cpp indexbuff.cpp vertexarray.cpp texture.cpp batch.cpp utils.cpp rendrer.cpp
 externel/imgui/imgui.cpp externel/imgui/imgui_demo.cpp externel/imgui/imgui_draw.cpp externel/imgui/imgui_tables.cpp externel/imgui/imgui_widgets.cpp externel/imgui/imgui_impl_glfw.cpp externel/imgui/imgui_impl_opengl3.cpp )
 
 #configure_folders(${CMAKE_CURRENT_SOURCE_DIR}/Shaders ${CMAKE_CURRENT_BINARY_DIR}/Shaders COPYONLY) #copying Shaders folder
