@@ -11,7 +11,7 @@ VertexArray* g_2DShapeVAO;
 IndexBuff* g_2DShapeIndexBuffer;
 
 void TickInit(){
-	g_2DShapesBatchRenderer= new BatchRendrer<float>(4*4);
+	g_2DShapesBatchRenderer= new BatchRendrer<float>(3);
 	g_2DShapeVertexBuffer = new VertexBuff(nullptr,0);
 	g_2DShapeIndexBuffer = new IndexBuff(nullptr,0);
 	
@@ -64,6 +64,7 @@ void TickRendre(){
 		for (int i = 0 ; i < count ; i++){
 			std::cout<<((float*)vertaxData)[i]<<"\t";
 		}
+		std::cout<<" >>>>>>"<<count<<"\n";
 	}
 	if(g_2DShapesBatchRenderer->isIndexChanged()){
 		isitChanged=true;
@@ -71,7 +72,6 @@ void TickRendre(){
 		u32 count;
 		void *indexData = g_2DShapesBatchRenderer->GetIndexData(count);
 		g_2DShapeIndexBuffer->reFull(indexData, count*sizeof(u32));
-		
 		
 	}
 	if(isitChanged){

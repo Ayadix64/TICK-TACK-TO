@@ -192,8 +192,11 @@ int main(){
 
 		
 		DrawRectangel(x, y, 0.3f, 0.3f, {255,0,0,255});
+		DrawRectangel(x+0.4f, y+0.1f, 0.3f, 0.3f, {255,0,0,255});
+		
 
-		TickRendre();	
+
+
 		ImGui::Begin("Hello TICK-TACK-TO");
 		ImGui::Text("Hi, he , hallo, hi");
 		
@@ -239,6 +242,8 @@ int main(){
 		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 			y-=0.05;
 		}
+		
+		TickRendre();	
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
