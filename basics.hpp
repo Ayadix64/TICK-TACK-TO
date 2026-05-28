@@ -7,7 +7,8 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1_
 									  //  |   |
 									  //  |   |
 									  // v3"""v4
-
+void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl);
 void DrawRectangel(float x, float y , float w , float h,Vec4c cl);
+void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void TickRendre();
 #endif
