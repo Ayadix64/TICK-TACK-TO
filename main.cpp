@@ -192,9 +192,9 @@ int main(){
 
 		
 		//DrawRectangel(x+0.4f, y+0.1f, 0.3f, 0.3f, {255,0,0,255});
-		DrawLine({0.0,0.0}, {x-0.1f,y-0.1f}, 0.6, {255,0,0,140});	
+		DrawLine({0.2,0.2}, {x-0.0f,y-0.0f}, 0.6, {255,0,0,255});	
 	
-		DrawRectangel(x+0.0f, y+0.0f, 0.1f, 0.1f, {255,255,255,255});
+		DrawRectangel(x+0.0f, y+0.0f, 0.1f, 0.1f, {0xfe,144,144,255});
 
 
 		ImGui::Begin("Hello TICK-TACK-TO");

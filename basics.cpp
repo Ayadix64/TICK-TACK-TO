@@ -43,17 +43,25 @@ void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl)
 
 
 void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl){
-	float dxdyOftheStriagthLine = (v2.x-v1.x)/(v1.y-v2.y);//basicly we the  perpendicular line of the line to make a line with in the line
-	
 	float offsetFromeTheSenter = thicknis/2.0f;//we ant the center line to be align with the line that the user want
-	float xsqr = 2.0*(offsetFromeTheSenter*offsetFromeTheSenter)/(dxdyOftheStriagthLine*dxdyOftheStriagthLine+1.0); //we want the ofsset of x from evry botom
+	if(v1.y == v2.y && v1.x == v2.x){
+		return;//wont draw any way lol
+	}else if(v1.y==v2.y){
+		DrawQuadrilateral({v1.x,v1.y-offsetFromeTheSenter}, {v2.x,v2.y-offsetFromeTheSenter}, {v1.x,v1.y+offsetFromeTheSenter} , {v2.x,v2.y+offsetFromeTheSenter},  cl);
+		std::cout<<"\nY=Y";
+	}else if(v1.x==v2.x){
+		DrawQuadrilateral({v1.x-offsetFromeTheSenter,v1.y}, {v2.x-offsetFromeTheSenter,v2.y}, {v1.x+offsetFromeTheSenter,v1.y} , {v2.x+offsetFromeTheSenter,v2.y},  cl);
+		std::cout<<"\nX=X";
+	}//we wont lose profourmence becuse the user want a renamed rectangel are we?
+	else {
+		float a = (v1.x-v2.x)/(v2.y-v1.y);//basicly we the  perpendicular line of the line to make a line with in the line
+		
+		float x_ = sqrtf((offsetFromeTheSenter*offsetFromeTheSenter)/(a*a+1.0)) ;//with some maths, and some deep think, l plk sio ak opopjr ,jdn :kdll k [Segmentation Fult (core dump)]
+		float y_ = x_*a ; //the y is bascily f(x);
+		DrawQuadrilateral({v1.x-x_,v1.y-y_}, {v2.x-x_,v2.y-y_}, {v1.x+x_,v1.y+y_} , {v2.x+x_,v2.y+y_},  cl);
+	}
 	
-	float x_ = sqrtf(xsqr);
-	
-	float y_ = x_*dxdyOftheStriagthLine; //the y is bascily f(x);
-	//std::cout<<"dxdy: "<<dxdyOftheStriagthLine <<" xsqr :"<<xsqr << " x_:"<< x_ << " y_:"<<y_<<"  \n";
-	DrawQuadrilateral(v1, v2, {v1.x+x_,v1.y+y_} , {v2.x+x_,v2.y+y_},  cl);	
-	DrawQuadrilateral(v1, v2, {v1.x-x_,v1.y-y_} , {v2.x-x_,v2.y-y_},  cl);
+	return;	
 }
 
 void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1___v2
@@ -65,13 +73,13 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1__
 		0,1,2,
 		2,3,1
 	};
-	u32 c = ((u32)cl.r<<24)|((u32)cl.g<<16)|((u32)cl.b<<8)|(u32)cl.a;
+	float c = ((float*)&cl)[0];;//float(((u32)(cl.r&0xff)<<24) | ((u32)(cl.g&0xff)<<16) | ((u32)(cl.b&0xff)<<8) | (u32)(cl.a&0xff));
 	
 	float verteces[]{
-		v1.x,v1.y,*(float*)&c,
-		v2.x,v2.y,*(float*)&c,
-		v3.x,v3.y,*(float*)&c,
-		v4.x,v4.y,*(float*)&c
+		v1.x,v1.y,c,
+		v2.x,v2.y,c,
+		v3.x,v3.y,c,
+		v4.x,v4.y,c
 	};
 	g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
 }

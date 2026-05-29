@@ -28,6 +28,7 @@ void BatchRendrer<T>::PushIndex(u32 indec){
 		m_Index.resize(m_Index.size()+1024);
 	}
 	if(m_Index[m_IndexPtr]!=indec){
+		std::cout<<"\n Was "<<m_Index[m_IndexPtr]<<" and become " << indec <<'\n';
 		m_IndexChanged=true;
 	}
 	m_Index[m_IndexPtr]=indec;
@@ -43,6 +44,7 @@ void BatchRendrer<T>::PushVertex(T& vert){
 		m_Vertex.resize(m_Vertex.size()+1024);
 	}
 	if(m_Vertex[m_VertexPtr]!=vert){
+		std::cout<<"\n Was "<<m_Vertex[m_VertexPtr]<<" and become " << vert <<'\n';
 		m_VertexChanged=true;
 	}
 	m_Vertex[m_VertexPtr]=vert;
