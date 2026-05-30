@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <cstdlib>
+#include <deque>
 #include <glm/ext/vector_float4.hpp>
 #include <iostream>
 #include <fstream>
@@ -43,6 +44,8 @@ typedef struct{
 }Vec4c;
 
 
+typedef struct {float x , y; u32 c;} VertexShape;
+//bool operator!=(VertexShape v1,VertexShape v){return true;};
 
 
 static void loge(std::string lg , std::string ms = ""){
