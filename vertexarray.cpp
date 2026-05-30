@@ -70,44 +70,44 @@ void VertexArray::Layout(){
 
 
 template<>
-void VertexArray::AddElement<float>(unsigned int cont){
-	m_elements.push_back({GL_FLOAT,cont,GL_FALSE});
+void VertexArray::AddElement<float>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_FLOAT,cont,norm});
 	m_stride += sizeof(float)*cont;
 }
 
 template<>
-void VertexArray::AddElement<unsigned int>(unsigned int cont){
-	m_elements.push_back({GL_UNSIGNED_INT,cont,GL_FALSE});
+void VertexArray::AddElement<unsigned int>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_UNSIGNED_INT,cont,norm});
 	m_stride += sizeof(unsigned int)*cont;
 }
 
 template<>
-void VertexArray::AddElement<unsigned short>(unsigned int cont){
-	m_elements.push_back({GL_UNSIGNED_SHORT,cont,GL_FALSE});
+void VertexArray::AddElement<unsigned short>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_UNSIGNED_SHORT,cont,norm});
 	m_stride += sizeof(unsigned short)*cont;
 }
 
 template<>
-void VertexArray::AddElement<unsigned char>(unsigned int cont){
-	m_elements.push_back({GL_UNSIGNED_BYTE,cont,GL_FALSE});
+void VertexArray::AddElement<unsigned char>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_UNSIGNED_BYTE,cont,norm});
 	m_stride += sizeof(unsigned char)*cont;
 }
 
 template<>
-void VertexArray::AddElement<int>(unsigned int cont){
-	m_elements.push_back({GL_INT,cont,GL_FALSE});
+void VertexArray::AddElement<int>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_INT,cont,norm});
 	m_stride += sizeof(int)*cont;
 }
 
 template<>
-void VertexArray::AddElement<short>(unsigned int cont){
-	m_elements.push_back({GL_SHORT,cont,GL_FALSE});
+void VertexArray::AddElement<short>(unsigned int cont, bool norm){
+	m_elements.push_back({GL_SHORT,cont,norm});
 	m_stride += sizeof(short)*cont;
 }
 
 template<>
-void VertexArray::AddElement<char>(unsigned int cont){
-	m_elements.push_back({GL_BYTE,cont,GL_FALSE});
+void VertexArray::AddElement<char>(unsigned int cont , bool norm){
+	m_elements.push_back({GL_BYTE,cont,norm});
 	m_stride += sizeof(char)*cont;
 }
 

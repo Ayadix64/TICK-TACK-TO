@@ -56,105 +56,7 @@ int main(){
 	/**********************************************************/
 	
 
-	BatchRendrer<float> batch(4);
-	
-	float buffData[]{
-		-0.5,-0.5,0.0,0.0,
-		 0.5,-0.5,1.0,0.0,
-		-0.5,0.5 ,0.0,1.0,
-		 0.5,0.5 ,1.0,1.0,
-		
-	};
-	unsigned int indecs[]{
-		0,1,2,
-		1,2,3,
-	};
-	
-
-	batch.Push(buffData, sizeof(buffData)/sizeof(float), indecs, sizeof(indecs)/sizeof(unsigned int));
-
-
-	float buffData2[]{
-		-0.5+1.0,  0.5, 0.0,1.0,//0
-		 0.5+1.0,  0.5, 1.0,1.0,//1
-		-0.5+1.0, -0.5, 0.0,0.0,//2
-		 0.5+1.0, -0.5, 1.0,0.0, //3
-	};
-	unsigned int indecs2[]{
-		0,1,2,
-		1,2,3
-	};
-	batch.Push(buffData2, sizeof(buffData2)/sizeof(float), indecs2,sizeof(indecs2)/sizeof(unsigned int));
-	
-	VertexArray vao;
-	vao.Bind();
-	
-	vao.AddElement<float>(2);
-	vao.AddElement<float>(2);
-
-	VertexBuff vb = batch.GetVertrex();
-	vb.Bind();	
-	vao.Layout();
-	
-	IndexBuff ib= batch.GetIndex();
-	
-	unsigned char* buff = (unsigned char*)malloc(640*480*4);	
-	for(int i = 0 ; i < 640*480*4 ; i+=4){
-		buff[i] = 255;
-		buff[i+1] = i%255;
-		buff[i+2] = 0;
-		buff[i+3] = 255;
-	}
-	//Texture imagetext(buff,640,480,4);
-	free(buff);
-	ImageTexture imagetext("p.png");
-	imagetext.Binde();
-	
-
-	vb.UnBind();
-	ib.UnBinde();
-
 	Shader shader("Shaders/vert.shader","Shaders/frag.shader");
-	
-	float Cube[]{
-		 0.3, 0.3,1.0,//0
-		 0.3,-0.3,1.0,//1
-		-0.3, 0.3,1.0,//2
-		-0.3,-0.3,1.0,//3
-
-		 0.3, 0.3,1.5,//4
-		 0.3,-0.3,1.5,//5
-		-0.3, 0.3,1.5,//6
-		-0.3,-0.3,1.5 //7
-	};
-
-	u32 CubeIndex[]{
-		1,0,2,
-		1,2,3,
-		
-		1,4,0,
-		1,5,4,
-		
-		1,5,7,
-		1,7,3,
-		
-		0,4,6,
-		0,2,6,
-		
-		7,3,6,
-		2,3,6,
-		
-		5,4,7,
-		4,6,7
-	};
-	
-	VertexArray cube_vao;
-	cube_vao.AddElement<float>(3);
-	VertexBuff cube_vb(Cube, sizeof(Cube));
-	IndexBuff cube_ib(CubeIndex, sizeof(CubeIndex));
-	cube_vb.Bind();
-	cube_ib.Bind();
-	cube_vao.Layout();
 	/*****************************************************************************************************************/
 	TickInit();
 	
@@ -186,47 +88,25 @@ int main(){
 			ph=h;
 			proj=glm::ortho(-1.0f,1.0f,(float)(-(float)h/(float)w),(float)((float)h/(float)w),-10.0f,10.0f);
 		}
-		glClear(GL_COLOR_BUFFER_BIT);	
 		//RnedrerDraw(vao,ib);
 		//RnedrerDraw(cube_vao,cube_ib);
 
 		
 		//DrawRectangel(x+0.4f, y+0.1f, 0.3f, 0.3f, {255,0,0,255});
-		DrawLine({0.2,0.2}, {x-0.0f,y-0.0f}, 0.6, {255,0,0,255});	
-	
-		DrawRectangel(x+0.0f, y+0.0f, 0.1f, 0.1f, {0xfe,144,144,255});
-
-
+		//DrawLine({0.4,0.0}, {x-0.0f,y-0.0f}, 0.1, {255,0,0,255});	
+		//DrawLine({-0.4,0.0}, {x-0.0f,y-0.0f}, 0.1, {255,0,0,255});	
+		DrawRectangel(x-0.05f, y-0.05f, 0.1f, 0.1f, {0xff,0xff,0xff,0xff});
+		Vec2f vertex[]{{0.5,0.5},{0.5,-0.5},{-0.5,0.5},{-0.5,-0.5}};
+		Draw2DVerteces(vertex,4 , {255,255,0,255});
 		ImGui::Begin("Hello TICK-TACK-TO");
-		ImGui::Text("Hi, he , hallo, hi");
 		
+		ImGui::Text("Hi, he , hallo, hi");
 		ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
 		ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
 		ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
 		
-
-		
-
-
-
-		for(int i = 0 ; i < 8*3;i+=3){			
-			double x_=Cube[i],y_=Cube[i+1],z_=Cube[i+2];
-			Rotate(x_,y_,z_,0.0,0.0,1.15,(double)r,(double)r2);
-			Cube[i]=x_,Cube[i+1]=y_,Cube[i+2]=z_;
-
-
-		}
-		cube_vb.reFull(Cube, sizeof(Cube));
-			
-
-		//trans = glm::translate(glm::mat4(1.0), {x,y,1.0});
-		//trans = glm::rotate(glm::mat4(1.0), z, {0.0,0.0,0.0});
-		
-		for(int i = 0 ; i < 8 ; i++){
-			
-		}
 		ImGui::End();
 		ImGui::Render();
 		
@@ -247,6 +127,8 @@ int main(){
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		glClear(GL_COLOR_BUFFER_BIT);
 		clc+=0.01;
 
 	}

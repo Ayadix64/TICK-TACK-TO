@@ -29,7 +29,7 @@ public:
 	void Layout();
 
 	template<typename T>
-	void AddElement(unsigned int cont){
+	void AddElement(unsigned int cont , bool normilized = false){
 		loge("VertexArray Erorr", "UnAllowed type");
 	}
 	void rebuild();
