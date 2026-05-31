@@ -39,7 +39,7 @@ void VertexBuff::reFull(void* buff, u32 sz){
 		CHECK_GL_ERORR(glBufferData(GL_ARRAY_BUFFER,sz,buff,GL_DYNAMIC_DRAW));
 		m_size=sz;
 		return;
-	}
+	}	
 	Bind();
 	CHECK_GL_ERORR(glBufferSubData(GL_ARRAY_BUFFER,0,sz,buff));
 	

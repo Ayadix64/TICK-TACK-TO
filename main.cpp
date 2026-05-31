@@ -44,8 +44,8 @@ int main(){
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 	
-
 	GLFWwindow* window = CreatWindow("window", 800, 600);
+	
 	GlewInit();	
 		
 
@@ -53,6 +53,7 @@ int main(){
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImGuiInit(window);
+	
 	/**********************************************************/
 	
 
@@ -69,44 +70,62 @@ int main(){
 	
 	float clc=0.0;
 	
-	glm::mat4 proj = glm::ortho(-1.0,1.0,-0.75,0.75,-10.0,10.0);
+	glm::mat4 proj = glm::ortho(0.0f,(float)pw,(float)ph,0.0f,-10.0f,10.0f);
 	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	float x=-0.5f,y=-0.5f,z=1.0f , r=0.0f, r2=0.0f;
-	
+
 	Uniform u_mvp("u_MVP",shader);
 	Uniform u_z("u_z",shader);
-	while(!glfwWindowShouldClose(window)){
+	
+	char ticktackto[3][3];
+
+	float bx =0.0f , by=10.0f;
+	float bxa=2.0f,bya=2.0f;
+	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
+	while(!glfwWindowShouldClose(window) ){
 		glm::mat4 model = trans*proj;
 		u_mvp.SetMat4f(model);
 		u_z.Set1f(z);
+		
 		ImGuiNewFrame();
+		
 		int w , h;
 		glfwGetFramebufferSize(window, &w, &h);
 		if(w!=pw || h!=ph){
 			glViewport(0, 0, w,h);
 			pw=w;
 			ph=h;
-			proj=glm::ortho(-1.0f,1.0f,(float)(-(float)h/(float)w),(float)((float)h/(float)w),-10.0f,10.0f);
+			proj=glm::ortho(0.0f,(float)w,(float)h,0.0f,-10.0f,10.0f);
 		}
-		//RnedrerDraw(vao,ib);
-		//RnedrerDraw(cube_vao,cube_ib);
 
 		
-		//DrawRectangel(x+0.4f, y+0.1f, 0.3f, 0.3f, {255,0,0,255});
-		//DrawLine({0.4,0.0}, {x-0.0f,y-0.0f}, 0.1, {255,0,0,255});	
-		//DrawLine({-0.4,0.0}, {x-0.0f,y-0.0f}, 0.1, {255,0,0,255});	
-		DrawRectangel(x-0.05f, y-0.05f, 0.1f, 0.1f, {0xff,0xff,0xff,0xff});
-		Vec2f vertex[]{{0.5,0.5},{0.5,-0.5},{-0.5,0.5},{-0.5,-0.5}};
-		Draw2DVerteces(vertex,4 , {255,255,0,255});
+		DrawRectangel((float)pw-20.0, yp1, 10.0f, 50.0f, {255,0,0,255});
+		DrawRectangel(10.0, yp2, 10.0f, 50.0f, {0,0,255,255});
+
+		DrawRectangel(bx, by, 20.0f, 20.0f, {0xff,0xff,0xff,0xff});
+		if(by>=yp1 && by<=yp1+50.0 && bx+20.0>=pw-20.0 && bx+20.0<=pw-10.0){
+			bxa=-bxa;
+		}
+		bx+=bxa;
+		by+=bya;
+		
+		if(bx+20.0f >= pw || bx<=0.0){
+			bxa=-bxa;
+		}
+		if(by+20.0f >= ph || by<=0.0){
+			bya=-bya;
+		}
 		ImGui::Begin("Hello TICK-TACK-TO");
 		
 		ImGui::Text("Hi, he , hallo, hi");
-		ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
-		ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
+		
+		//ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
+		//ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
-		ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
-		
+		//ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
+		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+		//DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});
 		ImGui::End();
 		ImGui::Render();
 		
@@ -118,16 +137,30 @@ int main(){
 		}
 		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
 			y+=0.05;
+			if(yp1>0.0){
+				yp1-=5.0;
+			}
 		}
 		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-			y-=0.05;
+			if(yp1+50.0<=(float)ph){
+				yp1+=5.0;
+			}
 		}
-		
+		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+			if(yp2+50.0<=(float)ph){
+				yp2+=5.0;
+			}
+		}
+		if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+			if(yp2>0.0){
+				yp2-=5.0;
+			}
+		}
 		TickRendre();	
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
+		
 		glClear(GL_COLOR_BUFFER_BIT);
 		clc+=0.01;
 
