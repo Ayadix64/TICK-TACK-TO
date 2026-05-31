@@ -42,6 +42,9 @@ public:
 	T* GetVertexData(u32& count);
 	u32* GetIndexData(u32& count);
 
+	u32 GetVertexCount();
+	u32 GetIndexCount();
+
 
 };
 

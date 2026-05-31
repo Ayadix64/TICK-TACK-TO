@@ -172,6 +172,18 @@ u32* BatchRendrer<T>::GetIndexData(u32& count){
 	return m_Index.data();
 }
 
+template<class T>
+
+u32 BatchRendrer<T>::GetIndexCount(){
+	return m_IndexPtr;
+}
+template<class T>
+
+u32 BatchRendrer<T>::GetVertexCount(){
+	return  m_VertexPtr;
+}
+
+
 
 
 template class BatchRendrer<float>;

@@ -127,17 +127,51 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
 
 
 
+
+void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl){
+	float* Vertex = (float*)malloc((Vertecount*3)*sizeof(float));
+	
+	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
+	for(u32 i = 0 ; i < Vertecount; i++){
+		Vertex[i*3]=verteces[i].x;
+		Vertex[i*3+1]=verteces[i].y;
+		Vertex[i*3+2]=*(float*)&c;
+	}
+
+	g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
+	
+}
+
+
+void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl){
+	float xx = r;
+	float yy = 0.0;
+	for(;yy<= r/1.5 ; yy+=(float)segments){
+		if(xx*xx+yy*yy-r*r>=0.0){
+			xx-=(float)segments;
+		}
+		DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
+		//DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
+		//DrawRectangel((float)x-xx, (float)y+yy, 1.0, 1.0, cl);
+		//DrawRectangel((float)x+xx, (float)y-yy, 1.0, 1.0, cl);
+		//DrawRectangel((float)x-xx, (float)y-yy, 1.0, 1.0, cl);
+	}
+	return;
+
+}
+
 void TickRendre(){
 	bool isitChanged = false;
 	static int points=0; 
+	
 	if(g_2DShapesBatchRenderer->isVertexChanged()){
+		u32 count;
 		isitChanged=true;
 		loge("vertex charnged");
 		if(!points){std::cout<<"..";};
 		if(points){std::cout<<"==";};
 		
 		points=!points;
-		u32 count;
 		void *vertaxData = g_2DShapesBatchRenderer->GetVertexData(count);
 		g_2DShapeVertexBuffer->reFull(vertaxData, count*sizeof(float));
 		std::cout<<" >>>>>>"<<count<<"\n";
@@ -161,7 +195,9 @@ void TickRendre(){
 		g_2DShapeVAO->Layout();
 	}
 	
+	g_2DShapeVAO->Bind();
+	
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, g_2DShapesBatchRenderer->GetIndexCount(), GL_UNSIGNED_INT, nullptr));
 
-	RnedrerDraw(*g_2DShapeVAO,*g_2DShapeIndexBuffer);
 	g_2DShapesBatchRenderer->resetPointers();	
 }
