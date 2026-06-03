@@ -150,8 +150,9 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont
 }
 
 
-void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl){
-	if(!r)return;//it make no sence™ to a circel with out a raduice 
+void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
+	if(!r|!steps)return;//it make no sence™ to a circel with out a raduice or a steps
+	
 	float xx = r;
 	float yy = 0.0;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
@@ -166,9 +167,9 @@ void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl){
 
 	g_2DShapesBatchRenderer->Push(ce_vertex,3,nullptr,0);
 
-	for(u32 i = 1;xx>=r/1.5; yy+=(float)segments,i+=8){
-		if(xx*xx+yy*yy-r*r>=0.0){
-			xx-=(float)segments;
+	for(u32 i = 1;xx>=r/1.5; yy+=(float)steps,i+=8){
+		if(xx*xx+yy*yy-r*r>=2.0){
+			xx-=(float)steps;
 		}
 	
 		Verteces[0]=x+xx;
@@ -218,7 +219,7 @@ void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl){
 		indeces[10]=6;
 		indeces[11]=7;
 		
-		g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12*4);	
+		g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12);	
 
 
 			
