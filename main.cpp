@@ -39,15 +39,16 @@ int main(){
 		Eloge("GLFW not init");
 		return 1;
 	}
-	
+		
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 	
-	GLFWwindow* window = CreatWindow("window", 800, 600);
+	GLFWwindow* window = CreatWindow("window", 800, 800);
 	
 	GlewInit();	
-		
+	
+
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	glEnable(GL_BLEND);	
@@ -72,7 +73,7 @@ int main(){
 	
 	glm::mat4 proj = glm::ortho(0.0f,(float)pw,(float)ph,0.0f,-10.0f,10.0f);
 	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
-	float x=-0.5f,y=-0.5f,z=1.0f , r=0.0f, r2=0.0f;
+	float x=-0.5f,y=-0.5f,z=1.0f , r=2.0f, r2=0.0f;
 
 	Uniform u_mvp("u_MVP",shader);
 	Uniform u_z("u_z",shader);
@@ -103,7 +104,7 @@ int main(){
 		DrawRectangel(10.0, yp2, 10.0f, 50.0f, {0,0,255,255});
 
 		DrawRectangel(bx, by, 20.0f, 20.0f, {0xff,0xff,0xff,0xff});
-		if(by>=yp1 && by<=yp1+50.0 && bx+20.0>=pw-20.0 && bx+20.0<=pw-10.0){
+		if(by-20>=yp1 && by<=yp1+50.0 && bx+20.0>=pw-20.0 && bx+20.0<=pw-10.0){
 			bxa=-bxa;
 		}
 		bx+=bxa;
@@ -125,7 +126,7 @@ int main(){
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
 		//ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
 		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
-		//DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});
+		DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});
 		ImGui::End();
 		ImGui::Render();
 		
@@ -161,6 +162,7 @@ int main(){
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		clc+=0.01;
 

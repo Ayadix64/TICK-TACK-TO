@@ -6,6 +6,7 @@
 #include "vertexarray.h"
 #include "rendrer.hpp"
 #include <cmath>
+#include <cstdlib>
 
 BatchRendrer<float> *g_2DShapesBatchRenderer;
 VertexBuff* g_2DShapeVertexBuffer;
@@ -40,13 +41,16 @@ void TickInit(){
 void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl)
 {
 	
-	float c = *(float*)&cl;//((int)cl.r<<24)|((int)cl.g<<16)|((int)cl.b<<8)|cl.a;
+	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	float verteces[]{
-		v1.x,v1.y,c,
-		v2.x,v2.y,c,
-		v3.x,v3.y,c,
+		v1.x,v1.y,*(float*)&c,
+		v2.x,v2.y,*(float*)&c,
+		v3.x,v3.y,*(float*)&c,
 	};
-	g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),nullptr,0);
+	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
+
+	//u32 verty , indexy;
+	g_2DShapesBatchRenderer->Push(verteces,9,indece,3);
 }
 
 
@@ -122,7 +126,9 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
 		}
 	}
 	g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
-
+	free(Vertex);
+	free(indeces);
+	return;
 }
 
 
@@ -139,23 +145,102 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont
 	}
 
 	g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
-	
+	free(Vertex);
+	return;
 }
 
 
 void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl){
+	if(!r)return;//it make no sence™ to a circel with out a raduice 
 	float xx = r;
 	float yy = 0.0;
-	for(;yy<= r/1.5 ; yy+=(float)segments){
+	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
+	/**********************************************************************************
+	 *			TODO: this code is reduceles, fix it!
+	 **********************************************************************************/
+	float Verteces[8*3];
+	u32 indeces[8*3];
+
+
+	float ce_vertex[3]{x,y,*(float*)&c};
+
+	g_2DShapesBatchRenderer->Push(ce_vertex,3,nullptr,0);
+
+	for(u32 i = 1;xx>=r/1.5; yy+=(float)segments,i+=8){
 		if(xx*xx+yy*yy-r*r>=0.0){
 			xx-=(float)segments;
 		}
-		DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
+	
+		Verteces[0]=x+xx;
+		Verteces[1]=y+yy;
+		Verteces[2]=*(float*)&c;
+		Verteces[3]=x+yy;
+		Verteces[4]=y+xx;
+		Verteces[5]=*(float*)&c;
+	
+
+		Verteces[6]=x+xx;
+		Verteces[7]=y-yy;
+		Verteces[8]=*(float*)&c;
+		Verteces[9]=x+yy;
+		Verteces[10]=y-xx;
+		Verteces[11]=*(float*)&c;
+
+		
+		Verteces[12]=x-xx;
+		Verteces[13]=y+yy;
+		Verteces[14]=*(float*)&c;
+		Verteces[15]=x-yy;
+		Verteces[16]=y+xx;
+		Verteces[17]=*(float*)&c;
+
+		
+		Verteces[18]=x-xx;
+		Verteces[19]=y-yy;
+		Verteces[20]=*(float*)&c;
+		Verteces[21]=x-yy;
+		Verteces[22]=y-xx;
+		Verteces[23]=*(float*)&c;
+		
+		indeces[0]=-i;
+		indeces[1]=0;
+		indeces[2]=1;
+
+		indeces[3]=-i;
+	 	indeces[4]=2;
+		indeces[5]=3;
+	
+		indeces[6]=-i;
+		indeces[7]=4;
+		indeces[8]=5;
+	
+		indeces[9]=-i;
+		indeces[10]=6;
+		indeces[11]=7;
+		
+		g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12*4);	
+
+
+			
+		/*DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
+		DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
+		
+		DrawRectangel((float)x-xx, (float)y+yy, 1.0f, 1.0f, cl);
+		DrawRectangel((float)x-yy, (float)y+xx, 1.0f, 1.0f, cl);
+		
+		DrawRectangel((float)x+xx, (float)y-yy, 1.0f, 1.0f, cl);
+		DrawRectangel((float)x+yy, (float)y-xx, 1.0f, 1.0f, cl);
+		
+		DrawRectangel((float)x-xx, (float)y-yy, 1.0f, 1.0f, cl);
+		DrawRectangel((float)x-yy, (float)y-xx, 1.0f, 1.0f, cl);*/
+		
+
 		//DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
 		//DrawRectangel((float)x-xx, (float)y+yy, 1.0, 1.0, cl);
 		//DrawRectangel((float)x+xx, (float)y-yy, 1.0, 1.0, cl);
 		//DrawRectangel((float)x-xx, (float)y-yy, 1.0, 1.0, cl);
 	}
+	//Draw2DVerteces((Vec2f*)Verteces, (u32)r*8 , cl);
 	return;
 
 }

@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
+
+project(f2h)
+set(CMAKE_C_STANDARD 11)
+add_executable(f2h utils/f2h.c)
+
 project(main)
 
 
