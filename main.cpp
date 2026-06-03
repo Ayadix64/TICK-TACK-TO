@@ -83,6 +83,7 @@ int main(){
 	float bx =0.0f , by=10.0f;
 	float bxa=2.0f,bya=2.0f;
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
+	int segments = 1;
 	while(!glfwWindowShouldClose(window) ){
 		glm::mat4 model = trans*proj;
 		u_mvp.SetMat4f(model);
@@ -124,8 +125,9 @@ int main(){
 		//ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
+		ImGui::SliderInt("steps", &segments, 1, 100);
 		//ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
-		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+		DrawCercel((float)pw/2.0, (float)ph/2, r,segments, {0,255,0,255});
 		DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});
 		ImGui::End();
 		ImGui::Render();
