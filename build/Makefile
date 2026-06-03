@@ -117,6 +117,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named f2h
+
+# Build rule for target.
+f2h: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 f2h
+.PHONY : f2h
+
+# fast build rule for target.
+f2h/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/f2h.dir/build.make CMakeFiles/f2h.dir/build
+.PHONY : f2h/fast
+
+#=============================================================================
 # Target rules for targets named main
 
 # Build rule for target.
@@ -478,6 +491,30 @@ utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/utils.cpp.s
 .PHONY : utils.cpp.s
 
+utils/f2h.o: utils/f2h.c.o
+.PHONY : utils/f2h.o
+
+# target to build an object file
+utils/f2h.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/f2h.dir/build.make CMakeFiles/f2h.dir/utils/f2h.c.o
+.PHONY : utils/f2h.c.o
+
+utils/f2h.i: utils/f2h.c.i
+.PHONY : utils/f2h.i
+
+# target to preprocess a source file
+utils/f2h.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/f2h.dir/build.make CMakeFiles/f2h.dir/utils/f2h.c.i
+.PHONY : utils/f2h.c.i
+
+utils/f2h.s: utils/f2h.c.s
+.PHONY : utils/f2h.s
+
+# target to generate assembly for a file
+utils/f2h.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/f2h.dir/build.make CMakeFiles/f2h.dir/utils/f2h.c.s
+.PHONY : utils/f2h.c.s
+
 vertexarray.o: vertexarray.cpp.o
 .PHONY : vertexarray.o
 
@@ -535,6 +572,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... shaders"
+	@echo "... f2h"
 	@echo "... main"
 	@echo "... batch.o"
 	@echo "... batch.i"
@@ -578,6 +616,9 @@ help:
 	@echo "... utils.o"
 	@echo "... utils.i"
 	@echo "... utils.s"
+	@echo "... utils/f2h.o"
+	@echo "... utils/f2h.i"
+	@echo "... utils/f2h.s"
 	@echo "... vertexarray.o"
 	@echo "... vertexarray.i"
 	@echo "... vertexarray.s"

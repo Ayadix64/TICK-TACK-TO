@@ -1,0 +1,1 @@
+/usr/bin/cc -g -Wl,--dependency-file=CMakeFiles/f2h.dir/link.d CMakeFiles/f2h.dir/utils/f2h.c.o -o f2h
