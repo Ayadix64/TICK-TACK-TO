@@ -9,7 +9,7 @@ private:
 	unsigned int CreatShader(const char* vert, const char* frag);
 	unsigned int CompileShader(unsigned int type , const char* src);
 public:
-	Shader(const char* vs_path, const char* fs_path);
+	Shader(const char* vs, const char* fs);
 	~Shader();
 	void Binde();
 	void UnBinde();
@@ -25,6 +25,10 @@ public:
 
 	void SetUniformMat4f(const char* unif, glm::mat4& m4);
 };
+
+
+Shader GetShaderFromeFile(const char* vs_path, const char* fs_path);
+
 class Uniform{
 private:
 	unsigned int m_location=0;

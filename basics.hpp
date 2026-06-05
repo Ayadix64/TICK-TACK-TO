@@ -12,6 +12,6 @@ void DrawRectangel(float x, float y , float w , float h,Vec4c cl);
 void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
-void DrawCercel(float x , float y , float r, u32 segments , Vec4c cl);
+void DrawCercel(float x , float y , float r, float steps , Vec4c cl);
 void TickRendre();
 #endif

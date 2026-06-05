@@ -44,13 +44,8 @@ unsigned int Shader::CreatShader(const char* vert, const char* frag){
 }
 
 
-Shader::Shader(const char* vs_path, const char* fs_path){
-	std::string vs;
-	std::string fs;
-	readFile(vs_path, vs);
-	readFile(fs_path, fs);
-	
-	m_shader = CreatShader(vs.c_str(), fs.c_str());
+Shader::Shader(const char* vs, const char* fs){
+	m_shader = CreatShader(vs, fs);
 	Binde();
 }
 
@@ -169,6 +164,7 @@ void Shader::SetUniformMat4f(const char* unif, glm::mat4& m4){
 	
 }
 Shader::~Shader(){
+	loge("DEAD");
 	if(m_shader){
 		CHECK_GL_ERORR(glDeleteProgram(m_shader));
 	}
@@ -176,6 +172,13 @@ Shader::~Shader(){
 }
 
 
+/***************************** Shader Frome A file ***********************/
+Shader GetShaderFromeFile(const char* vs_path, const char* fs_path){
+	std::string vs, fs;
+	readFile(vs_path, vs);
+	readFile(fs_path, vs);
+	return Shader (vs.c_str(),fs.c_str());
+}
 
 
 /***************************** Unifrorms *********************************/
