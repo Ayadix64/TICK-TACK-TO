@@ -57,8 +57,46 @@ int main(){
 	
 	/**********************************************************/
 	
+	const char* fragment_shader = 
+		"#version 330 core\n"
+		"\n"
+		"\n"
+		"layout(location=0) out vec4 outcl;\n"
+		"\n"
+		"\n"
+		"flat in uint color;\n"
+		"\n"
+		"uniform sampler2D u_Texture;\n"
+		"\n"
+		"void main(){\n"
+		"	float r = float((color>>24)&0xffu)/255.0;\n"
+		"	float g = float((color>>16)&0xffu)/255.0;\n"
+		"	float b = float((color>>8)&0xffu)/255.0;\n"
+		"	float a = float(color&0xffu)/255.0;\n"
+		"\n"
+		"	vec4 cl = vec4(r,g,b,a);//texture(u_Texture,v_textCoord);\n"
+		"	outcl =cl;\n"
+		"}\n"
+		;
 
-	Shader shader("Shaders/vert.shader","Shaders/frag.shader");
+
+	/********************************************vertex_shader***********************************************/
+	const char* vertex_shader = 
+		"#version 330 core\n"
+		"layout(location=0) in vec4 position;//pleze read vec4 (for the better, and it convert it automaticly),at index 0\n"
+		"layout(location=1) in uint inColor;\n"
+		"\n"
+		"flat out uint color;\n"
+		"uniform mat4 u_MVP;\n"
+		"uniform float u_z;\n"
+		"void main(){\n"
+		"	gl_Position=u_MVP*vec4(position.xyz,u_z)*0.5f;\n"
+		"	color=inColor;\n"
+		"}\n";
+	
+
+
+	Shader shader(vertex_shader,fragment_shader);
 	/*****************************************************************************************************************/
 	TickInit();
 	
@@ -73,7 +111,7 @@ int main(){
 	
 	glm::mat4 proj = glm::ortho(0.0f,(float)pw,(float)ph,0.0f,-10.0f,10.0f);
 	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
-	float x=-0.5f,y=-0.5f,z=1.0f , r=2.0f, r2=0.0f;
+	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
 	Uniform u_mvp("u_MVP",shader);
 	Uniform u_z("u_z",shader);
@@ -83,7 +121,7 @@ int main(){
 	float bx =0.0f , by=10.0f;
 	float bxa=2.0f,bya=2.0f;
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
-	int segments = 1;
+	float segments = 1.0;
 	while(!glfwWindowShouldClose(window) ){
 		glm::mat4 model = trans*proj;
 		u_mvp.SetMat4f(model);
@@ -104,7 +142,8 @@ int main(){
 		DrawRectangel((float)pw-20.0, yp1, 10.0f, 50.0f, {255,0,0,255});
 		DrawRectangel(10.0, yp2, 10.0f, 50.0f, {0,0,255,255});
 
-		DrawRectangel(bx, by, 20.0f, 20.0f, {0xff,0xff,0xff,0xff});
+		//DrawRectangel(bx, by, 20.0f, 20.0f, {0xff,0xff,0xff,0xff});
+		//DrawCercel(bx, by, r, segments, {0,0xff,0x0,0xff});
 		if(by-20>=yp1 && by<=yp1+50.0 && bx+20.0>=pw-20.0 && bx+20.0<=pw-10.0){
 			bxa=-bxa;
 		}
@@ -125,7 +164,7 @@ int main(){
 		//ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
-		ImGui::SliderInt("steps", &segments, 1, 100);
+		ImGui::SliderFloat("steps", &segments, 1, 100);
 		//ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
 		DrawCercel((float)pw/2.0, (float)ph/2, r,segments, {0,255,0,255});
 		DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});

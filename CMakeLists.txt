@@ -1,12 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(f2h)
-set(CMAKE_C_STANDARD 11)
-add_executable(f2h utils/f2h.c)
-
-project(main)
-
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug) #remeber to delet this if you want a user app, this increase the app length to better debug
 
@@ -18,12 +11,20 @@ add_executable(main main.cpp shader.cpp vertexbuff.cpp indexbuff.cpp vertexarray
 externel/imgui/imgui.cpp externel/imgui/imgui_demo.cpp externel/imgui/imgui_draw.cpp externel/imgui/imgui_tables.cpp externel/imgui/imgui_widgets.cpp externel/imgui/imgui_impl_glfw.cpp externel/imgui/imgui_impl_opengl3.cpp )
 
 #configure_folders(${CMAKE_CURRENT_SOURCE_DIR}/Shaders ${CMAKE_CURRENT_BINARY_DIR}/Shaders COPYONLY) #copying Shaders folder
-add_custom_target(shaders
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/"
-	"${CMAKE_CURRENT_BINARY_DIR}/Shaders"	
-	COMMENT "Copying Shaders"
-)
+#add_custom_target(shaders
+#	COMMAND ${CMAKE_COMMAND} -E copy_directory
+#	"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/Shaders"	
+#	COMMENT "Copying Shaders"
+#)
+#add_custom_command(
+#	TARGET main POST_BUILD
+#	COMMAND ./f2h  "$<TARGET_FILE:Shaders/>"
+#                       "$<TARGET_FILE:myExe>.hash"
+#	VERBATIM
+#)
+
+
 add_dependencies(main shaders)
 
 

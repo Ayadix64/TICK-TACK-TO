@@ -6,6 +6,6 @@ flat out uint color;
 uniform mat4 u_MVP;
 uniform float u_z;
 void main(){
-	gl_Position=u_MVP*vec4(position.xyz,u_z);
+	gl_Position=u_MVP*vec4(position.xyz,u_z)*0.5f;
 	color=inColor;
 }

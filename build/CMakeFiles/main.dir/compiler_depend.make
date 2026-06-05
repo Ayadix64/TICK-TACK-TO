@@ -2070,6 +2070,7 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
   /home/Ayadi/Projects/TIC-TACK-TO/indexbuff.h \
   /home/Ayadi/Projects/TIC-TACK-TO/rendrer.hpp \
   /home/Ayadi/Projects/TIC-TACK-TO/shader.h \
+  /home/Ayadi/Projects/TIC-TACK-TO/shaders.hpp \
   /home/Ayadi/Projects/TIC-TACK-TO/texture.hpp \
   /home/Ayadi/Projects/TIC-TACK-TO/utils.h \
   /home/Ayadi/Projects/TIC-TACK-TO/vertexarray.h \
@@ -5831,6 +5832,8 @@ CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o:
 /usr/include/bits/siginfo-consts-arch.h:
 
 /usr/include/bits/types/idtype_t.h:
+
+/home/Ayadi/Projects/TIC-TACK-TO/shaders.hpp:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/avx512bmmvlintrin.h:
 

@@ -1,17 +1,26 @@
 #include "indexbuff.h"
+#include "shader.h"
 #include "utils.h"
 #include "basics.hpp"
 #include "batch.hpp"
 #include "vertexbuff.h"
 #include "vertexarray.h"
 #include "rendrer.hpp"
+#include <GL/gl.h>
+#include "shaders.hpp"
 #include <cmath>
 #include <cstdlib>
+
+
+
 
 BatchRendrer<float> *g_2DShapesBatchRenderer;
 VertexBuff* g_2DShapeVertexBuffer;
 VertexArray* g_2DShapeVAO;
 IndexBuff* g_2DShapeIndexBuffer;
+Shader* g_2DShapeShader;
+Uniform* g_2DShape_u_MVP;
+
 
 BatchRendrer<float> *g_2DImageBatchRenderer;
 VertexBuff* g_2DImageVertexBuffer;
@@ -24,6 +33,9 @@ typedef struct {float x,y;u32 c;} Vertex;
 
 
 void TickInit(){
+	g_2DShapeShader = new Shader(g_2DShape_vertexshader,g_2DShape_fragmentshader);
+	g_2DShape_u_MVP = new Uniform("u_MVP",*g_2DShapeShader);
+
 	g_2DShapesBatchRenderer= new BatchRendrer<float>(3);
 	g_2DShapeVertexBuffer = new VertexBuff(nullptr,0);
 	g_2DShapeIndexBuffer = new IndexBuff(nullptr,0);
@@ -150,26 +162,26 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont
 }
 
 
-void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
+void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 	if(!r|!steps)return;//it make no sence™ to a circel with out a raduice or a steps
 	
 	float xx = r;
-	float yy = 0.0;
+	float yy = 0.0f;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	/**********************************************************************************
 	 *			TODO: this code is reduceles, fix it!
 	 **********************************************************************************/
 	float Verteces[8*3];
-	u32 indeces[8*3];
+	u32 indeces[12];
 
 
 	float ce_vertex[3]{x,y,*(float*)&c};
 
 	g_2DShapesBatchRenderer->Push(ce_vertex,3,nullptr,0);
 
-	for(u32 i = 1;xx>=r/1.5; yy+=(float)steps,i+=8){
-		if(xx*xx+yy*yy-r*r>=2.0){
-			xx-=(float)steps;
+	for(u32 i = 1;xx>r/1.5f; yy+=steps,i+=8){
+		if(xx*xx+yy*yy-r*r>0.0f){
+			xx-=steps;
 		}
 	
 		Verteces[0]=x+xx;
@@ -188,7 +200,7 @@ void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
 		Verteces[11]=*(float*)&c;
 
 		
-		Verteces[12]=x-xx;
+		/*Verteces[12]=x-xx;
 		Verteces[13]=y+yy;
 		Verteces[14]=*(float*)&c;
 		Verteces[15]=x-yy;
@@ -201,7 +213,7 @@ void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
 		Verteces[20]=*(float*)&c;
 		Verteces[21]=x-yy;
 		Verteces[22]=y-xx;
-		Verteces[23]=*(float*)&c;
+		Verteces[23]=*(float*)&c;*/
 		
 		indeces[0]=-i;
 		indeces[1]=0;
@@ -220,10 +232,10 @@ void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
 		indeces[11]=7;
 		
 		g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12);	
-
-
-			
-		/*DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
+		//*/
+		
+		/*	
+		DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
 		DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
 		
 		DrawRectangel((float)x-xx, (float)y+yy, 1.0f, 1.0f, cl);
@@ -233,7 +245,8 @@ void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
 		DrawRectangel((float)x+yy, (float)y-xx, 1.0f, 1.0f, cl);
 		
 		DrawRectangel((float)x-xx, (float)y-yy, 1.0f, 1.0f, cl);
-		DrawRectangel((float)x-yy, (float)y-xx, 1.0f, 1.0f, cl);*/
+		DrawRectangel((float)x-yy, (float)y-xx, 1.0f, 1.0f, cl);
+		//*/
 		
 
 		//DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
@@ -247,9 +260,15 @@ void DrawCercel(float x , float y , float r, u32 steps , Vec4c cl){
 }
 
 void TickRendre(){
+	int bindedShader;
+	glGetIntegerv(GL_CURRENT_PROGRAM,&bindedShader);//we save wher ever shader is binded
+	g_2DShapeShader->Binde();
+	
+
 	bool isitChanged = false;
 	static int points=0; 
 	
+
 	if(g_2DShapesBatchRenderer->isVertexChanged()){
 		u32 count;
 		isitChanged=true;
@@ -280,10 +299,13 @@ void TickRendre(){
 		g_2DShapeIndexBuffer->Bind();
 		g_2DShapeVAO->Layout();
 	}
-	
 	g_2DShapeVAO->Bind();
 	
 	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, g_2DShapesBatchRenderer->GetIndexCount(), GL_UNSIGNED_INT, nullptr));
 
-	g_2DShapesBatchRenderer->resetPointers();	
+	g_2DShapesBatchRenderer->resetPointers();
+	
+	if(bindedShader && bindedShader!=-1){
+		glUseProgram(bindedShader);
+	}
 }
