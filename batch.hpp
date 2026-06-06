@@ -7,45 +7,7 @@
 #include <cassert>
 #include <random>
 #include <vector>
-
-
-template<typename T>
-class BatchRendrer{
-private:
-	std::vector<T> m_Vertex;
-	std::vector<u32> m_Index;
-	u32 m_steps = 1;//the cont of elements betwen evry vertex
-	u32 m_IndexPtr =0, m_VertexPtr=0;
-	bool m_VertexChanged=false;
-	bool m_IndexChanged=false;
-private:
-	void PushIndex(u32 index);
-	void PushVertex(T& vert);
-
-public:
-	BatchRendrer(u32 steps);
-	BatchRendrer();
-	~BatchRendrer();
-	void Push(T* vertex, u32 countofVertex, u32* index, u32 countofIndex);
-	void Push(T* vertex, u32 countofVertex, u32& VertexOffset, u32* index, u32 countofIndex,u32& IndexOffset);
-
-	VertexBuff GetVertrex();
-	IndexBuff GetIndex();
-	void SetStepsPerVertec(u32 steps);
-	void resetPointers();
-	u32 getVertexUsedMemory();//to make the api knows when it want to freeup lelory and is it worth it.
-	u32 getIndexUsedMemory();
-	void FreeUpVertexMemory();
-	void FreeUpIndexMemory();
-	bool isIndexChanged();
-	bool isVertexChanged();
-	T* GetVertexData(u32& count);
-	u32* GetIndexData(u32& count);
-
-	u32 GetVertexCount();
-	u32 GetIndexCount();
-
-
-};
+void BatchRendringAddVertex(float** buffer , u32 * bufferSize, u32* pointer, char* isItChanged,float* data, u32 count);
+void BatchRendringAddIndex(u32** buffer , u32 * bufferSize, u32* pointer, char* isItChanged,u32* data, u32 count , u32 vertexptr, u32 vertexstrid);
 
 #endif

@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/main.dir/link.d"
+  "CMakeFiles/main.dir/basics.cpp.o"
+  "CMakeFiles/main.dir/basics.cpp.o.d"
   "CMakeFiles/main.dir/batch.cpp.o"
   "CMakeFiles/main.dir/batch.cpp.o.d"
   "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o"
@@ -20,8 +22,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/indexbuff.cpp.o.d"
   "CMakeFiles/main.dir/main.cpp.o"
   "CMakeFiles/main.dir/main.cpp.o.d"
-  "CMakeFiles/main.dir/rendrer.cpp.o"
-  "CMakeFiles/main.dir/rendrer.cpp.o.d"
   "CMakeFiles/main.dir/shader.cpp.o"
   "CMakeFiles/main.dir/shader.cpp.o.d"
   "CMakeFiles/main.dir/texture.cpp.o"

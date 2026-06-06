@@ -52,10 +52,12 @@ static void loge(std::string lg , std::string ms = ""){
 	std::cout << "[" << lg << "] " << ms << ".\n";
 	return;
 }
-static void Eloge(std::string lg){
-	loge("ERORR",lg);
+static void Eloge(std::string ms){
+	 std::cerr << "[ERORR] " << ms << ".\n";
 }
-
+static void Wloge(std::string ms){
+	 std::cerr << "[WARNING] " << ms << ".\n";
+}
 
 static void readFile(std::string path, std::string& data){
 	std::ifstream fl(path);

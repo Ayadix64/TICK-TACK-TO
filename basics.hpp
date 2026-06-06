@@ -1,7 +1,37 @@
 #ifndef TICK_BASICS
 #define TICK_BASICS
+#include "externel/imgui/imgui_impl_glfw.h"
 #include "utils.h"
-void TickInit();
+#include <cstddef>
+#include <glm/ext/matrix_float4x4.hpp>
+
+
+
+typedef struct {
+	int Shader2D;
+	u32 VAO_2D;
+	u32 VertexBuffer2D;
+	u32 VertexBuffer2DSize;
+	u32 IndexBuffer2D;
+	u32 IndexBuffer2DSize;
+	
+	float* vertexbatchr2D;
+	u32 vertexbatch2DPtr;
+	u32 vertexbatch2DSize;
+	char isVertex2DChanged;
+
+	u32  * indexbatchr2D;
+	u32 indexbatch2DPtr;
+	u32 indexbatch2DSize;
+	char isIndex2DChanged;
+	
+	int uniform2DMvp;
+	u32 prvuceMVP[4][4]; // we wont aculy send this evry time are we?
+
+}TickContext;
+
+
+TickContext TickInit();
 
 void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1___v2
 									  //  |   |
@@ -13,5 +43,5 @@ void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
 void DrawCercel(float x , float y , float r, float steps , Vec4c cl);
-void TickRendre();
+void TickRendre(GLFWwindow* window);
 #endif

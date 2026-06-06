@@ -1,52 +1,36 @@
 #include "utils.h"
 #include "indexbuff.h"
 
-IndexBuff::IndexBuff(u32 * data, u32 size){
-	this->m_count = size/sizeof(u32);
-	CHECK_GL_ERORR(glGenBuffers(1,&m_indexID));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_indexID));
+
+u32 GenIndexBuff(u32 *data, u32 size){
+	u32 indexbuff;
+
+	CHECK_GL_ERORR(glGenBuffers(1,&indexbuff));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexbuff));
 	CHECK_GL_ERORR(glBufferData(GL_ELEMENT_ARRAY_BUFFER,size,data,GL_DYNAMIC_DRAW));
-	return;
+	return indexbuff;
 }
 
-void IndexBuff::Bind(){
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_indexID));
-	return;
-}
-
-void IndexBuff::UnBinde(){
-
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0));
-	
-}
-
-IndexBuff::~IndexBuff(){
-	if(m_indexID){
-		CHECK_GL_ERORR(glDeleteBuffers(1,&m_indexID));
+void DeletIndexBuff(u32 * indexbuff){
+	if(*indexbuff){
+		CHECK_GL_ERORR(glDeleteBuffers(1,indexbuff));
 	}else {
 		Eloge("No index buffer to delete");
 	}
-		
 }
-
-u32 IndexBuff::GetCount(){
-	return this->m_count;
-}
-
-
-void IndexBuff::reFull(void* buff, u32 sz){
-	if(sz>m_count*sizeof(u32)){
-		loge("Warning","the send buffer bigger than the original buffur, so it ill be re-generate");
-		if(m_indexID){
-			CHECK_GL_ERORR(glDeleteBuffers(1,&m_indexID));
-		}
-		CHECK_GL_ERORR(glGenBuffers(1,&m_indexID));
-		Bind();
-		CHECK_GL_ERORR(glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,buff,GL_DYNAMIC_DRAW));
-		m_count=sz/sizeof(u32);
-		return;
-	}
-	Bind();
-	CHECK_GL_ERORR(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,sz,buff));
+void FullIndexBuff(void* buff, u32 size){
+	CHECK_GL_ERORR(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,size,buff));
 	return;
 }
+void SetIndexBuff(void* data, u32 size, u32 pos){
+	CHECK_GL_ERORR(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,pos,size,data));
+	return;
+}
+
+
+void RegenrateIndexBuffer(u32* indexbuff, u32* data, u32 size){
+	DeletIndexBuff(indexbuff);
+	*indexbuff = GenIndexBuff(data, size);
+	return;
+}
+
