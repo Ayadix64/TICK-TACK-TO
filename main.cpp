@@ -17,8 +17,8 @@
 #include "shader.h"
 #include "texture.hpp"
 #include "batch.hpp"
-#include "rendrer.hpp"
-#include "basics.cpp"
+
+#include "basics.hpp"
 
 #include "externel/imgui/imgui.h"
 #include "externel/imgui/imgui_impl_glfw.h"
@@ -94,27 +94,28 @@ int main(){
 		"	color=inColor;\n"
 		"}\n";
 	
+	
 
-
-	Shader shader(vertex_shader,fragment_shader);
+	//Shader shader(vertex_shader,fragment_shader);
 	/*****************************************************************************************************************/
 	TickInit();
-	
-	shader.SetUniform1i("u_Texture",0);
+	u32 shader = CreatShader(vertex_shader, fragment_shader);
+	u32 u_MVP = GetUniform("u_MVP",shader);
+	glUseProgram(shader);
+	//shader.SetUniform1i("u_Texture",0);
 		
 	
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
 	
 	
-	float clc=0.0;
 	
 	glm::mat4 proj = glm::ortho(0.0f,(float)pw,(float)ph,0.0f,-10.0f,10.0f);
-	glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
+	//glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
-	Uniform u_mvp("u_MVP",shader);
-	Uniform u_z("u_z",shader);
+	//Uniform u_mvp("u_MVP",shader);
+	//Uniform u_z("u_z",shader);
 	
 	char ticktackto[3][3];
 
@@ -123,9 +124,9 @@ int main(){
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
 	float segments = 1.0;
 	while(!glfwWindowShouldClose(window) ){
-		glm::mat4 model = trans*proj;
-		u_mvp.SetMat4f(model);
-		u_z.Set1f(z);
+		//glm::mat4 model = trans*proj;
+		//u_mvp.SetMat4f(model);
+		//u_z.Set1f(z);
 		
 		ImGuiNewFrame();
 		
@@ -136,6 +137,7 @@ int main(){
 			pw=w;
 			ph=h;
 			proj=glm::ortho(0.0f,(float)w,(float)h,0.0f,-10.0f,10.0f);
+			CHECK_GL_ERORR(glUniformMatrix4fv(u_MVP,1,GL_FALSE,&proj[0][0]));	
 		}
 
 		
@@ -198,14 +200,15 @@ int main(){
 				yp2-=5.0;
 			}
 		}
-		TickRendre();	
+		
+		TickRendre(window);	
+		
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		clc+=0.01;
 
 	}
 	ImGuiStop();

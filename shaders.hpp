@@ -7,7 +7,7 @@ const char* g_2DShape_vertexshader =
 	"uniform mat4 u_MVP;\n"
 	"\n"
 	"void main(){\n"
-	"	gl_Position=u_MVP*position;\n"
+	"	gl_Position=u_MVP*vec4(position.xy,1.0,1.0);\n"
 	"	color=inColor;\n"
 	"}\n"
 

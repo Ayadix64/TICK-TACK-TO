@@ -184,19 +184,19 @@ CMakeFiles/main.dir/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/utils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/Ayadi/Projects/TIC-TACK-TO/utils.cpp -o CMakeFiles/main.dir/utils.cpp.s
 
-CMakeFiles/main.dir/rendrer.cpp.o: CMakeFiles/main.dir/flags.make
-CMakeFiles/main.dir/rendrer.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp
-CMakeFiles/main.dir/rendrer.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/main.dir/rendrer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/rendrer.cpp.o -MF CMakeFiles/main.dir/rendrer.cpp.o.d -o CMakeFiles/main.dir/rendrer.cpp.o -c /home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp
+CMakeFiles/main.dir/basics.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/basics.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp
+CMakeFiles/main.dir/basics.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/main.dir/basics.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/basics.cpp.o -MF CMakeFiles/main.dir/basics.cpp.o.d -o CMakeFiles/main.dir/basics.cpp.o -c /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp
 
-CMakeFiles/main.dir/rendrer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/rendrer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp > CMakeFiles/main.dir/rendrer.cpp.i
+CMakeFiles/main.dir/basics.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/basics.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp > CMakeFiles/main.dir/basics.cpp.i
 
-CMakeFiles/main.dir/rendrer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/rendrer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp -o CMakeFiles/main.dir/rendrer.cpp.s
+CMakeFiles/main.dir/basics.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/basics.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp -o CMakeFiles/main.dir/basics.cpp.s
 
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.cpp
@@ -306,7 +306,7 @@ main_OBJECTS = \
 "CMakeFiles/main.dir/texture.cpp.o" \
 "CMakeFiles/main.dir/batch.cpp.o" \
 "CMakeFiles/main.dir/utils.cpp.o" \
-"CMakeFiles/main.dir/rendrer.cpp.o" \
+"CMakeFiles/main.dir/basics.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o" \
 "CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o" \
@@ -326,7 +326,7 @@ main: CMakeFiles/main.dir/vertexarray.cpp.o
 main: CMakeFiles/main.dir/texture.cpp.o
 main: CMakeFiles/main.dir/batch.cpp.o
 main: CMakeFiles/main.dir/utils.cpp.o
-main: CMakeFiles/main.dir/rendrer.cpp.o
+main: CMakeFiles/main.dir/basics.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o
 main: CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o

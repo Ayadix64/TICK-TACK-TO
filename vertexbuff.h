@@ -2,24 +2,10 @@
 #define TICK_VERTEX_BUFF
 #include <cassert>
 #include "utils.h"
-class VertexBuff{
-private:
-	u32 m_renderID=0;
-	u32 m_size=0;
-public:
-	VertexBuff(void* buff, u32 size);
-	~VertexBuff();
-	void Bind();
-	void UnBind();
-	void reFull(void* buff, u32 size);
-	template<typename T>
-	void Set(T var, u32 pos){
-		assert(pos+sizeof(T)<m_size);
-		Bind();
-		CHECK_GL_ERORR(glBufferSubData(GL_ARRAY_BUFFER,pos*sizeof(T),sizeof(T),&var));
-		return;
-	}
-	
-};
 
+u32 GenVertexBuffer(void* buff, u32 size);
+void FullVertexBuffer(void* buff, u32 size);
+void DeletVertexBuffer(u32* vbID);
+void SetVertexBuff(void* data, u32 size, u32 pos);
+void RegenrateVertexBuffer(u32* vbID, void* buff, u32 size);
 #endif 

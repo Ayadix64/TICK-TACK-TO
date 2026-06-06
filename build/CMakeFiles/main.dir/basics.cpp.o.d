@@ -1,12 +1,22 @@
-CMakeFiles/main.dir/rendrer.cpp.o: \
- /home/Ayadi/Projects/TIC-TACK-TO/rendrer.cpp /usr/include/stdc-predef.h \
- /home/Ayadi/Projects/TIC-TACK-TO/utils.h /usr/include/c++/16.1.1/complex \
- /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
- /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+CMakeFiles/main.dir/basics.cpp.o: \
+ /home/Ayadi/Projects/TIC-TACK-TO/basics.cpp /usr/include/stdc-predef.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imconfig.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/float.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stdarg.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stddef.h \
+ /usr/include/string.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \
  /usr/include/sys/cdefs.h /usr/include/bits/long-double.h \
  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+ /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
+ /usr/include/strings.h /usr/include/assert.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/indexbuff.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/utils.h /usr/include/c++/16.1.1/complex \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
  /usr/include/c++/16.1.1/pstl/pstl_config.h \
  /usr/include/c++/16.1.1/bits/cpp_type_traits.h \
@@ -14,27 +24,24 @@ CMakeFiles/main.dir/rendrer.cpp.o: \
  /usr/include/c++/16.1.1/type_traits \
  /usr/include/c++/16.1.1/ext/type_traits.h /usr/include/c++/16.1.1/cmath \
  /usr/include/c++/16.1.1/bits/requires_hosted.h /usr/include/math.h \
- /usr/include/bits/libc-header-start.h /usr/include/bits/math-vector.h \
- /usr/include/bits/libm-simd-decl-stubs.h /usr/include/bits/floatn.h \
- /usr/include/bits/floatn-common.h /usr/include/bits/flt-eval-method.h \
- /usr/include/bits/fp-logb.h /usr/include/bits/fp-fast.h \
- /usr/include/bits/mathcalls-macros.h \
+ /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/bits/floatn.h /usr/include/bits/floatn-common.h \
+ /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
+ /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
  /usr/include/bits/mathcalls-helper-functions.h \
  /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
  /usr/include/bits/iscanonical.h /usr/include/c++/16.1.1/bits/std_abs.h \
- /usr/include/stdlib.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stddef.h \
- /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
- /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
- /usr/include/sys/types.h /usr/include/bits/types.h \
- /usr/include/bits/typesizes.h /usr/include/bits/time64.h \
- /usr/include/bits/types/clock_t.h /usr/include/bits/types/clockid_t.h \
- /usr/include/bits/types/time_t.h /usr/include/bits/types/timer_t.h \
- /usr/include/bits/stdint-intn.h /usr/include/endian.h \
- /usr/include/bits/endian.h /usr/include/bits/endianness.h \
- /usr/include/bits/byteswap.h /usr/include/bits/uintn-identity.h \
- /usr/include/sys/select.h /usr/include/bits/select.h \
- /usr/include/bits/types/sigset_t.h /usr/include/bits/types/__sigset_t.h \
+ /usr/include/stdlib.h /usr/include/bits/waitflags.h \
+ /usr/include/bits/waitstatus.h /usr/include/sys/types.h \
+ /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+ /usr/include/bits/time64.h /usr/include/bits/types/clock_t.h \
+ /usr/include/bits/types/clockid_t.h /usr/include/bits/types/time_t.h \
+ /usr/include/bits/types/timer_t.h /usr/include/bits/stdint-intn.h \
+ /usr/include/endian.h /usr/include/bits/endian.h \
+ /usr/include/bits/endianness.h /usr/include/bits/byteswap.h \
+ /usr/include/bits/uintn-identity.h /usr/include/sys/select.h \
+ /usr/include/bits/select.h /usr/include/bits/types/sigset_t.h \
+ /usr/include/bits/types/__sigset_t.h \
  /usr/include/bits/types/struct_timeval.h \
  /usr/include/bits/types/struct_timespec.h \
  /usr/include/bits/pthreadtypes.h /usr/include/bits/thread-shared-types.h \
@@ -78,10 +85,8 @@ CMakeFiles/main.dir/rendrer.cpp.o: \
  /usr/include/c++/16.1.1/bits/stringfwd.h \
  /usr/include/c++/16.1.1/bits/memoryfwd.h \
  /usr/include/c++/16.1.1/bits/postypes.h /usr/include/c++/16.1.1/cwchar \
- /usr/include/wchar.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stdarg.h \
- /usr/include/bits/wchar.h /usr/include/bits/types/wint_t.h \
- /usr/include/bits/types/mbstate_t.h \
+ /usr/include/wchar.h /usr/include/bits/wchar.h \
+ /usr/include/bits/types/wint_t.h /usr/include/bits/types/mbstate_t.h \
  /usr/include/bits/types/__mbstate_t.h /usr/include/bits/types/__FILE.h \
  /usr/include/bits/types/FILE.h /usr/include/c++/16.1.1/exception \
  /usr/include/c++/16.1.1/bits/exception.h \
@@ -178,8 +183,8 @@ CMakeFiles/main.dir/rendrer.cpp.o: \
  /usr/include/glm/ext/vector_float4.hpp \
  /usr/include/glm/detail/type_vec4.hpp \
  /usr/include/glm/detail/qualifier.hpp /usr/include/glm/detail/setup.hpp \
- /usr/include/c++/16.1.1/cassert /usr/include/assert.h \
- /usr/include/glm/simd/platform.h /usr/include/c++/16.1.1/cstdint \
+ /usr/include/c++/16.1.1/cassert /usr/include/glm/simd/platform.h \
+ /usr/include/c++/16.1.1/cstdint \
  /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/stdint-uintn.h \
  /usr/include/bits/stdint-least.h /usr/include/glm/detail/type_vec4.inl \
@@ -206,9 +211,6 @@ CMakeFiles/main.dir/rendrer.cpp.o: \
  /usr/include/c++/16.1.1/bits/fstream.tcc /usr/include/GL/glew.h \
  /usr/include/GL/glu.h /usr/include/GL/gl.h \
  /usr/local/include/GLFW/glfw3.h \
- /home/Ayadi/Projects/TIC-TACK-TO/vertexarray.h \
- /home/Ayadi/Projects/TIC-TACK-TO/vertexbuff.h \
- /home/Ayadi/Projects/TIC-TACK-TO/indexbuff.h \
  /home/Ayadi/Projects/TIC-TACK-TO/shader.h \
  /usr/include/glm/ext/matrix_float4x4.hpp \
  /usr/include/glm/detail/type_mat4x4.hpp \
@@ -318,10 +320,28 @@ CMakeFiles/main.dir/rendrer.cpp.o: \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
  /usr/include/bits/uio_lim.h /usr/include/c++/16.1.1/cfloat \
- /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/float.h \
  /usr/include/glm/fwd.hpp /usr/include/glm/trigonometric.hpp \
  /usr/include/glm/detail/func_trigonometric.inl \
  /usr/include/glm/packing.hpp /usr/include/glm/detail/func_packing.inl \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
- /usr/include/glm/detail/func_integer.inl
+ /usr/include/glm/detail/func_integer.inl \
+ /home/Ayadi/Projects/TIC-TACK-TO/basics.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/batch.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/vertexbuff.h \
+ /usr/include/c++/16.1.1/random /usr/include/c++/16.1.1/bits/random.h \
+ /usr/include/c++/16.1.1/bits/uniform_int_dist.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/opt_random.h \
+ /usr/include/c++/16.1.1/bits/random.tcc /usr/include/c++/16.1.1/numeric \
+ /usr/include/c++/16.1.1/bits/stl_numeric.h \
+ /usr/include/c++/16.1.1/pstl/glue_numeric_defs.h \
+ /usr/include/c++/16.1.1/pstl/execution_defs.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/vertexarray.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/shaders.hpp \
+ /usr/include/c++/16.1.1/atomic \
+ /usr/include/c++/16.1.1/bits/atomic_base.h \
+ /usr/include/c++/16.1.1/bits/atomic_lockfree_defines.h \
+ /usr/include/glm/ext/matrix_clip_space.hpp \
+ /usr/include/glm/ext/scalar_constants.hpp \
+ /usr/include/glm/ext/scalar_constants.inl \
+ /usr/include/glm/ext/matrix_clip_space.inl

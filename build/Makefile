@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+basics.o: basics.cpp.o
+.PHONY : basics.o
+
+# target to build an object file
+basics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.o
+.PHONY : basics.cpp.o
+
+basics.i: basics.cpp.i
+.PHONY : basics.i
+
+# target to preprocess a source file
+basics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.i
+.PHONY : basics.cpp.i
+
+basics.s: basics.cpp.s
+.PHONY : basics.s
+
+# target to generate assembly for a file
+basics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.s
+.PHONY : basics.cpp.s
+
 batch.o: batch.cpp.o
 .PHONY : batch.o
 
@@ -369,30 +393,6 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-rendrer.o: rendrer.cpp.o
-.PHONY : rendrer.o
-
-# target to build an object file
-rendrer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.o
-.PHONY : rendrer.cpp.o
-
-rendrer.i: rendrer.cpp.i
-.PHONY : rendrer.i
-
-# target to preprocess a source file
-rendrer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.i
-.PHONY : rendrer.cpp.i
-
-rendrer.s: rendrer.cpp.s
-.PHONY : rendrer.s
-
-# target to generate assembly for a file
-rendrer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/rendrer.cpp.s
-.PHONY : rendrer.cpp.s
-
 shader.o: shader.cpp.o
 .PHONY : shader.o
 
@@ -522,6 +522,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... basics.o"
+	@echo "... basics.i"
+	@echo "... basics.s"
 	@echo "... batch.o"
 	@echo "... batch.i"
 	@echo "... batch.s"
@@ -552,9 +555,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... rendrer.o"
-	@echo "... rendrer.i"
-	@echo "... rendrer.s"
 	@echo "... shader.o"
 	@echo "... shader.i"
 	@echo "... shader.s"

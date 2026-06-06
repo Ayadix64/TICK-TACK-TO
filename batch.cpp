@@ -2,191 +2,64 @@
 #include "indexbuff.h"
 #include "utils.h"
 #include "vertexbuff.h"
+#include <cstdlib>
 #include <cstring>
 
-template <class T>
-BatchRendrer<T>::BatchRendrer(u32 steps):m_steps(steps){
-	m_Vertex.resize(1024);
-	m_Index .resize(1024);
-}
 
 
-template <class T>
-BatchRendrer<T>::BatchRendrer(){
-	m_Vertex.resize(1024);
-	m_Index .resize(1024);
-}
-
-template <class T>
-BatchRendrer<T>::~BatchRendrer(){
-	m_Vertex.clear();
-	m_Index.clear();
-}
-
-
-template <class T>
-void BatchRendrer<T>::PushIndex(u32 indec){
-	if(m_IndexPtr>=m_Index.size()){
-		m_Index.resize(m_Index.size()+1024);
-	}
-	if(m_Index[m_IndexPtr]!=indec){
-		//std::cout<<"\n Was "<<m_Index[m_IndexPtr]<<" and become " << indec <<'\n';
-		m_IndexChanged=true;
-		m_Index[m_IndexPtr]=indec;
-	}
-
-	m_IndexPtr++;
+void BatchRendringAddVertex(float** buffer , u32 * bufferSize, u32* pointer, char* isItChanged,float* data, u32 count){
 	
-	return;	
-}
-
-
-template <class T>
-void BatchRendrer<T>::PushVertex(T& vert){
-	if(m_VertexPtr>=m_Vertex.size()){
-		m_Vertex.resize(m_Vertex.size()+1024);
+	if(!count)return;
+	if((*pointer+count)*sizeof(float) > *bufferSize){
+		u32 newMemorySize = *bufferSize+count*sizeof(float)+0x1000;
+		if(*buffer){
+			*buffer=(float*)realloc(*buffer,newMemorySize);
+			/*void *nw = malloc(newMemorySize);
+			memcpy(nw, *buffer, *bufferSize);
+			free(*buffer);
+			*buffer=(float*)nw;*/
+		}else {
+			*buffer=(float*)malloc(newMemorySize);
+		}
+		*bufferSize=newMemorySize;
 	}
-	if( memcmp(&m_Vertex[m_VertexPtr], &vert, sizeof(T))) {//we actioly some times pass unsigned integers as float, and comparising them is changing them some how, i know that i mess somthing and i will check out it some time, i think that no premenete fix is more than a temprary one, but TODO
-		m_VertexChanged=true;
-		m_Vertex[m_VertexPtr]=vert;
+	for(u32 i = 0 ; i < count ; i++ ){
+		if(memcmp(
+			&((*buffer)[*pointer+i])
+			,&data[i],sizeof(float)
+		))
+		
+		{
+			(*buffer)[pointer[0]+i] =data[i];
+			*isItChanged=true;
+		}
 	}
-	m_VertexPtr++;
-	
-	return;	
-}
-
-template <class T>
-void BatchRendrer<T>::Push(T* vertex, u32 countofVertex, u32* index, u32 countofIndex){
-	for(u32 i = 0 ; i < countofIndex; i++){
-		PushIndex(index[i]+m_VertexPtr/m_steps);
-	}
-	for(u32 i = 0 ; i < countofVertex; i++){
-		PushVertex(vertex[i]);
-	}
-	return;	
-}
-
-
-
-
-template <class T>
-void BatchRendrer<T>::Push(T* vertex, u32 countofVertex, u32& VertexOffset, u32* index, u32 countofIndex,u32& IndexOffset)
-{
-	IndexOffset=m_IndexPtr;
-	for(u32 i = 0 ; i < countofIndex; i++){
-		PushIndex(index[i]+m_VertexPtr/m_steps);
-	}
-	
-	VertexOffset=m_VertexPtr;
-	for(u32 i = 0 ; i < countofVertex; i++){
-		PushVertex(vertex[i]);
-	}
-}
-
-
-template<class T>
-
-VertexBuff BatchRendrer<T>::GetVertrex(){
-	
-	return VertexBuff(m_Vertex.data(), m_VertexPtr*sizeof(T));
-}
-
-
-template<class T>
-
-IndexBuff BatchRendrer<T>::GetIndex(){
-	return IndexBuff(m_Index.data(), m_IndexPtr*sizeof(u32));
-}
-
-
-template <class T>
-void BatchRendrer<T>::SetStepsPerVertec(u32 stpes){
-	m_steps=stpes;
-	return;
-}
-template<class T>
-
-void BatchRendrer<T>::resetPointers(){
-	m_IndexPtr=0;
-	m_VertexPtr=0;
-
-	m_IndexChanged=false;
-	m_VertexChanged=false;
-	return ;
-}
-
-
-template<class T>
-
-u32 BatchRendrer<T>::getVertexUsedMemory(){
-	return m_Vertex.size()*sizeof(T);
-}
-
-
-template<class T>
-
-u32 BatchRendrer<T>::getIndexUsedMemory(){
-	return m_Index.size()*sizeof(u32);
-}
-
-
-template<class T>
-
-void BatchRendrer<T>::FreeUpVertexMemory(){
-	m_Vertex.clear();
-	return ;
-}
-
-
-template<class T>
-
-void  BatchRendrer<T>::FreeUpIndexMemory(){
-	m_Index.clear();
+	*pointer+=count;
 	return;
 }
 
 
-template<class T>
 
-bool BatchRendrer<T>::isIndexChanged(){
-	return m_IndexChanged;
+void BatchRendringAddIndex(u32** buffer , u32 * bufferSize, u32* pointer, char* isItChanged,u32* data, u32 count, u32 vertexPtr, u32 strid){
+	if(!count)return;
+	if((*pointer+count)*sizeof(float) >= *bufferSize){
+		u32 newMemorySize = (*pointer+count)*sizeof(u32)+0x1000;
+		if(*buffer){
+			*buffer=(u32*)realloc(*buffer,newMemorySize);
+		}else {
+			*buffer=(u32*)malloc(newMemorySize);
+		}
+		*bufferSize=newMemorySize;
+	}
+	for(u32 i = 0 ; i < count ; i++ ){
+		u32 data_ = data[i] + vertexPtr/strid;
+		if((*buffer)[*pointer+i]!=data_){
+			
+			(*buffer)[*pointer+i]=data_;
+			*isItChanged=true;
+		
+		}
+	}
+	*pointer+=count;
+	return;
 }
-
-template<class T>
-
-bool BatchRendrer<T>::isVertexChanged(){
-	return m_VertexChanged;
-}
-template<class T>
-
-T* BatchRendrer<T>::GetVertexData(u32& count){
-	count=m_VertexPtr;
-	return m_Vertex.data();
-}
-
-
-template<class T>
-
-u32* BatchRendrer<T>::GetIndexData(u32& count){
-	count=m_IndexPtr;
-	return m_Index.data();
-}
-
-template<class T>
-
-u32 BatchRendrer<T>::GetIndexCount(){
-	return m_IndexPtr;
-}
-template<class T>
-
-u32 BatchRendrer<T>::GetVertexCount(){
-	return  m_VertexPtr;
-}
-
-
-
-
-template class BatchRendrer<float>;
-template class BatchRendrer<int>;
-template class BatchRendrer<u32>;
-//template class BatchRendrer<VertexShape>;
