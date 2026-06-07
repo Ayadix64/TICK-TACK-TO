@@ -27,7 +27,7 @@ unsigned int CompileShader(unsigned int type , const char* src){
 }
 
 
-unsigned CreatShader(const char* vert, const char* frag){
+unsigned int CreatShader(const char* vert, const char* frag){
 	unsigned int prog = glCreateProgram();
 	
 	unsigned int vs = CompileShader(GL_VERTEX_SHADER,vert);
@@ -42,6 +42,7 @@ unsigned CreatShader(const char* vert, const char* frag){
 	CHECK_GL_ERORR(glDeleteShader(fs));
 	return prog;
 }
+
 
 
 int GetUniform(const char* uniform, u32 shader){

@@ -8,6 +8,9 @@
 
 
 typedef struct {
+	
+	u32 window_w,window_h;
+
 	int Shader2D;
 	u32 VAO_2D;
 	u32 VertexBuffer2D;
@@ -26,7 +29,6 @@ typedef struct {
 	char isIndex2DChanged;
 	
 	int uniform2DMvp;
-	u32 prvuceMVP[4][4]; // we wont aculy send this evry time are we?
 
 }TickContext;
 
