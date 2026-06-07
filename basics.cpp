@@ -13,28 +13,12 @@
 #include <cstddef>
 #include <cstdlib>
 #include <atomic>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_float4x4.hpp>
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 TickContext g_defultContext;
 std::atomic<bool> g_defultContextIsAlreadySet;
 
 #define debugy(x) std::cout<<"\n"<<#x<<" : " << x ;
-
-
-/*BatchRendrer<float> *g_2DShapesBatchRenderer;
-VertexBuff* g_2DShapeVertexBuffer;
-VertexArray* g_2DShapeVAO;
-IndexBuff* g_2DShapeIndexBuffer;
-Shader* g_2DShapeShader;
-Uniform* g_2DShape_u_MVP;
-
-
-BatchRendrer<float> *g_2DImageBatchRenderer;
-VertexBuff* g_2DImageVertexBuffer;
-VertexArray* g_2DImageVAO;
-IndexBuff* g_2DImageIndexBuffer;
-*/
 
 
 typedef struct {float x,y;u32 c;} Vertex;
@@ -43,36 +27,28 @@ typedef struct {float x,y;u32 c;} Vertex;
 
 
 TickContext TickInit(){
-	//g_2DShapeShader = new Shader(g_2DShape_vertexshader,g_2DShape_fragmentshader);
-	//g_2DShape_u_MVP = new Uniform("u_MVP",*g_2DShapeShader);
-
-	//g_2DShapesBatchRenderer= new BatchRendrer<float>(3);
-	//g_2DShapeVertexBuffer = new VertexBuff(nullptr,0);
-	//g_2DShapeIndexBuffer = new IndexBuff(nullptr,0);
-	
-	//g_2DShapeVAO = new VertexArray();
-	//g_2DShapeVAO->Bind();
-	//g_2DShapeVertexBuffer->Bind()
-	//g_2DShapeIndexBuffer->Bind();
-	//g_2DShapeVAO->AddElement<float>(2);//x,y
-	//g_2DShapeVAO->AddElement<float>(1);//color
-	//g_2DShapeVAO->Layout();
 	loge("TICK INIT ...");
 	TickContext context;
 	context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
-	glGenVertexArrays(1,&context.VAO_2D);
+	context.uniform2DMvp = GetUniform("u_MVP", context.Shader2D);		
+	if(context.uniform2DMvp == -1){
+		Eloge("SHADER ERORR");
+	}
+	context.VAO_2D = GenVertexArray();
 	context.VertexBuffer2D = GenVertexBuffer(nullptr, 0);
 	context.VertexBuffer2DSize=0;
 	context.IndexBuffer2D=GenIndexBuff(nullptr, 0);
 	context.IndexBuffer2DSize=0;
-	context.uniform2DMvp = GetUniform("u_MVP", context.Shader2D);		
+		
 	
-	context.VAO_2D = GenVertexArray();
 	CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-	GenVAAP(0, GL_FLOAT, false, 4,2, (void *)0);
-	GenVAAP(1, GL_FLOAT, false, 4,1, (void *)(2*sizeof(float)));
+	
+	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));
 	
 	context.vertexbatch2DSize=0x1000;
 	context.vertexbatchr2D = (float*)malloc(0x1000);
@@ -81,9 +57,12 @@ TickContext TickInit(){
 	context.indexbatch2DSize=0x1000;
 	context.indexbatchr2D = (u32*)malloc(0x1000);
 	context.indexbatch2DPtr=0;
+	
+	context.window_w=0;
+	context.window_h=0;
 
 	if(!g_defultContextIsAlreadySet){
-		g_defultContext=context;	
+		g_defultContext=context;
 		g_defultContextIsAlreadySet=true;
 	}
 	loge("TICK INIT .");
@@ -157,7 +136,7 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1__
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd(verteces, 12, indeces, 9, &g_defultContext);
+	BatcheRendrerAdd(verteces, 12, indeces, 6, &g_defultContext);
 }
 void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
 	DrawQuadrilateral({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl);
@@ -319,132 +298,81 @@ void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 
 void TickRendre(GLFWwindow* window){
 	TickContext& context = g_defultContext;
-	std::cout<<"\n\n*********************************************";
-	debugy(context.VertexBuffer2D)
-	debugy(context.VertexBuffer2DSize)
-	debugy(context.vertexbatchr2D);
-	debugy(context.vertexbatch2DPtr);
-	debugy(context.vertexbatch2DSize)
-	std::cout<<"\n";
-	debugy(context.IndexBuffer2D)
-	debugy(context.IndexBuffer2DSize)
-	debugy(context.indexbatchr2D);
-	debugy(context.indexbatch2DPtr);
-	debugy(context.indexbatch2DSize)
+	
 	if(!g_defultContextIsAlreadySet){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 	}
-	int bindedShader;
-	//glGetIntegerv(GL_CURRENT_PROGRAM,&bindedShader);//we save wher ever shader is binded
-	CHECK_GL_ERORR(glUseProgram(g_defultContext.Shader2D));	
 	
-	bool isitChanged = false;
+
+	CHECK_GL_ERORR(glUseProgram(context.Shader2D));
+	
+	//if the window changed, update the mvp
+	int window_w=0, window_h=0;
+	glfwGetFramebufferSize(window, &window_w, &window_h);
+	if(window_w!=context.window_w || window_h!=context.window_h){
+		glm::mat4 proj = glm::ortho(0.0f,(float)window_w,(float)window_h,0.0f,-1.0f,1.0f);
+		glViewport(0,0,window_w,window_h);	
+		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
+		context.window_w=window_w;
+		context.window_h=window_h;
+	}
+
+	bool isitChanged = true;
 	static int points=0; 
 	
 	if(context.isVertex2DChanged){
-		if(context.vertexbatch2DPtr>context.VertexBuffer2DSize){
-			RegenrateVertexBuffer(&context.VertexBuffer2D,context.vertexbatchr2D,context.vertexbatch2DPtr);
+		if(context.vertexbatch2DPtr*sizeof(float)>=context.VertexBuffer2DSize){
+			RegenrateVertexBuffer(&context.VertexBuffer2D,context.vertexbatchr2D,context.vertexbatch2DPtr*4);
 			context.VertexBuffer2DSize=context.vertexbatch2DPtr*sizeof(float);
 			std::cout<<"\nRegnarate Vertex Buffer to " << context.VertexBuffer2DSize;
-			isitChanged=true;
+		isitChanged=true;
 		}else {
 			glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D);
-			FullVertexBuffer(context.vertexbatchr2D, context.vertexbatch2DPtr);
+			glBufferSubData(GL_ARRAY_BUFFER,0,context.vertexbatch2DPtr*4,context.vertexbatchr2D);
+			//FullVertexBuffer(context.vertexbatchr2D, context.vertexbatch2DPtr*4);
 		}
-		loge("vertex charnged");
-		if(!points){std::cout<<"..";};
-		if(points){std::cout<<"==";};
-		
-		points=!points;
 	}
 	if(context.isIndex2DChanged){
-		if(context.indexbatch2DPtr>context.IndexBuffer2DSize){
-			RegenrateIndexBuffer(&context.IndexBuffer2D,context.indexbatchr2D,context.indexbatch2DPtr);
+		if(context.indexbatch2DPtr*sizeof(u32)>=context.IndexBuffer2DSize){
+			RegenrateIndexBuffer(&context.IndexBuffer2D,context.indexbatchr2D,context.indexbatch2DPtr*4);
+
 			context.IndexBuffer2DSize=context.indexbatch2DPtr*sizeof(u32);
 			std::cout<<"\nRegnarate Index Buffer to " << context.IndexBuffer2DSize;
 			isitChanged=true;
 		}else {
 			CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-			FullIndexBuff(context.indexbatchr2D, context.indexbatch2DPtr);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,context.indexbatch2DPtr*4,context.indexbatchr2D);
 			
 		}
-		loge("index changed");
-		u32 count;
-		if(!points){std::cout<<"..";};
-		if(points){std::cout<<"==";};
-		
-		points=!points;
 	}
 	if(isitChanged){
 		RegenrateVetexArray(&context.VAO_2D);
 
-		glBindVertexArray(context.VAO_2D);
-		glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D);
+		CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
+		CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
+		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
 		
-		GenVAAP(0, GL_FLOAT, false, 4,2, (void *)0);
-		GenVAAP(1, GL_FLOAT, false, 4,1, (void *)(2*sizeof(float)));
+		CHECK_GL_ERORR(glEnableVertexAttribArray(0));
+		CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
+		CHECK_GL_ERORR(glEnableVertexAttribArray(1));
+		CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));	
 		
 	}
-	int window_w, window_h;
-	glfwGetFramebufferSize(window, &window_w, &window_h);
+	
+	
+	
 
-	glm::mat4 proj = glm::ortho(0.0f,(float)window_w , (float)window_h, 0.0f,-10.0f,10.0f);
-	bool isProjDef = false;
-	for(int i = 0 ; i < 4 ; i ++){
-		for(int ii = 0 ; ii < 4 ; ii++){
-			if(memcmp(&proj[i][ii],&context.prvuceMVP[i][ii],sizeof(float))){
-				isProjDef=true;
-				context.prvuceMVP[i][ii]=proj[i][ii];
-			}
-		}
-	}
+	
 
-	if(isProjDef){
-		CHECK_GL_ERORR(glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]));	
-		loge("SETING MVP");
-	}
-	glBindVertexArray(context.VAO_2D);	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.IndexBuffer2DSize/sizeof(u32), GL_UNSIGNED_INT, nullptr));
+	CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
+	
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.indexbatch2DPtr, GL_UNSIGNED_INT, nullptr));
 
 	context.indexbatch2DPtr=0;
 	context.vertexbatch2DPtr=0;
 	context.isVertex2DChanged=false;
 	context.isIndex2DChanged=false;
-	
-	if(bindedShader && bindedShader!=-1){
-	//	glUseProgram(bindedShader);
-	}
-	/*if(g_2DShapesBatchRenderer->isVertexChanged()){
-		u32 count;
-		isitChanged=true;
-		loge("vertex charnged");
-		if(!points){std::cout<<"..";};
-		if(points){std::cout<<"==";};
-		
-		points=!points;
-		void *vertaxData = g_2DShapesBatchRenderer->GetVertexData(count);
-		g_2DShapeVertexBuffer->reFull(vertaxData, count*sizeof(float));
-		std::cout<<" >>>>>>"<<count<<"\n";
-	}
-	if(g_2DShapesBatchRenderer->isIndexChanged()){
-		isitChanged=true;
-		loge("index changed");
-		u32 count;
-		if(!points){std::cout<<"..";};
-		if(points){std::cout<<"==";};
-		
-		points=!points;
-		void *indexData = g_2DShapesBatchRenderer->GetIndexData(count);
-		g_2DShapeIndexBuffer->reFull(indexData, count*sizeof(u32));
-		
-	}
-	if(isitChanged){
-		g_2DShapeVAO->rebuild();
-		g_2DShapeVertexBuffer->Bind();
-		g_2DShapeIndexBuffer->Bind();
-		g_2DShapeVAO->Layout();
-	}
-	g_2DShapeVAO->Bind();*/
-
+	return;
 }

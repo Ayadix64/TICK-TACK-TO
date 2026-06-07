@@ -17,7 +17,7 @@
 #include "shader.h"
 #include "texture.hpp"
 #include "batch.hpp"
-
+#include "shaders.hpp"
 #include "basics.hpp"
 
 #include "externel/imgui/imgui.h"
@@ -30,7 +30,36 @@ void Rotate(float& x,float& y,double xx,float yy,float theta);
 void Rotate(float& x,float& y,float&z,float xx,float yy,float zz,float theta,float theta2);
 
 
-
+void GoodOldTesting(){
+	u32 cl = 0xff0000ff;
+	float veteces[]{
+		0.0,100.0,*(float*)&cl,
+		100.0,0.0,*(float*)&cl,
+		100.0,100.0,*(float*)&cl
+	};
+	u32 indeces[]{0,1,2};
+	u32 vao;
+	glGenVertexArrays(1,&vao);
+	glBindVertexArray(vao);
+	u32 vb;
+	glGenBuffers(1,&vb);
+	glBindBuffer(GL_ARRAY_BUFFER,vb);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(veteces),veteces,GL_DYNAMIC_DRAW);
+	u32 ib;
+	glGenBuffers(1,&ib);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indeces),indeces,GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*4,0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*4,(void*)8);
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
+	glDeleteVertexArrays(1,&vao);
+	glDeleteBuffers(1,&vb);
+	glDeleteBuffers(1,&ib);
+	return;
+}
 
 
 int main(){
@@ -54,123 +83,34 @@ int main(){
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImGuiInit(window);
-	
+	TickInit();	
 	/**********************************************************/
-	
-	const char* fragment_shader = 
-		"#version 330 core\n"
-		"\n"
-		"\n"
-		"layout(location=0) out vec4 outcl;\n"
-		"\n"
-		"\n"
-		"flat in uint color;\n"
-		"\n"
-		"uniform sampler2D u_Texture;\n"
-		"\n"
-		"void main(){\n"
-		"	float r = float((color>>24)&0xffu)/255.0;\n"
-		"	float g = float((color>>16)&0xffu)/255.0;\n"
-		"	float b = float((color>>8)&0xffu)/255.0;\n"
-		"	float a = float(color&0xffu)/255.0;\n"
-		"\n"
-		"	vec4 cl = vec4(r,g,b,a);//texture(u_Texture,v_textCoord);\n"
-		"	outcl =cl;\n"
-		"}\n"
-		;
-
-
-	/********************************************vertex_shader***********************************************/
-	const char* vertex_shader = 
-		"#version 330 core\n"
-		"layout(location=0) in vec4 position;//pleze read vec4 (for the better, and it convert it automaticly),at index 0\n"
-		"layout(location=1) in uint inColor;\n"
-		"\n"
-		"flat out uint color;\n"
-		"uniform mat4 u_MVP;\n"
-		"uniform float u_z;\n"
-		"void main(){\n"
-		"	gl_Position=u_MVP*vec4(position.xyz,u_z)*0.5f;\n"
-		"	color=inColor;\n"
-		"}\n";
-	
-	
-
-	//Shader shader(vertex_shader,fragment_shader);
-	/*****************************************************************************************************************/
-	TickInit();
-	u32 shader = CreatShader(vertex_shader, fragment_shader);
-	u32 u_MVP = GetUniform("u_MVP",shader);
-	glUseProgram(shader);
-	//shader.SetUniform1i("u_Texture",0);
-		
 	
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
 	
-	
-	
-	glm::mat4 proj = glm::ortho(0.0f,(float)pw,(float)ph,0.0f,-10.0f,10.0f);
-	//glm::mat4 trans = glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
+
+	//int shader = CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);	
+	//glUseProgram(shader);
 	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
-	//Uniform u_mvp("u_MVP",shader);
-	//Uniform u_z("u_z",shader);
-	
-	char ticktackto[3][3];
-
-	float bx =0.0f , by=10.0f;
-	float bxa=2.0f,bya=2.0f;
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
 	float segments = 1.0;
+	glm::mat4 proj; 
+	glm::mat4 trans= glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
+	glm::mat4 mv;
+
 	while(!glfwWindowShouldClose(window) ){
-		//glm::mat4 model = trans*proj;
-		//u_mvp.SetMat4f(model);
-		//u_z.Set1f(z);
+			ImGuiNewFrame();
 		
-		ImGuiNewFrame();
-		
-		int w , h;
-		glfwGetFramebufferSize(window, &w, &h);
-		if(w!=pw || h!=ph){
-			glViewport(0, 0, w,h);
-			pw=w;
-			ph=h;
-			proj=glm::ortho(0.0f,(float)w,(float)h,0.0f,-10.0f,10.0f);
-			CHECK_GL_ERORR(glUniformMatrix4fv(u_MVP,1,GL_FALSE,&proj[0][0]));	
-		}
-
-		
-		DrawRectangel((float)pw-20.0, yp1, 10.0f, 50.0f, {255,0,0,255});
-		DrawRectangel(10.0, yp2, 10.0f, 50.0f, {0,0,255,255});
-
-		//DrawRectangel(bx, by, 20.0f, 20.0f, {0xff,0xff,0xff,0xff});
-		//DrawCercel(bx, by, r, segments, {0,0xff,0x0,0xff});
-		if(by-20>=yp1 && by<=yp1+50.0 && bx+20.0>=pw-20.0 && bx+20.0<=pw-10.0){
-			bxa=-bxa;
-		}
-		bx+=bxa;
-		by+=bya;
-		
-		if(bx+20.0f >= pw || bx<=0.0){
-			bxa=-bxa;
-		}
-		if(by+20.0f >= ph || by<=0.0){
-			bya=-bya;
-		}
 		ImGui::Begin("Hello TICK-TACK-TO");
 		
 		ImGui::Text("Hi, he , hallo, hi");
-		
-		//ImGui::SliderFloat("x", &x, -1.0f, 1.0f);
-		//ImGui::SliderFloat("y", &y, -1.0f, 1.0f);
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
 		ImGui::SliderFloat("steps", &segments, 1, 100);
-		//ImGui::SliderFloat("r2", &r2, 0.0f, 360.0f);
-		DrawCercel((float)pw/2.0, (float)ph/2, r,segments, {0,255,0,255});
-		DrawTriangle({55.0,55.0}, {55.0,0.0}, {0.0,55.0}, {255,255,0,255});
 		ImGui::End();
+		
 		ImGui::Render();
 		
 		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
@@ -200,8 +140,16 @@ int main(){
 				yp2-=5.0;
 			}
 		}
+			
+		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
+		DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
+		DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
+		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+	
+
+
 		
-		TickRendre(window);	
+		TickRendre(window);
 		
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);

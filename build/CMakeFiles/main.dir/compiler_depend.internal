@@ -361,6 +361,10 @@ CMakeFiles/main.dir/basics.cpp.o
  /usr/include/glm/ext/matrix_float4x3_precision.hpp
  /usr/include/glm/ext/matrix_float4x4.hpp
  /usr/include/glm/ext/matrix_float4x4_precision.hpp
+ /usr/include/glm/ext/matrix_projection.hpp
+ /usr/include/glm/ext/matrix_projection.inl
+ /usr/include/glm/ext/matrix_transform.hpp
+ /usr/include/glm/ext/matrix_transform.inl
  /usr/include/glm/ext/scalar_constants.hpp
  /usr/include/glm/ext/scalar_constants.inl
  /usr/include/glm/ext/scalar_int_sized.hpp
@@ -398,6 +402,10 @@ CMakeFiles/main.dir/basics.cpp.o
  /usr/include/glm/fwd.hpp
  /usr/include/glm/geometric.hpp
  /usr/include/glm/glm.hpp
+ /usr/include/glm/gtc/constants.hpp
+ /usr/include/glm/gtc/constants.inl
+ /usr/include/glm/gtc/matrix_transform.hpp
+ /usr/include/glm/gtc/matrix_transform.inl
  /usr/include/glm/integer.hpp
  /usr/include/glm/mat2x2.hpp
  /usr/include/glm/mat2x3.hpp
@@ -2527,6 +2535,7 @@ CMakeFiles/main.dir/main.cpp.o
  /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.h
  /home/Ayadi/Projects/TIC-TACK-TO/indexbuff.h
  /home/Ayadi/Projects/TIC-TACK-TO/shader.h
+ /home/Ayadi/Projects/TIC-TACK-TO/shaders.hpp
  /home/Ayadi/Projects/TIC-TACK-TO/texture.hpp
  /home/Ayadi/Projects/TIC-TACK-TO/utils.h
  /home/Ayadi/Projects/TIC-TACK-TO/vertexarray.h

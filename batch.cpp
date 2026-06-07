@@ -14,10 +14,7 @@ void BatchRendringAddVertex(float** buffer , u32 * bufferSize, u32* pointer, cha
 		u32 newMemorySize = *bufferSize+count*sizeof(float)+0x1000;
 		if(*buffer){
 			*buffer=(float*)realloc(*buffer,newMemorySize);
-			/*void *nw = malloc(newMemorySize);
-			memcpy(nw, *buffer, *bufferSize);
-			free(*buffer);
-			*buffer=(float*)nw;*/
+
 		}else {
 			*buffer=(float*)malloc(newMemorySize);
 		}
@@ -52,7 +49,7 @@ void BatchRendringAddIndex(u32** buffer , u32 * bufferSize, u32* pointer, char* 
 		*bufferSize=newMemorySize;
 	}
 	for(u32 i = 0 ; i < count ; i++ ){
-		u32 data_ = data[i] + vertexPtr/strid;
+		u32 data_ = data[i] +vertexPtr/strid;
 		if((*buffer)[*pointer+i]!=data_){
 			
 			(*buffer)[*pointer+i]=data_;

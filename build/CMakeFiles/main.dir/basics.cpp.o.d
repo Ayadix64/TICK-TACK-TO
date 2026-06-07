@@ -341,7 +341,15 @@ CMakeFiles/main.dir/basics.cpp.o: \
  /usr/include/c++/16.1.1/atomic \
  /usr/include/c++/16.1.1/bits/atomic_base.h \
  /usr/include/c++/16.1.1/bits/atomic_lockfree_defines.h \
- /usr/include/glm/ext/matrix_clip_space.hpp \
+ /usr/include/glm/gtc/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_projection.hpp \
+ /usr/include/glm/gtc/constants.hpp \
  /usr/include/glm/ext/scalar_constants.hpp \
  /usr/include/glm/ext/scalar_constants.inl \
- /usr/include/glm/ext/matrix_clip_space.inl
+ /usr/include/glm/gtc/constants.inl \
+ /usr/include/glm/ext/matrix_projection.inl \
+ /usr/include/glm/ext/matrix_clip_space.hpp \
+ /usr/include/glm/ext/matrix_clip_space.inl \
+ /usr/include/glm/ext/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_transform.inl \
+ /usr/include/glm/gtc/matrix_transform.inl
