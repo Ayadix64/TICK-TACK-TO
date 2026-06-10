@@ -1,34 +1,12 @@
 #ifndef TICK_TEXTURE
 #define TICK_TEXTURE
-#include <string>
-class Texture {
-private:
-	unsigned int m_texturID=0;
-	unsigned char* m_data = nullptr;
-	unsigned int m_dataS = 0;
-	
-	unsigned int m_w=0,m_h,m_bpp=0;
-public:
-	Texture(unsigned char* data,  unsigned int width, unsigned int heigth, unsigned int bpp);
-	~Texture();
-	void Binde(unsigned int slot = 0);
-	void UnBinde();
-};
+#include "utils.h"
+u32 GenTexture();
 
+void SetTextureData(u8* data, u32 w,u32 h);
+void SetTexturDataFromeFile(const char* fileName);
+void BindTexture(u32 texture, u8 slot);
+void DeletTexture(u32* texture);
 
-class ImageTexture{
-private:
-	Texture* m_texture;
-	std::string m_path;
-	unsigned int m_w=0,m_h=0,m_bpp=0;
-	unsigned char* image = nullptr;
-	
-public:
-	ImageTexture(std::string path);
-	~ImageTexture();
-	void Binde(unsigned int slot=0);
-	void UnBinde();
-	
-};
 
 #endif

@@ -74,8 +74,9 @@ int main(){
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 	
 	GLFWwindow* window = CreatWindow("window", 800, 800);
-	
-	GlewInit();	
+	//GlewInit();
+	GLFWwindow* window2 = CreatWindow("window2", 800, 600);
+	GlewInit();
 	
 
 
@@ -83,7 +84,9 @@ int main(){
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ImGuiInit(window);
-	TickInit();	
+	TickInit();
+	TickContext window1TickContex= TickInit();	
+	TickContext window2TickContex= TickInit();
 	/**********************************************************/
 	
 	int pw,ph ;
@@ -101,7 +104,7 @@ int main(){
 	glm::mat4 mv;
 
 	while(!glfwWindowShouldClose(window) ){
-			ImGuiNewFrame();
+		ImGuiNewFrame();
 		
 		ImGui::Begin("Hello TICK-TACK-TO");
 		
@@ -141,22 +144,30 @@ int main(){
 			}
 		}
 			
-		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
-		DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
-		DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
-		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+		//DrawLine_ctx({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255},&window1TickContex);
+		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
+		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
+		//DrawCercel_ctx((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255},&window1TickContex);
 	
 
 
-		
-		TickRendre(window);
+		glfwMakeContextCurrent(window);
+		//TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		glClear(GL_COLOR_BUFFER_BIT);
 		
+		glfwMakeContextCurrent(window2);
+		//DrawLine_ctx({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255},&window2TickContex);
+		//TickRendre_ctx(window2,&window2TickContex);
+		glfwSwapBuffers(window2);
+		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
+		glfwMakeContextCurrent(window);
 
+	
 	}
 	ImGuiStop();
 	glfwTerminate();

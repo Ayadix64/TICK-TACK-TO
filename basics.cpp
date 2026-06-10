@@ -208,15 +208,15 @@ void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 	 *			TODO: this code is reduceles, fix it!
 	 **********************************************************************************/
 	float Verteces[8*3];
-	u32 indeces[12*2];
+	u32 indeces[12];
 
 
-	float ce_vertex[3]{x,y,*(float*)&c};
-
-	//g_2DShapesBatchRenderer->Push(ce_vertex,3,nullptr,0);
-
+	float ce_vertex[]{x,y,*(float*)&c};
 	BatcheRendrerAdd(ce_vertex, 3, NULL, 0, &g_defultContext);
-	for(u32 i = 1;xx>r/1.5f; i+=4){
+	
+
+	for(u32 i = 1  ;xx>r/1.5f; i+=8){
+		
 		Verteces[0]=x+xx;
 		Verteces[1]=y+yy;
 		Verteces[2]=*(float*)&c;
@@ -251,41 +251,26 @@ void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 		indeces[0]=-i;
 		indeces[1]=0;
 		indeces[2]=1;
-		
+
 		indeces[3]=-i;
-		indeces[4]=1;
-		indeces[5]=2;
-
+	 	indeces[4]=2;
+		indeces[5]=3;
+	
 		indeces[6]=-i;
-	 	indeces[7]=2;
-		indeces[8]=3;
-
+		indeces[7]=4;
+		indeces[8]=5;
+	
 		indeces[9]=-i;
-	 	indeces[10]=3;
-		indeces[11]=4;
-
-		indeces[12]=-i;
-		indeces[13]=4;
-		indeces[14]=5;
+		indeces[10]=6;
+		indeces[11]=7;
 		
-		indeces[15]=-i;
-		indeces[16]=5;
-		indeces[17]=6;
-
-		indeces[18]=-i;
-		indeces[19]=6;
-		indeces[20]=7;
-		
-		indeces[21]=-i;
-		indeces[22]=7;
-		indeces[23]=0;
+		yy+=steps;
 		if(xx*xx+yy*yy-r*r>=0.0f){
 			xx-=steps;
 		}
-		
-		yy+=steps;
+
 		//g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12);	
-		BatcheRendrerAdd(Verteces, 24, (u32*)indeces,24, &g_defultContext);
+		BatcheRendrerAdd(Verteces, 24, (u32*)indeces,12, &g_defultContext);
 		//*/
 		
 		/*	
@@ -452,7 +437,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 }
 
 
-void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx){
+void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickContext* ctx){
 	if(!r|!steps)return;//it make no sence™ to a circel with out a raduice or a steps
 	
 	float xx = r;
@@ -462,7 +447,7 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickCont
 	 *			TODO: this code is reduceles, fix it!
 	 **********************************************************************************/
 	float Verteces[8*3];
-	u32 indeces[12*2];
+	u32 indeces[12];
 
 
 	float ce_vertex[3]{x,y,*(float*)&c};
@@ -471,7 +456,10 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickCont
 
 	BatcheRendrerAdd(ce_vertex, 3, NULL, 0, ctx);
 	for(u32 i = 1;xx>r/1.5f; yy+=steps,i+=8){
-		
+		if(xx*xx+yy*yy-r*r>0.0f){
+			xx-=steps;
+		}
+	
 		Verteces[0]=x+xx;
 		Verteces[1]=y+yy;
 		Verteces[2]=*(float*)&c;
@@ -506,38 +494,21 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickCont
 		indeces[0]=-i;
 		indeces[1]=0;
 		indeces[2]=1;
-		
+
 		indeces[3]=-i;
-		indeces[4]=1;
-		indeces[5]=2;
-
+	 	indeces[4]=2;
+		indeces[5]=3;
+	
 		indeces[6]=-i;
-	 	indeces[7]=2;
-		indeces[8]=3;
-
+		indeces[7]=4;
+		indeces[8]=5;
+	
 		indeces[9]=-i;
-	 	indeces[10]=3;
-		indeces[11]=4;
-
-		indeces[12]=-i;
-		indeces[13]=4;
-		indeces[14]=5;
+		indeces[10]=6;
+		indeces[11]=7;
 		
-		indeces[15]=-i;
-		indeces[16]=5;
-		indeces[17]=6;
-
-		indeces[18]=-i;
-		indeces[19]=6;
-		indeces[20]=7;
-		
-		;
-		if(xx*xx+yy*yy-r*r>=0.0f){
-			xx-=steps;
-		}
-
 		//g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12);	
-		BatcheRendrerAdd(Verteces, 24, (u32*)indeces,21, ctx);
+		BatcheRendrerAdd(Verteces, 24, (u32*)indeces,12, ctx);
 		//*/
 		
 		/*	
@@ -564,6 +535,7 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickCont
 	return;
 
 }
+
 
 
 
