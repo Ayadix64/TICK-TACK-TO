@@ -93,9 +93,6 @@ static void readFile(std::string path, std::string& data){
 
 
 
-void  ImGuiInit(GLFWwindow* window);
-void  ImGuiNewFrame();
-void  ImGuiStop();
 
 GLFWwindow* CreatWindow(const char* name, unsigned int width, unsigned int heigth);
 void GlewInit();

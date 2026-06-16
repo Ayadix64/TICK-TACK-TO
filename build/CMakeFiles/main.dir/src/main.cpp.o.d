@@ -1,6 +1,6 @@
-CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
- /usr/include/stdc-predef.h /usr/include/GL/glew.h \
- /usr/include/c++/16.1.1/cstddef \
+CMakeFiles/main.dir/src/main.cpp.o: \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/main.cpp /usr/include/stdc-predef.h \
+ /usr/include/GL/glew.h /usr/include/c++/16.1.1/cstddef \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -279,6 +279,11 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/ext/matrix_projection.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/basics.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/externel/imgui/imgui_impl_glfw.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/externel/imgui/imgui.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/externel/imgui/imconfig.h \
+ /usr/include/string.h /usr/include/strings.h \
  /home/Ayadi/Projects/TIC-TACK-TO/src/utils.h \
  /usr/include/c++/16.1.1/complex /usr/include/c++/16.1.1/sstream \
  /usr/include/c++/16.1.1/istream /usr/include/c++/16.1.1/ios \
@@ -332,12 +337,18 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
  /usr/include/c++/16.1.1/bits/fstream.tcc \
- /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to.h \
- /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to/basics.h \
- /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to/utils.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imconfig.h \
- /usr/include/string.h /usr/include/strings.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.h \
- /home/Ayadi/Projects/TIC-TACK-TO/utils.hpp
+ /home/Ayadi/Projects/TIC-TACK-TO/src/vertexbuff.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/indexbuff.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/vertexarray.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/shader.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/texture.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/batch.hpp \
+ /usr/include/c++/16.1.1/random /usr/include/c++/16.1.1/bits/random.h \
+ /usr/include/c++/16.1.1/bits/uniform_int_dist.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/opt_random.h \
+ /usr/include/c++/16.1.1/bits/random.tcc /usr/include/c++/16.1.1/numeric \
+ /usr/include/c++/16.1.1/bits/stl_numeric.h \
+ /usr/include/c++/16.1.1/pstl/glue_numeric_defs.h \
+ /usr/include/c++/16.1.1/pstl/execution_defs.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/shaders.hpp \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/externel/imgui/imgui_impl_opengl3.h

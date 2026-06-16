@@ -129,54 +129,6 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-basics.o: basics.cpp.o
-.PHONY : basics.o
-
-# target to build an object file
-basics.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.o
-.PHONY : basics.cpp.o
-
-basics.i: basics.cpp.i
-.PHONY : basics.i
-
-# target to preprocess a source file
-basics.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.i
-.PHONY : basics.cpp.i
-
-basics.s: basics.cpp.s
-.PHONY : basics.s
-
-# target to generate assembly for a file
-basics.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/basics.cpp.s
-.PHONY : basics.cpp.s
-
-batch.o: batch.cpp.o
-.PHONY : batch.o
-
-# target to build an object file
-batch.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.o
-.PHONY : batch.cpp.o
-
-batch.i: batch.cpp.i
-.PHONY : batch.i
-
-# target to preprocess a source file
-batch.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.i
-.PHONY : batch.cpp.i
-
-batch.s: batch.cpp.s
-.PHONY : batch.s
-
-# target to generate assembly for a file
-batch.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/batch.cpp.s
-.PHONY : batch.cpp.s
-
 externel/imgui/imgui.o: externel/imgui/imgui.cpp.o
 .PHONY : externel/imgui/imgui.o
 
@@ -345,30 +297,6 @@ externel/imgui/imgui_widgets.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/externel/imgui/imgui_widgets.cpp.s
 .PHONY : externel/imgui/imgui_widgets.cpp.s
 
-indexbuff.o: indexbuff.cpp.o
-.PHONY : indexbuff.o
-
-# target to build an object file
-indexbuff.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/indexbuff.cpp.o
-.PHONY : indexbuff.cpp.o
-
-indexbuff.i: indexbuff.cpp.i
-.PHONY : indexbuff.i
-
-# target to preprocess a source file
-indexbuff.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/indexbuff.cpp.i
-.PHONY : indexbuff.cpp.i
-
-indexbuff.s: indexbuff.cpp.s
-.PHONY : indexbuff.s
-
-# target to generate assembly for a file
-indexbuff.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/indexbuff.cpp.s
-.PHONY : indexbuff.cpp.s
-
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -393,125 +321,197 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-shader.o: shader.cpp.o
-.PHONY : shader.o
+src/basics.o: src/basics.cpp.o
+.PHONY : src/basics.o
 
 # target to build an object file
-shader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/shader.cpp.o
-.PHONY : shader.cpp.o
+src/basics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/basics.cpp.o
+.PHONY : src/basics.cpp.o
 
-shader.i: shader.cpp.i
-.PHONY : shader.i
+src/basics.i: src/basics.cpp.i
+.PHONY : src/basics.i
 
 # target to preprocess a source file
-shader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/shader.cpp.i
-.PHONY : shader.cpp.i
+src/basics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/basics.cpp.i
+.PHONY : src/basics.cpp.i
 
-shader.s: shader.cpp.s
-.PHONY : shader.s
+src/basics.s: src/basics.cpp.s
+.PHONY : src/basics.s
 
 # target to generate assembly for a file
-shader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/shader.cpp.s
-.PHONY : shader.cpp.s
+src/basics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/basics.cpp.s
+.PHONY : src/basics.cpp.s
 
-texture.o: texture.cpp.o
-.PHONY : texture.o
+src/batch.o: src/batch.cpp.o
+.PHONY : src/batch.o
 
 # target to build an object file
-texture.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/texture.cpp.o
-.PHONY : texture.cpp.o
+src/batch.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/batch.cpp.o
+.PHONY : src/batch.cpp.o
 
-texture.i: texture.cpp.i
-.PHONY : texture.i
+src/batch.i: src/batch.cpp.i
+.PHONY : src/batch.i
 
 # target to preprocess a source file
-texture.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/texture.cpp.i
-.PHONY : texture.cpp.i
+src/batch.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/batch.cpp.i
+.PHONY : src/batch.cpp.i
 
-texture.s: texture.cpp.s
-.PHONY : texture.s
+src/batch.s: src/batch.cpp.s
+.PHONY : src/batch.s
 
 # target to generate assembly for a file
-texture.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/texture.cpp.s
-.PHONY : texture.cpp.s
+src/batch.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/batch.cpp.s
+.PHONY : src/batch.cpp.s
 
-utils.o: utils.cpp.o
-.PHONY : utils.o
+src/indexbuff.o: src/indexbuff.cpp.o
+.PHONY : src/indexbuff.o
 
 # target to build an object file
-utils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/utils.cpp.o
-.PHONY : utils.cpp.o
+src/indexbuff.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/indexbuff.cpp.o
+.PHONY : src/indexbuff.cpp.o
 
-utils.i: utils.cpp.i
-.PHONY : utils.i
+src/indexbuff.i: src/indexbuff.cpp.i
+.PHONY : src/indexbuff.i
 
 # target to preprocess a source file
-utils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/utils.cpp.i
-.PHONY : utils.cpp.i
+src/indexbuff.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/indexbuff.cpp.i
+.PHONY : src/indexbuff.cpp.i
 
-utils.s: utils.cpp.s
-.PHONY : utils.s
+src/indexbuff.s: src/indexbuff.cpp.s
+.PHONY : src/indexbuff.s
 
 # target to generate assembly for a file
-utils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/utils.cpp.s
-.PHONY : utils.cpp.s
+src/indexbuff.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/indexbuff.cpp.s
+.PHONY : src/indexbuff.cpp.s
 
-vertexarray.o: vertexarray.cpp.o
-.PHONY : vertexarray.o
+src/shader.o: src/shader.cpp.o
+.PHONY : src/shader.o
 
 # target to build an object file
-vertexarray.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexarray.cpp.o
-.PHONY : vertexarray.cpp.o
+src/shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/shader.cpp.o
+.PHONY : src/shader.cpp.o
 
-vertexarray.i: vertexarray.cpp.i
-.PHONY : vertexarray.i
+src/shader.i: src/shader.cpp.i
+.PHONY : src/shader.i
 
 # target to preprocess a source file
-vertexarray.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexarray.cpp.i
-.PHONY : vertexarray.cpp.i
+src/shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/shader.cpp.i
+.PHONY : src/shader.cpp.i
 
-vertexarray.s: vertexarray.cpp.s
-.PHONY : vertexarray.s
+src/shader.s: src/shader.cpp.s
+.PHONY : src/shader.s
 
 # target to generate assembly for a file
-vertexarray.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexarray.cpp.s
-.PHONY : vertexarray.cpp.s
+src/shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/shader.cpp.s
+.PHONY : src/shader.cpp.s
 
-vertexbuff.o: vertexbuff.cpp.o
-.PHONY : vertexbuff.o
+src/texture.o: src/texture.cpp.o
+.PHONY : src/texture.o
 
 # target to build an object file
-vertexbuff.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexbuff.cpp.o
-.PHONY : vertexbuff.cpp.o
+src/texture.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/texture.cpp.o
+.PHONY : src/texture.cpp.o
 
-vertexbuff.i: vertexbuff.cpp.i
-.PHONY : vertexbuff.i
+src/texture.i: src/texture.cpp.i
+.PHONY : src/texture.i
 
 # target to preprocess a source file
-vertexbuff.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexbuff.cpp.i
-.PHONY : vertexbuff.cpp.i
+src/texture.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/texture.cpp.i
+.PHONY : src/texture.cpp.i
 
-vertexbuff.s: vertexbuff.cpp.s
-.PHONY : vertexbuff.s
+src/texture.s: src/texture.cpp.s
+.PHONY : src/texture.s
 
 # target to generate assembly for a file
-vertexbuff.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/vertexbuff.cpp.s
-.PHONY : vertexbuff.cpp.s
+src/texture.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/texture.cpp.s
+.PHONY : src/texture.cpp.s
+
+src/utils.o: src/utils.cpp.o
+.PHONY : src/utils.o
+
+# target to build an object file
+src/utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/utils.cpp.o
+.PHONY : src/utils.cpp.o
+
+src/utils.i: src/utils.cpp.i
+.PHONY : src/utils.i
+
+# target to preprocess a source file
+src/utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/utils.cpp.i
+.PHONY : src/utils.cpp.i
+
+src/utils.s: src/utils.cpp.s
+.PHONY : src/utils.s
+
+# target to generate assembly for a file
+src/utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/utils.cpp.s
+.PHONY : src/utils.cpp.s
+
+src/vertexarray.o: src/vertexarray.cpp.o
+.PHONY : src/vertexarray.o
+
+# target to build an object file
+src/vertexarray.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexarray.cpp.o
+.PHONY : src/vertexarray.cpp.o
+
+src/vertexarray.i: src/vertexarray.cpp.i
+.PHONY : src/vertexarray.i
+
+# target to preprocess a source file
+src/vertexarray.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexarray.cpp.i
+.PHONY : src/vertexarray.cpp.i
+
+src/vertexarray.s: src/vertexarray.cpp.s
+.PHONY : src/vertexarray.s
+
+# target to generate assembly for a file
+src/vertexarray.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexarray.cpp.s
+.PHONY : src/vertexarray.cpp.s
+
+src/vertexbuff.o: src/vertexbuff.cpp.o
+.PHONY : src/vertexbuff.o
+
+# target to build an object file
+src/vertexbuff.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexbuff.cpp.o
+.PHONY : src/vertexbuff.cpp.o
+
+src/vertexbuff.i: src/vertexbuff.cpp.i
+.PHONY : src/vertexbuff.i
+
+# target to preprocess a source file
+src/vertexbuff.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexbuff.cpp.i
+.PHONY : src/vertexbuff.cpp.i
+
+src/vertexbuff.s: src/vertexbuff.cpp.s
+.PHONY : src/vertexbuff.s
+
+# target to generate assembly for a file
+src/vertexbuff.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/vertexbuff.cpp.s
+.PHONY : src/vertexbuff.cpp.s
 
 # Help Target
 help:
@@ -522,12 +522,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
-	@echo "... basics.o"
-	@echo "... basics.i"
-	@echo "... basics.s"
-	@echo "... batch.o"
-	@echo "... batch.i"
-	@echo "... batch.s"
 	@echo "... externel/imgui/imgui.o"
 	@echo "... externel/imgui/imgui.i"
 	@echo "... externel/imgui/imgui.s"
@@ -549,27 +543,33 @@ help:
 	@echo "... externel/imgui/imgui_widgets.o"
 	@echo "... externel/imgui/imgui_widgets.i"
 	@echo "... externel/imgui/imgui_widgets.s"
-	@echo "... indexbuff.o"
-	@echo "... indexbuff.i"
-	@echo "... indexbuff.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... shader.o"
-	@echo "... shader.i"
-	@echo "... shader.s"
-	@echo "... texture.o"
-	@echo "... texture.i"
-	@echo "... texture.s"
-	@echo "... utils.o"
-	@echo "... utils.i"
-	@echo "... utils.s"
-	@echo "... vertexarray.o"
-	@echo "... vertexarray.i"
-	@echo "... vertexarray.s"
-	@echo "... vertexbuff.o"
-	@echo "... vertexbuff.i"
-	@echo "... vertexbuff.s"
+	@echo "... src/basics.o"
+	@echo "... src/basics.i"
+	@echo "... src/basics.s"
+	@echo "... src/batch.o"
+	@echo "... src/batch.i"
+	@echo "... src/batch.s"
+	@echo "... src/indexbuff.o"
+	@echo "... src/indexbuff.i"
+	@echo "... src/indexbuff.s"
+	@echo "... src/shader.o"
+	@echo "... src/shader.i"
+	@echo "... src/shader.s"
+	@echo "... src/texture.o"
+	@echo "... src/texture.i"
+	@echo "... src/texture.s"
+	@echo "... src/utils.o"
+	@echo "... src/utils.i"
+	@echo "... src/utils.s"
+	@echo "... src/vertexarray.o"
+	@echo "... src/vertexarray.i"
+	@echo "... src/vertexarray.s"
+	@echo "... src/vertexbuff.o"
+	@echo "... src/vertexbuff.i"
+	@echo "... src/vertexbuff.s"
 .PHONY : help
 
 

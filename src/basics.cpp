@@ -1,8 +1,6 @@
-#include "externel/imgui/imgui_impl_glfw.h"
 #include "indexbuff.h"
 #include "shader.h"
 #include "utils.h"
-#include "basics.hpp"
 #include "batch.hpp"
 #include "vertexbuff.h"
 #include "vertexarray.h"
@@ -15,6 +13,9 @@
 #include <atomic>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "../include/tick-tack-to/basics.h"
+
 TickContext g_defultContext;
 std::atomic<bool> g_defultContextIsAlreadySet;
 
@@ -23,11 +24,24 @@ std::atomic<bool> g_defultContextIsAlreadySet;
 
 typedef struct {float x,y;u32 c;} Vertex;
 
+#define VERTFG_TRINGELS 0
+#define VERTFG_CERCULS  1
+
+
+typedef struct {
+	char Practicul:4;
+	bool textures;
+	char textureSlot;
+	char rsv;
+	
+} VertexFlags;
+
 
 
 
 TickContext TickInit(){
 	loge("TICK INIT ...");
+	std::cout << sizeof(VertexFlags);
 	TickContext context;
 	context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
 	context.uniform2DMvp = GetUniform("u_MVP", context.Shader2D);		
@@ -49,7 +63,7 @@ TickContext TickInit(){
 	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
 	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));
-	
+		
 	context.vertexbatch2DSize=0x1000;
 	context.vertexbatchr2D = (float*)malloc(0x1000);
 	context.vertexbatch2DPtr=0;
@@ -205,7 +219,7 @@ void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 	float yy = 0.0f;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	/**********************************************************************************
-	 *			TODO: this code is reduceles, fix it!
+	 *			TODO: this code is reduceles, fix it!			  *
 	 **********************************************************************************/
 	float Verteces[8*3];
 	u32 indeces[12];
@@ -681,7 +695,6 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	if(isitChanged){
 		RegenrateVetexArray(&context.VAO_2D);
-
 		CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
 		CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
 		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));

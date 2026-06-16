@@ -1,10 +1,9 @@
 #ifndef TICK_BASICS
 #define TICK_BASICS
-#include "externel/imgui/imgui_impl_glfw.h"
 #include "utils.h"
 #include <cstddef>
 #include <glm/ext/matrix_float4x4.hpp>
-
+#include <GLFW/glfw3.h>
 
 
 typedef struct {
