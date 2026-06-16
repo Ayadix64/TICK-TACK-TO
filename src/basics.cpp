@@ -95,20 +95,14 @@ void BatcheRendrerAdd(float* vetex , u32 vcount , u32* index, u32 icount , TickC
 
 
 
+
+
+
+
+
 void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl)
 {
-	
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
-	float verteces[]{
-		v1.x,v1.y,*(float*)&c,
-		v2.x,v2.y,*(float*)&c,
-		v3.x,v3.y,*(float*)&c,
-	};
-	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
-
-	//u32 verty , indexy;
-	//g_2DShapesBatchRenderer->Push(verteces,9,indece,3);
-	BatcheRendrerAdd(verteces, 9, indece, 3, &g_defultContext);
+	DrawTriangle_ctx(v1,  v2, v3, cl,&g_defultContext);
 }
 
 
@@ -138,20 +132,9 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1__
 									 //  |   |
 									 // v3"""v4
 {
-	u32 indeces[6]{
-		0,1,2,
-		2,3,1
-	};
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
-	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,
-		v2.x,v2.y,*(float*)&c,
-		v3.x,v3.y,*(float*)&c,
-		v4.x,v4.y,*(float*)&c
-	};
-
-	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd(verteces, 12, indeces, 6, &g_defultContext);
+	
+	DrawQuadrilateral_ctx(v1 , v2, v3 , v4,cl,&g_defultContext);
+		
 }
 void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
 	DrawQuadrilateral({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl);
@@ -160,35 +143,7 @@ void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
 
 
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
-	float* Vertex = (float*)malloc((Vertecount*3)*sizeof(float));
-	u32* indeces = (u32*)malloc(Vertecount*3*sizeof(u32));
-	
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
-	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*3]=verteces[i].x;
-		Vertex[i*3+1]=verteces[i].y;
-		Vertex[i*3+2]=*(float*)&c;
-	}
-	for(u32 i = 0 ; i < Vertecount ; i++){
-		indeces[i*3] = i;
-		if(Vertecount-i == 2){
-			indeces[i*3+1] = i+1;
-			indeces[i*3+2] = 0;
-
-		}
-		else if(Vertecount-i == 1){
-			indeces[i*3+1] = 0;
-			indeces[i*3+2] = 1;
-
-		}else{ 
-			indeces[i*3+1] = i+1;
-			indeces[i*3+2] = i+2;
-		}
-	}
-	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
-	BatcheRendrerAdd(Vertex, Vertecount*3, indeces, Vertecount*3, &g_defultContext);
-	free(Vertex);
-	free(indeces);
+	Draw2DVerteces_ctx(verteces,Vertecount,cl,&g_defultContext);
 	return;
 }
 
@@ -196,118 +151,13 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
 
 
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl){
-	float* Vertex = (float*)malloc((Vertecount*3)*sizeof(float));
-	
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
-	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*3]=verteces[i].x;
-		Vertex[i*3+1]=verteces[i].y;
-		Vertex[i*3+2]=*(float*)&c;
-	}
-
-	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
-	BatcheRendrerAdd(Vertex, Vertecount*3, indeces, Indexcont, &g_defultContext);
-	free(Vertex);
+	Draw2DVerteces_ctx(verteces,Vertecount,indeces,Indexcont,cl,&g_defultContext);
 	return;
 }
 
 
 void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
-	if(!r|!steps)return;//it make no sence™ to a circel with out a raduice or a steps
-	
-	float xx = r;
-	float yy = 0.0f;
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
-	/**********************************************************************************
-	 *			TODO: this code is reduceles, fix it!			  *
-	 **********************************************************************************/
-	float Verteces[8*3];
-	u32 indeces[12];
-
-
-	float ce_vertex[]{x,y,*(float*)&c};
-	BatcheRendrerAdd(ce_vertex, 3, NULL, 0, &g_defultContext);
-	
-
-	for(u32 i = 1  ;xx>r/1.5f; i+=8){
-		
-		Verteces[0]=x+xx;
-		Verteces[1]=y+yy;
-		Verteces[2]=*(float*)&c;
-		Verteces[3]=x+yy;
-		Verteces[4]=y+xx;
-		Verteces[5]=*(float*)&c;
-	
-
-		Verteces[6]=x+xx;
-		Verteces[7]=y-yy;
-		Verteces[8]=*(float*)&c;
-		Verteces[9]=x+yy;
-		Verteces[10]=y-xx;
-		Verteces[11]=*(float*)&c;
-
-		
-		Verteces[12]=x-xx;
-		Verteces[13]=y+yy;
-		Verteces[14]=*(float*)&c;
-		Verteces[15]=x-yy;
-		Verteces[16]=y+xx;
-		Verteces[17]=*(float*)&c;
-
-		
-		Verteces[18]=x-xx;
-		Verteces[19]=y-yy;
-		Verteces[20]=*(float*)&c;
-		Verteces[21]=x-yy;
-		Verteces[22]=y-xx;
-		Verteces[23]=*(float*)&c;
-		
-		indeces[0]=-i;
-		indeces[1]=0;
-		indeces[2]=1;
-
-		indeces[3]=-i;
-	 	indeces[4]=2;
-		indeces[5]=3;
-	
-		indeces[6]=-i;
-		indeces[7]=4;
-		indeces[8]=5;
-	
-		indeces[9]=-i;
-		indeces[10]=6;
-		indeces[11]=7;
-		
-		yy+=steps;
-		if(xx*xx+yy*yy-r*r>=0.0f){
-			xx-=steps;
-		}
-
-		//g_2DShapesBatchRenderer->Push(Verteces,24,(u32*)indeces,12);	
-		BatcheRendrerAdd(Verteces, 24, (u32*)indeces,12, &g_defultContext);
-		//*/
-		
-		/*	
-		DrawRectangel((float)x+xx, (float)y+yy, 1.0f, 1.0f, cl);
-		DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
-		
-		DrawRectangel((float)x-xx, (float)y+yy, 1.0f, 1.0f, cl);
-		DrawRectangel((float)x-yy, (float)y+xx, 1.0f, 1.0f, cl);
-		
-		DrawRectangel((float)x+xx, (float)y-yy, 1.0f, 1.0f, cl);
-		DrawRectangel((float)x+yy, (float)y-xx, 1.0f, 1.0f, cl);
-		
-		DrawRectangel((float)x-xx, (float)y-yy, 1.0f, 1.0f, cl);
-		DrawRectangel((float)x-yy, (float)y-xx, 1.0f, 1.0f, cl);
-		//*/
-		
-
-		//DrawRectangel((float)x+yy, (float)y+xx, 1.0f, 1.0f, cl);
-		//DrawRectangel((float)x-xx, (float)y+yy, 1.0, 1.0, cl);
-		//DrawRectangel((float)x+xx, (float)y-yy, 1.0, 1.0, cl);
-		//DrawRectangel((float)x-xx, (float)y-yy, 1.0, 1.0, cl);
-	}
-	//Draw2DVerteces((Vec2f*)Verteces, (u32)r*8 , cl);
+	DrawCercel_ctx(x, y, r,  steps,  cl, &g_defultContext);
 	return;
 
 }
@@ -317,6 +167,12 @@ void DrawCercel(float x , float y , float r, float steps , Vec4c cl){
 
 
 /************************************* Context Functions **********************************/
+
+
+
+
+
+
 void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,TickContext* ctx)// v1___v2
 									 //  |   |
 									 //  |   |
