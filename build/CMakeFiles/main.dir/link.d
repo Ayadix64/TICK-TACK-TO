@@ -3,14 +3,14 @@ main: \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/crtbeginS.o \
   CMakeFiles/main.dir/main.cpp.o \
-  CMakeFiles/main.dir/shader.cpp.o \
-  CMakeFiles/main.dir/vertexbuff.cpp.o \
-  CMakeFiles/main.dir/indexbuff.cpp.o \
-  CMakeFiles/main.dir/vertexarray.cpp.o \
-  CMakeFiles/main.dir/texture.cpp.o \
-  CMakeFiles/main.dir/batch.cpp.o \
-  CMakeFiles/main.dir/utils.cpp.o \
-  CMakeFiles/main.dir/basics.cpp.o \
+  CMakeFiles/main.dir/src/shader.cpp.o \
+  CMakeFiles/main.dir/src/vertexbuff.cpp.o \
+  CMakeFiles/main.dir/src/indexbuff.cpp.o \
+  CMakeFiles/main.dir/src/vertexarray.cpp.o \
+  CMakeFiles/main.dir/src/texture.cpp.o \
+  CMakeFiles/main.dir/src/batch.cpp.o \
+  CMakeFiles/main.dir/src/utils.cpp.o \
+  CMakeFiles/main.dir/src/basics.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_demo.cpp.o \
   CMakeFiles/main.dir/externel/imgui/imgui_draw.cpp.o \
@@ -70,21 +70,21 @@ main: \
 
 CMakeFiles/main.dir/main.cpp.o:
 
-CMakeFiles/main.dir/shader.cpp.o:
+CMakeFiles/main.dir/src/shader.cpp.o:
 
-CMakeFiles/main.dir/vertexbuff.cpp.o:
+CMakeFiles/main.dir/src/vertexbuff.cpp.o:
 
-CMakeFiles/main.dir/indexbuff.cpp.o:
+CMakeFiles/main.dir/src/indexbuff.cpp.o:
 
-CMakeFiles/main.dir/vertexarray.cpp.o:
+CMakeFiles/main.dir/src/vertexarray.cpp.o:
 
-CMakeFiles/main.dir/texture.cpp.o:
+CMakeFiles/main.dir/src/texture.cpp.o:
 
-CMakeFiles/main.dir/batch.cpp.o:
+CMakeFiles/main.dir/src/batch.cpp.o:
 
-CMakeFiles/main.dir/utils.cpp.o:
+CMakeFiles/main.dir/src/utils.cpp.o:
 
-CMakeFiles/main.dir/basics.cpp.o:
+CMakeFiles/main.dir/src/basics.cpp.o:
 
 CMakeFiles/main.dir/externel/imgui/imgui.cpp.o:
 

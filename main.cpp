@@ -9,20 +9,14 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "basics.hpp"
-#include "utils.h"
-#include "vertexbuff.h"
-#include "indexbuff.h"
-#include "vertexarray.h"
-#include "shader.h"
-#include "texture.hpp"
-#include "batch.hpp"
-#include "shaders.hpp"
-#include "basics.hpp"
-
+#include "src/utils.h"
+#include "include/tick-tack-to.h""
 #include "externel/imgui/imgui.h"
 #include "externel/imgui/imgui_impl_glfw.h"
 #include "externel/imgui/imgui_impl_opengl3.h"
+#include "utils.hpp"
+
+
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
 
@@ -75,7 +69,7 @@ int main(){
 	
 	GLFWwindow* window = CreatWindow("window", 800, 800);
 	//GlewInit();
-	GLFWwindow* window2 = CreatWindow("window2", 800, 600);
+	//GLFWwindow* window2 = CreatWindow("window2", 800, 600);
 	GlewInit();
 	
 
@@ -86,7 +80,7 @@ int main(){
 	ImGuiInit(window);
 	TickInit();
 	TickContext window1TickContex= TickInit();	
-	TickContext window2TickContex= TickInit();
+	//TickContext window2TickContex= TickInit();
 	/**********************************************************/
 	
 	int pw,ph ;
@@ -152,20 +146,12 @@ int main(){
 
 
 		glfwMakeContextCurrent(window);
-		//TickRendre_ctx(window,&window1TickContex);
+		TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		glfwMakeContextCurrent(window2);
-		//DrawLine_ctx({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255},&window2TickContex);
-		//TickRendre_ctx(window2,&window2TickContex);
-		glfwSwapBuffers(window2);
-		glfwPollEvents();
-
-		glClear(GL_COLOR_BUFFER_BIT);
-		glfwMakeContextCurrent(window);
 
 	
 	}

@@ -279,14 +279,10 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/ext/matrix_projection.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
- /home/Ayadi/Projects/TIC-TACK-TO/basics.hpp \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.h \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imconfig.h \
- /usr/include/string.h /usr/include/strings.h \
- /home/Ayadi/Projects/TIC-TACK-TO/utils.h /usr/include/c++/16.1.1/complex \
- /usr/include/c++/16.1.1/sstream /usr/include/c++/16.1.1/istream \
- /usr/include/c++/16.1.1/ios /usr/include/c++/16.1.1/exception \
+ /home/Ayadi/Projects/TIC-TACK-TO/src/utils.h \
+ /usr/include/c++/16.1.1/complex /usr/include/c++/16.1.1/sstream \
+ /usr/include/c++/16.1.1/istream /usr/include/c++/16.1.1/ios \
+ /usr/include/c++/16.1.1/exception \
  /usr/include/c++/16.1.1/bits/exception_ptr.h \
  /usr/include/c++/16.1.1/bits/cxxabi_init_exception.h \
  /usr/include/c++/16.1.1/bits/nested_exception.h \
@@ -336,18 +332,12 @@ CMakeFiles/main.dir/main.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/main.cpp \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
  /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
  /usr/include/c++/16.1.1/bits/fstream.tcc \
- /home/Ayadi/Projects/TIC-TACK-TO/vertexbuff.h \
- /home/Ayadi/Projects/TIC-TACK-TO/indexbuff.h \
- /home/Ayadi/Projects/TIC-TACK-TO/vertexarray.h \
- /home/Ayadi/Projects/TIC-TACK-TO/shader.h \
- /home/Ayadi/Projects/TIC-TACK-TO/texture.hpp \
- /home/Ayadi/Projects/TIC-TACK-TO/batch.hpp \
- /usr/include/c++/16.1.1/random /usr/include/c++/16.1.1/bits/random.h \
- /usr/include/c++/16.1.1/bits/uniform_int_dist.h \
- /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/opt_random.h \
- /usr/include/c++/16.1.1/bits/random.tcc /usr/include/c++/16.1.1/numeric \
- /usr/include/c++/16.1.1/bits/stl_numeric.h \
- /usr/include/c++/16.1.1/pstl/glue_numeric_defs.h \
- /usr/include/c++/16.1.1/pstl/execution_defs.h \
- /home/Ayadi/Projects/TIC-TACK-TO/shaders.hpp \
- /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.h
+ /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to/basics.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/include/tick-tack-to/utils.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imconfig.h \
+ /usr/include/string.h /usr/include/strings.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_glfw.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/externel/imgui/imgui_impl_opengl3.h \
+ /home/Ayadi/Projects/TIC-TACK-TO/utils.hpp
