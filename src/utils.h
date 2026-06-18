@@ -8,8 +8,14 @@
 #include <iostream>
 #include <fstream>
 
+//#ifndef GLAD_GL_IMPLEMENTATION 
+//	#define GLAD_GL_IMPLEMENTATION
+//	#include <glad/gl.h>
+//#endif
+
 #include <GL/glew.h>
 #include <GL/gl.h>
+
 #include <GLFW/glfw3.h>
 
 
@@ -48,34 +54,7 @@ typedef struct {float x , y; u32 c;} VertexShape;
 //bool operator!=(VertexShape v1,VertexShape v){return true;};
 
 
-static void loge(std::string lg , std::string ms = ""){
-	std::cout << "[" << lg << "] " << ms << ".\n";
-	return;
-}
-static void Eloge(std::string ms){
-	 std::cerr << "[ERORR] " << ms << ".\n";
-}
-static void Wloge(std::string ms){
-	 std::cerr << "[WARNING] " << ms << ".\n";
-}
 
-static void readFile(std::string path, std::string& data){
-	std::ifstream fl(path);
-	if(!fl.is_open()){
-		Eloge("At opening " + path + " file disnt exiset or curupted");
-		return;
-	}
-	fl.seekg(0,fl.end);
-	
-	unsigned int u_fileSize = fl.tellg();
-	data.resize(u_fileSize);
-	
-	fl.seekg(0);
-	fl.read(data.data(), u_fileSize);
-	fl.close();
-		
-	return;
-}
 
 
 #ifdef DEBUG_MODE
@@ -92,10 +71,11 @@ static void readFile(std::string path, std::string& data){
 #endif
 
 
-
-
-GLFWwindow* CreatWindow(const char* name, unsigned int width, unsigned int heigth);
-void GlewInit();
+void loge(std::string lg , std::string ms = "");
+void Eloge(std::string ms);
+void Wloge(std::string ms);
+void readFile(std::string path, std::string& data);
+	
 
 
 #endif 

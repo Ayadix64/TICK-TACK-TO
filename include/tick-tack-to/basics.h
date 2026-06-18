@@ -44,6 +44,7 @@ void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
 void DrawCercel(float x , float y , float r, float steps , Vec4c cl);
+void TickNewFrame();
 void TickRendre(GLFWwindow* window);
 
 
@@ -54,6 +55,7 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,Tic
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
 void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
+void TickNewFrame_ctx(TickContext* context);
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
 
 #endif

@@ -1,9 +1,4 @@
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GLFW/glfw3.h>
-#include <cstring>
-#include <ostream>
-#include <string>
+#include <iostream>
 #include "utils.h"
 #include "shader.h"
 

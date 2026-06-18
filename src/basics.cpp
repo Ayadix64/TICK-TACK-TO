@@ -1,12 +1,11 @@
+#include "basics.hpp"
 #include "indexbuff.h"
 #include "shader.h"
 #include "utils.h"
 #include "batch.hpp"
 #include "vertexbuff.h"
 #include "vertexarray.h"
-#include <GL/gl.h>
 #include "shaders.hpp"
-#include <GLFW/glfw3.h>
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
@@ -15,9 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../include/tick-tack-to/basics.h"
-
-TickContext g_defultContext;
-std::atomic<bool> g_defultContextIsAlreadySet;
 
 #define debugy(x) std::cout<<"\n"<<#x<<" : " << x ;
 
@@ -30,11 +26,33 @@ typedef struct {float x,y;u32 c;} Vertex;
 
 typedef struct {
 	char Practicul:4;
-	bool textures;
-	char textureSlot;
-	char rsv;
-	
-} VertexFlags;
+	bool Enbletextures:1;
+	char textureSlot:5;//0x1f = ignore
+	int rsv:22;
+}__attribute__((packed)) VertexFlags;
+
+
+TickContext g_defultContext;
+std::atomic<bool> g_defultContextIsAlreadySet;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -178,6 +196,7 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,Tic
 									 //  |   |
 									 // v3"""v4
 {
+
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
@@ -233,20 +252,22 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 
 void DrawQuadrilateral_xtx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, TickContext* ctx)
 {
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+	
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,
-		v2.x,v2.y,*(float*)&c,
-		v3.x,v3.y,*(float*)&c,
-		v4.x,v4.y,*(float*)&c
+		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,
+		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,
+		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,
+		v4.x,v4.y,*(float*)&c,*(float*)&flage,0
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd(verteces, 12, indeces, 6, ctx);
+	BatcheRendrerAdd(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32), ctx);
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
@@ -314,7 +335,7 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 	float yy = 0.0f;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	/**********************************************************************************
-	 *			TODO: this code is reduceles, fix it!
+	 *			TODO: this code is reduceles, fix it!			  *
 	 **********************************************************************************/
 	float Verteces[8*3];
 	u32 indeces[12];
@@ -417,13 +438,33 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 
 
 void TickRendre(GLFWwindow* window){
-	TickContext& context = g_defultContext;
+	TickRendre_ctx(window, &g_defultContext);
+	return;
+}
+
+
+void TickNewFrame(){
+	TickContext* context = &g_defultContext;
+	context->indexbatch2DPtr=0;
+	context->vertexbatch2DPtr=0;
+	context->isVertex2DChanged=false;
+	context->isIndex2DChanged=false;
+	return;
+
+}
+
+
+
+
+
+void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
+	TickContext& context = *ctx;
 	
 	if(!g_defultContextIsAlreadySet){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
+		return;
 	}
 	
-
 	CHECK_GL_ERORR(glUseProgram(context.Shader2D));
 	
 	//if the window changed, update the mvp
@@ -467,7 +508,6 @@ void TickRendre(GLFWwindow* window){
 	}
 	if(isitChanged){
 		RegenrateVetexArray(&context.VAO_2D);
-
 		CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
 		CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
 		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
@@ -479,9 +519,6 @@ void TickRendre(GLFWwindow* window){
 		
 	}
 	
-	
-	
-
 	
 
 	CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
@@ -496,86 +533,11 @@ void TickRendre(GLFWwindow* window){
 	context.isIndex2DChanged=false;
 	return;
 }
-
-
-
-
-void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
-	TickContext& context = *ctx;
-	
-	if(!g_defultContextIsAlreadySet){
-		Eloge("Rendring without a Context ===> did you call TickInit() ?");
-	}
-	
-
-	CHECK_GL_ERORR(glUseProgram(context.Shader2D));
-	
-	//if the window changed, update the mvp
-	int window_w=0, window_h=0;
-	glfwGetFramebufferSize(window, &window_w, &window_h);
-	if(window_w!=context.window_w || window_h!=context.window_h){
-		glm::mat4 proj = glm::ortho(0.0f,(float)window_w,(float)window_h,0.0f,-1.0f,1.0f);
-		glViewport(0,0,window_w,window_h);	
-		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
-		context.window_w=window_w;
-		context.window_h=window_h;
-	}
-
-	bool isitChanged = true;
-	static int points=0; 
-	
-	if(context.isVertex2DChanged){
-		if(context.vertexbatch2DPtr*sizeof(float)>context.VertexBuffer2DSize){
-			RegenrateVertexBuffer(&context.VertexBuffer2D,context.vertexbatchr2D,context.vertexbatch2DPtr*4);
-			context.VertexBuffer2DSize=context.vertexbatch2DPtr*sizeof(float);
-			std::cout<<"\nRegnarate Vertex Buffer to " << context.VertexBuffer2DSize;
-		isitChanged=true;
-		}else {
-			glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D);
-			glBufferSubData(GL_ARRAY_BUFFER,0,context.vertexbatch2DPtr*4,context.vertexbatchr2D);
-			//FullVertexBuffer(context.vertexbatchr2D, context.vertexbatch2DPtr*4);
-		}
-	}
-	if(context.isIndex2DChanged){
-		if(context.indexbatch2DPtr*sizeof(u32)>context.IndexBuffer2DSize){
-			RegenrateIndexBuffer(&context.IndexBuffer2D,context.indexbatchr2D,context.indexbatch2DPtr*4);
-
-			context.IndexBuffer2DSize=context.indexbatch2DPtr*sizeof(u32);
-			std::cout<<"\nRegnarate Index Buffer to " << context.IndexBuffer2DSize;
-			isitChanged=true;
-		}else {
-			CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,context.indexbatch2DPtr*4,context.indexbatchr2D);
-			
-		}
-	}
-	if(isitChanged){
-		RegenrateVetexArray(&context.VAO_2D);
-		CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
-		CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
-		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-		
-		CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-		CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
-		CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-		CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));	
-		
-	}
-	
-	
-	
-
-	
-
-	CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.indexbatch2DPtr, GL_UNSIGNED_INT, nullptr));
-
-	context.indexbatch2DPtr=0;
-	context.vertexbatch2DPtr=0;
-	context.isVertex2DChanged=false;
-	context.isIndex2DChanged=false;
+void TickNewFrame_ctx(TickContext* context){
+	context->indexbatch2DPtr=0;
+	context->vertexbatch2DPtr=0;
+	context->isVertex2DChanged=false;
+	context->isIndex2DChanged=false;
 	return;
+
 }
