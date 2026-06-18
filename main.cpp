@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -17,7 +18,7 @@
 #include "externel/imgui/imgui_impl_opengl3.h"
 #include "include/tick-tack-to/basics.h"
 #include "utils.hpp"
-#include "src/utils.h""
+#include "src/utils.h"
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
 
@@ -70,7 +71,6 @@ void GoodOldTesting(){
 	return;
 }
 
-
 int main(){
 	/****************************Init*************************/
 	if(!glfwInit()){
@@ -82,33 +82,25 @@ int main(){
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 	
-	GLFWwindow* window[2];//"windows" is a name that remamber me of a painful era of my life, what a painful 3 monthes befure switching to linux
-	TickContext ticontext[2];
-	
-	window[0] = glfwCreateWindow(800, 600, "window1", NULL, NULL);
-	glfwMakeContextCurrent(window[0]);
-	window[1] = glfwCreateWindow(800, 600, "window2", NULL, NULL);
-	glfwMakeContextCurrent(window[1]);
-	GlewInit();
-
-
-	ticontext[0]=TickInit();
-	//ticontext[1]=TickInit();
+	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
+	glfwMakeContextCurrent(window);
 	//GlewInit();
-	//GLFWwindow[0]* window2 = CreatWindow("window2", 800, 600);
+	//GLFWwindow* window2 = CreatWindow("window2", 800, 600);
+	GlewInit();
 	
-	
+
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	ImGuiInit(window[0]);
-
-	//TickContext window[0]2TickContex= TickInit();
+	ImGuiInit(window);
+	TickInit();
+	TickContext window1TickContex= TickInit();	
+	//TickContext window2TickContex= TickInit();
 	/**********************************************************/
 	
 	int pw,ph ;
-	glfwGetFramebufferSize(window[0], &pw, &ph);
+	glfwGetFramebufferSize(window, &pw, &ph);
 	
 
 	//int shader = CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);	
@@ -121,9 +113,11 @@ int main(){
 	glm::mat4 trans= glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	glm::mat4 mv;
 
-	while(!glfwWindowShouldClose(window[0]) ){
-		ImGuiNewFrame();
+	while(!glfwWindowShouldClose(window) ){
 		
+		ImGuiNewFrame();
+		TickNewFrame();
+
 		ImGui::Begin("Hello TICK-TACK-TO");
 		
 		ImGui::Text("Hi, he , hallo, hi");
@@ -134,61 +128,54 @@ int main(){
 		
 		ImGui::Render();
 		
-		if(glfwGetKey(window[0], GLFW_KEY_RIGHT) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
 			x+=0.05;
 		}
-		if(glfwGetKey(window[0], GLFW_KEY_LEFT) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
 			x-=0.05;
 		}
-		if(glfwGetKey(window[0], GLFW_KEY_UP) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
 			y+=0.05;
 			if(yp1>0.0){
 				yp1-=5.0;
 			}
 		}
-		if(glfwGetKey(window[0], GLFW_KEY_DOWN) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 			if(yp1+50.0<=(float)ph){
 				yp1+=5.0;
 			}
 		}
-		if(glfwGetKey(window[0], GLFW_KEY_Q) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
 			if(yp2+50.0<=(float)ph){
 				yp2+=5.0;
 			}
 		}
-		if(glfwGetKey(window[0], GLFW_KEY_A) == GLFW_PRESS){
+		if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
 			if(yp2>0.0){
 				yp2-=5.0;
 			}
 		}
-		TickNewFrame();		
-		//DrawLine_ctx({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255},&window[0]1TickContex);
-		DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
+			
+		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
+		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
 		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
-		//DrawCercel_ctx((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255},&window[0]1TickContex);
+		//DrawCercel_ctx((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255},&window1TickContex);
 	
 
-
-		glfwMakeContextCurrent(window[0]);
-		TickRendre(window[0]);
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		glfwSwapBuffers(window[0]);
+		glfwMakeContextCurrent(window);
+		TickRendre(window);
+		//TickRendre_ctx(window,&window1TickContex);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		glfwMakeContextCurrent(window[1]);
-		glfwSwapBuffers(window[1]);
-		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-	
 
 	
 	}
 	ImGuiStop();
 	glfwTerminate();
 }
-
 
 
 

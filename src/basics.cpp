@@ -1,4 +1,3 @@
-#include "basics.hpp"
 #include "indexbuff.h"
 #include "shader.h"
 #include "utils.h"
@@ -41,22 +40,6 @@ std::atomic<bool> g_defultContextIsAlreadySet;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 TickContext TickInit(){
 	loge("TICK INIT ...");
 	std::cout << sizeof(VertexFlags);
@@ -78,10 +61,11 @@ TickContext TickInit(){
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
 	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));
-		
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
 	context.vertexbatch2DSize=0x1000;
 	context.vertexbatchr2D = (float*)malloc(0x1000);
 	context.vertexbatch2DPtr=0;
@@ -100,6 +84,11 @@ TickContext TickInit(){
 	loge("TICK INIT .");
 	return context;
 }
+
+
+
+
+
 
 
 
@@ -196,21 +185,25 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,Tic
 									 //  |   |
 									 // v3"""v4
 {
-
+	VertexFlags flags;
+	flags.Practicul=VERTFG_TRINGELS;
+	flags.Enbletextures=false;
+	flags.textureSlot=0;
+	
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,
-		v2.x,v2.y,*(float*)&c,
-		v3.x,v3.y,*(float*)&c,
-		v4.x,v4.y,*(float*)&c
+		v1.x,v1.y,*(float*)&c,*(float*)&flags,
+		v2.x,v2.y,*(float*)&c,*(float*)&flags,
+		v3.x,v3.y,*(float*)&c,*(float*)&flags,
+		v4.x,v4.y,*(float*)&c,*(float*)&flags,
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd(verteces, 12, indeces, 6, ctx);
+	BatcheRendrerAdd(verteces, sizeof(verteces)/sizeof(float), indeces, 6, ctx);
 }
 void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 {
@@ -439,6 +432,7 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 
 void TickRendre(GLFWwindow* window){
 	TickRendre_ctx(window, &g_defultContext);
+
 	return;
 }
 
@@ -465,7 +459,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		return;
 	}
 	
-	CHECK_GL_ERORR(glUseProgram(context.Shader2D));
+	CHECK_GL_ERORR(glUseProgram(ctx->Shader2D));
 	
 	//if the window changed, update the mvp
 	int window_w=0, window_h=0;
@@ -513,10 +507,13 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
 		
 		CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-		CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,3*sizeof(float),0));
+		CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
 		CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-		CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,3*sizeof(float),(void*)8));	
+		CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));	
+		CHECK_GL_ERORR(glEnableVertexAttribArray(2));
+		CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
 		
+
 	}
 	
 	
@@ -527,10 +524,6 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	
 	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.indexbatch2DPtr, GL_UNSIGNED_INT, nullptr));
 
-	context.indexbatch2DPtr=0;
-	context.vertexbatch2DPtr=0;
-	context.isVertex2DChanged=false;
-	context.isIndex2DChanged=false;
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){
