@@ -12,7 +12,7 @@ flat out uint flags;
 out vec4 cercelPosX;
 out vec4 cercelPosY;
 out float Raduce;
-
+out vec4 pos;
 
 uniform mat4 u_MVP;
 

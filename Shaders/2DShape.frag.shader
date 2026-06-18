@@ -9,7 +9,7 @@ flat in uint flags;
 in vec4 cercelPosX;
 in vec4 cercelPosY;
 in float Raduce;
-
+in vec4 pos;
 
 
 
@@ -30,14 +30,15 @@ void main(){
 	
 	vec4 color;
 		
-	if( (Flags & 0xfu) == uint(1)){//a cercul
+	/*if( (flags & 0xfu) == uint(1)){//a cercul
 		vec4 cercul;
-		if(gl_Position.x > 2.0){}
-	}
-	if( (Flags & 0x10u) == uint(1)){// it is a texture
+		//if(gl_Position.x > 2.0){}
 		
 	}
-	else{
-		outcl =vec4(r,g,b,a);
-	}
+	if( (flags & 0x10u) == uint(1)){// it is a texture
+		return;	
+	}*/
+	
+	outcl =vec4(r,g,b,a);
+	
 }
