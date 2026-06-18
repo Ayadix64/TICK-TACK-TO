@@ -13,6 +13,12 @@ in float Raduce;
 
 
 
+/*flags bit structure
+	|0123|  -> Praticul
+	|4|     -> texture Enbled
+	|56789| -> texture slot
+	|10->31| ->reseved
+*/
 
 
 
@@ -22,5 +28,16 @@ void main(){
 	float b = float((color>>8)&0xffu)/255.0;
 	float a = float(color&0xffu)/255.0;
 	
-	outcl =vec4(r,g,b,a);
+	vec4 color;
+		
+	if( (Flags & 0xfu) == uint(1)){//a cercul
+		vec4 cercul;
+		if(gl_Position.x > 2.0){}
+	}
+	if( (Flags & 0x10u) == uint(1)){// it is a texture
+		
+	}
+	else{
+		outcl =vec4(r,g,b,a);
+	}
 }

@@ -1,4 +1,3 @@
-#include "indexbuff.h"
 #include "utils.h"
 #include "vertexarray.h"
 

@@ -1,7 +1,5 @@
 #include "batch.hpp"
-#include "indexbuff.h"
 #include "utils.h"
-#include "vertexbuff.h"
 #include <cstdlib>
 #include <cstring>
 
