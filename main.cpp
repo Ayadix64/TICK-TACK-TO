@@ -162,7 +162,7 @@ int main(){
 
 		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
 		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
-		//DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
 	
 
 		glfwMakeContextCurrent(window);

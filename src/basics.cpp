@@ -38,6 +38,21 @@ std::atomic<bool> g_defultContextIsAlreadySet;
 
 
 
+void  GenrateAttribute2DShape(u32 vao, u32 vb, u32 ib){
+	CHECK_GL_ERORR(glBindVertexArray(vao));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
+	
+	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
+	
+	
+}
+
 
 
 
@@ -56,17 +71,7 @@ TickContext TickInit(){
 	context.IndexBuffer2D=GenIndexBuff(nullptr, 0);
 	context.IndexBuffer2DSize=0;
 		
-	
-	CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-	
-	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
-	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));
-	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
+	GenrateAttribute2DShape(context.VAO_2D, context.VertexBuffer2D, context.IndexBuffer2D);
 	context.vertexbatch2DSize=0x1000;
 	context.vertexbatchr2D = (float*)malloc(0x1000);
 	context.vertexbatch2DPtr=0;
@@ -315,10 +320,10 @@ void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		x+r,y+r,*(float*)&c,*(float*)&flage,
-		x+r,y-r,*(float*)&c,*(float*)&flage,
-		x-r,y+r,*(float*)&c,*(float*)&flage,
-		x-r,y-r,*(float*)&c,*(float*)&flage
+		x+r,y+r,*(float*)&c,0,*(float*)&flage,
+		x+r,y-r,*(float*)&c,1,*(float*)&flage,
+		x-r,y+r,*(float*)&c,2,*(float*)&flage,
+		x-r,y-r,*(float*)&c,3,*(float*)&flage
 	};
 
 	BatcheRendrerAdd(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32), ctx);
@@ -409,18 +414,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	if(isitChanged){
 		RegenrateVetexArray(&context.VAO_2D);
-		CHECK_GL_ERORR(glBindVertexArray(context.VAO_2D));
-		CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.VertexBuffer2D));
-		CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.IndexBuffer2D));
-		
-		CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-		CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
-		CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-		CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));	
-		CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-		CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
-		
-
+		GenrateAttribute2DShape(context.VAO_2D, context.VertexBuffer2D, context.IndexBuffer2D);
 	}
 	
 	
@@ -447,6 +441,8 @@ void TickClose(){
 		free(g_defultContext.indexbatchr2D);
 		free(g_defultContext.vertexbatchr2D);
 		g_defultContextIsAlreadySet=false;
+	}else {
+		Eloge("Tick never init to close");
 	}
 }
 
