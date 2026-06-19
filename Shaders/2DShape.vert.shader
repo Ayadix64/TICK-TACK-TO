@@ -20,7 +20,7 @@ uniform mat4 u_MVP;
 
 void main(){
 	gl_Position=u_MVP*position;
-	
+	pos=gl_Position;
 	if( (Flags & 0xfu) == uint(1)){
 		/*do somthing potansly cool*/
 		if((startID)==uint(0)){
@@ -42,4 +42,5 @@ void main(){
 	}
 	flags=Flags;
 	color=inColor;
+
 }

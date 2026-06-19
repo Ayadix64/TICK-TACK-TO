@@ -129,18 +129,19 @@ int main(){
 		ImGui::Render();
 		
 		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-			x+=0.05;
+			x+=5.0f;
 		}
 		if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-			x-=0.05;
+			x-=5.0f;
 		}
 		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-			y+=0.05;
+			y-=5.0f;
 			if(yp1>0.0){
 				yp1-=5.0;
 			}
 		}
 		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+			y+=5.0f;
 			if(yp1+50.0<=(float)ph){
 				yp1+=5.0;
 			}
@@ -157,8 +158,10 @@ int main(){
 		}
 			
 		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
-		DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
-		DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
+		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
+
+		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
+		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
 		//DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
 	
 
