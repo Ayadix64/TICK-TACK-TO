@@ -329,7 +329,8 @@ CMakeFiles/main.dir/src/basics.cpp.o: \
  /home/Ayadi/Projects/TIC-TACK-TO/src/vertexbuff.h \
  /home/Ayadi/Projects/TIC-TACK-TO/src/vertexarray.h \
  /home/Ayadi/Projects/TIC-TACK-TO/src/shaders.hpp \
- /usr/include/c++/16.1.1/atomic \
+ /usr/include/c++/16.1.1/cstring /usr/include/string.h \
+ /usr/include/strings.h /usr/include/c++/16.1.1/atomic \
  /usr/include/c++/16.1.1/bits/atomic_base.h \
  /usr/include/c++/16.1.1/bits/atomic_lockfree_defines.h \
  /usr/include/glm/gtc/matrix_transform.hpp \
