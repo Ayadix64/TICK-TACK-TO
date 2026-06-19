@@ -95,7 +95,7 @@ TickContext TickInit(){
 
 void BatcheRendrerAdd(float* vetex , u32 vcount , u32* index, u32 icount , TickContext* context){
 	BatchRendringAddIndex(&context->indexbatchr2D, &context->indexbatch2DSize, &context->indexbatch2DPtr, &context->isIndex2DChanged,
-		 index, icount, context->vertexbatch2DPtr, 3);
+		 index, icount, context->vertexbatch2DPtr, 4);
 	BatchRendringAddVertex(&context->vertexbatchr2D,&context->vertexbatch2DSize , &context->vertexbatch2DPtr, &context->isVertex2DChanged 
 			, vetex, vcount);
 	return;
@@ -116,7 +116,7 @@ void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl)
 
 
 void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl){
-	float offsetFromeTheSenter = thicknis/2.0f;//we ant the center line to be align with the line that the user want
+	/*float offsetFromeTheSenter = thicknis/2.0f;//we ant the center line to be align with the line that the user want
 	if(v1.y == v2.y && v1.x == v2.x){
 		return;//wont draw any way lol
 	}else if(v1.y==v2.y){
@@ -130,8 +130,8 @@ void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl){
 		float x_ = sqrtf((offsetFromeTheSenter*offsetFromeTheSenter)/(a*a+1.0)) ;//with some maths, and some deep think, l plk sio ak opopjr ,jdn :kdll k [Segmentation Fult (core dump)]
 		float y_ = x_*a ; //the y is bascily f(x);
 		DrawQuadrilateral({v1.x-x_,v1.y-y_}, {v2.x-x_,v2.y-y_}, {v1.x+x_,v1.y+y_} , {v2.x+x_,v2.y+y_},  cl);
-	}
-	
+	}*/
+	DrawLine_ctx( v1,  v2,  thicknis,  cl, &g_defultContext);
 	return;	
 }
 
@@ -287,17 +287,21 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl,TickContext* ctx){
-	float* Vertex = (float*)malloc((Vertecount*3)*sizeof(float));
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+
+
+	float* Vertex = (float*)malloc((Vertecount*4)*sizeof(float));
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*3]=verteces[i].x;
-		Vertex[i*3+1]=verteces[i].y;
-		Vertex[i*3+2]=*(float*)&c;
+		Vertex[i*4]=verteces[i].x;
+		Vertex[i*4+1]=verteces[i].y;
+		Vertex[i*4+2]=*(float*)&c;
+		Vertex[i*4+3]=*(float*)&flage;
 	}
 
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
-	BatcheRendrerAdd(Vertex, Vertecount*3, indeces, Indexcont, ctx);
+	BatcheRendrerAdd(Vertex, Vertecount*4, indeces, Indexcont, ctx);
 	free(Vertex);
 	return;
 }

@@ -21,7 +21,7 @@ static const char* g_2DShape_vertexshader =
 	"\n"
 	"void main(){\n"
 	"	gl_Position=u_MVP*position;\n"
-	"	\n"
+	"	pos=gl_Position;\n"
 	"	if( (Flags & 0xfu) == uint(1)){\n"
 	"		/*do somthing potansly cool*/\n"
 	"		if((startID)==uint(0)){\n"
@@ -43,6 +43,7 @@ static const char* g_2DShape_vertexshader =
 	"	}\n"
 	"	flags=Flags;\n"
 	"	color=inColor;\n"
+	"\n"
 	"}\n"
 	;
 
