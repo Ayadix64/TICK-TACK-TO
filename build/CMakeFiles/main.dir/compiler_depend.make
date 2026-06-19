@@ -1971,6 +1971,7 @@ CMakeFiles/main.dir/src/basics.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/src/basic
   /usr/include/c++/16.1.1/cstdint \
   /usr/include/c++/16.1.1/cstdio \
   /usr/include/c++/16.1.1/cstdlib \
+  /usr/include/c++/16.1.1/cstring \
   /usr/include/c++/16.1.1/cwchar \
   /usr/include/c++/16.1.1/cwctype \
   /usr/include/c++/16.1.1/debug/assertions.h \
@@ -2198,6 +2199,8 @@ CMakeFiles/main.dir/src/basics.cpp.o: /home/Ayadi/Projects/TIC-TACK-TO/src/basic
   /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
   /usr/include/sys/single_threaded.h \
