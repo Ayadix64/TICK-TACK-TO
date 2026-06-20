@@ -2,42 +2,34 @@
 layout(location=0) in vec4 position;
 layout(location=1) in uint inColor;
 layout(location=2) in uint Flags;
-layout(location=3) in uint startID;
+layout(location=3) in vec4 location3; // cneter of the cercul / texture 
+// so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs
 
 //out pos;
 flat out uint color;
 flat out uint flags;
 
-out vec4 cercelPosX;
-out vec4 cercelPosY;
 out vec4 pos;
 
 uniform mat4 u_MVP;
 
+vec2 Rotate(vec2 pos,vec2 center,float theta){
+	float raduian=(theta*3.14159)/(180.0);
+	float X = pos.x-center.x;
+	float Y = pos.y-center.y;
+	pos.x=center.x+X*cos(raduian)-Y*sin(raduian);
+	pos.y=center.y+X*sin(raduian)+Y*cos(raduian);
+	return pos;
+}
 
 
 void main(){
+	if( (Flags & 0xfu) == uint(1)){
+		position = Rotate(position.xy,location3.xy,location3.z); // the thread float of 'location3' will hold the theta
+	}
 	gl_Position=u_MVP*position;
 	pos=position;
-	if( (Flags & 0xfu) == uint(1)){
-		/*do somthing potansly cool*/
-		if((startID)==uint(0)){
-			cercelPosX.x=200.0;
-			cercelPosY.x=200.0;
-		}
-		else if((startID)==uint(1)){
-			cercelPosX.y=200.0;
-			cercelPosY.y=400.0;
-		}
-		else if((startID)==uint(3)){
-			cercelPosX.z=400.0;
-			cercelPosY.z=200.0;
-		}
-		else if((startID)==uint(4)){
-			cercelPosX.w=400.0;
-			cercelPosY.w=400.0;
-		}
-	}
+	
 	flags=Flags;
 	color=inColor;
 
