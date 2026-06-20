@@ -1,3 +1,0 @@
-/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles/main.dir
-/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles/edit_cache.dir
-/home/Ayadi/Projects/TIC-TACK-TO/build/CMakeFiles/rebuild_cache.dir

@@ -31,6 +31,7 @@ typedef struct {
 	u32 window_w,window_h;
 	int Shader2D;
 	TickRendrerStruct Shape2D;
+	TickRendrerStruct ShapeCir2D;
 	int uniform2DMvp;
 
 }TickContext;
