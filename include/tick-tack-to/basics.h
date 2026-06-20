@@ -6,27 +6,31 @@
 #include <GLFW/glfw3.h>
 
 
+
+typedef struct{
+	u32 VAO;
+	u32 VertexBuffer;
+	u32 VertexBufferSize;
+	u32 IndexBuffer;
+	u32 IndexBufferSize;
+	
+	float* vertexbatchr;
+	u32 vertexbatchPtr;
+	u32 vertexbatchSize;
+	char isVertexChanged;
+
+	u32  * indexbatchr;
+	u32 indexbatchPtr;
+	u32 indexbatchSize;
+	char isIndexChanged;
+
+}TickRendrerStruct;
+
+
 typedef struct {
-	
 	u32 window_w,window_h;
-
 	int Shader2D;
-	u32 VAO_2D;
-	u32 VertexBuffer2D;
-	u32 VertexBuffer2DSize;
-	u32 IndexBuffer2D;
-	u32 IndexBuffer2DSize;
-	
-	float* vertexbatchr2D;
-	u32 vertexbatch2DPtr;
-	u32 vertexbatch2DSize;
-	char isVertex2DChanged;
-
-	u32  * indexbatchr2D;
-	u32 indexbatch2DPtr;
-	u32 indexbatch2DSize;
-	char isIndex2DChanged;
-	
+	TickRendrerStruct Shape2D;
 	int uniform2DMvp;
 
 }TickContext;
