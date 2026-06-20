@@ -44,17 +44,45 @@ void  GenrateAttribute2DShape(u32 vao, u32 vb, u32 ib){
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
 	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,5*sizeof(float),0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,5*sizeof(float),(void*)8));
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));
 	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,5*sizeof(float),(void*)12));	
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
+}
+
+void  GenrateAttribute2DCirShape(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
+	CHECK_GL_ERORR(glBindVertexArray(vao));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
+	
+	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,7*sizeof(float),0));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)8));
+	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)12));	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
-	CHECK_GL_ERORR(glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,5*sizeof(float),(void*)16));	
+	CHECK_GL_ERORR(glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)16));	
 	
 }
 
+void InitlizeRendrer(TickRendrerStruct* rendrer){
+	rendrer->VAO = GenVertexArray();
+	rendrer->VertexBuffer=GenVertexBuffer(NULL, 0);
+	rendrer->IndexBuffer =GenIndexBuff(NULL, 0 );
+	rendrer->VertexBufferSize=0;
+	rendrer->IndexBufferSize=0;
 
+	rendrer->vertexbatchSize=0x1000;
+	rendrer->vertexbatchPtr=0;
+	rendrer->vertexbatchr=(float*)malloc(0x1000);
+	
+	rendrer->indexbatchSize=0x1000;
+	rendrer->indexbatchPtr=0;
+	rendrer->indexbatchr=(u32*)malloc(0x1000);
+	return;
+}
 
 
 TickContext TickInit(){
@@ -66,20 +94,11 @@ TickContext TickInit(){
 	if(context.uniform2DMvp == -1){
 		Eloge("SHADER ERORR");
 	}
-	context.Shape2D.VAO = GenVertexArray();
-	context.Shape2D.VertexBuffer = GenVertexBuffer(nullptr, 0);
-	context.Shape2D.VertexBufferSize=0;
-	context.Shape2D.IndexBuffer=GenIndexBuff(nullptr, 0);
-	context.Shape2D.IndexBufferSize=0;
-		
+	InitlizeRendrer(&context.Shape2D);	
+	InitlizeRendrer(&context.ShapeCir2D);
 	GenrateAttribute2DShape(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
-	context.Shape2D.vertexbatchSize=0x1000;
-	context.Shape2D.vertexbatchr = (float*)malloc(0x1000);
-	context.Shape2D.vertexbatchPtr=0;
+	GenrateAttribute2DCirShape(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
 
-	context.Shape2D.indexbatchSize=0x1000;
-	context.Shape2D.indexbatchr = (u32*)malloc(0x1000);
-	context.Shape2D.indexbatchPtr=0;
 	
 	context.window_w=0;
 	context.window_h=0;
@@ -104,11 +123,12 @@ void BatcheRendrerAdd2DShape(float* vetex , u32 vcount , u32* index, u32 icount 
 			&context->Shape2D.indexbatchSize,
 			&context->Shape2D.indexbatchPtr,
 			&context->Shape2D.isIndexChanged,
-		 	index, icount, context->Shape2D.vertexbatchPtr, 5);
+		 	index, icount, context->Shape2D.vertexbatchPtr, 4);
 	BatchRendringAddVertex(&context->Shape2D.vertexbatchr,&context->Shape2D.vertexbatchSize , &context->Shape2D.vertexbatchPtr, &context->Shape2D.isVertexChanged 
 			, vetex, vcount);
 	return;
 }
+
 
 
 
@@ -183,9 +203,9 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	float verteces[]{
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,0
+		v1.x,v1.y,*(float*)&c,*(float*)&flage,
+		v2.x,v2.y,*(float*)&c,*(float*)&flage,
+		v3.x,v3.y,*(float*)&c,*(float*)&flage,
 	};
 	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
 
@@ -226,10 +246,10 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,
-		v4.x,v4.y,*(float*)&c,*(float*)&flage,0
+		v1.x,v1.y,*(float*)&c,*(float*)&flage,
+		v2.x,v2.y,*(float*)&c,*(float*)&flage,
+		v3.x,v3.y,*(float*)&c,*(float*)&flage,
+		v4.x,v4.y,*(float*)&c,*(float*)&flage,
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
@@ -250,11 +270,10 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*5]=verteces[i].x;
-		Vertex[i*5+1]=verteces[i].y;
-		Vertex[i*5+2]=*(float*)&c;
-		Vertex[i*5+3]=*(float*)&flage;
-		Vertex[i*5+4]=0;
+		Vertex[i*4]=verteces[i].x;
+		Vertex[i*4+1]=verteces[i].y;
+		Vertex[i*4+2]=*(float*)&c;
+		Vertex[i*4+3]=*(float*)&flage;
 	}
 	for(u32 i = 0 ; i < Vertecount ; i++){
 		indeces[i*3] = i;
@@ -294,7 +313,6 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 		Vertex[i*4+1]=verteces[i].y;
 		Vertex[i*4+2]=*(float*)&c;
 		Vertex[i*4+3]=*(float*)&flage;
-		Vertex[i*5+4]=0;
 	}
 
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
@@ -306,19 +324,13 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 
 void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl, TickContext* ctx){
 	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false,.textureSlot=0};
-	u32 indeces[6]{
-		0,1,2,
-		2,3,1
-	};
+	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
-	float verteces[]{ 
-		x+r,y+r,*(float*)&c,0,*(float*)&flage,0,
-		x+r,y-r,*(float*)&c,1,*(float*)&flage,1,
-		x-r,y+r,*(float*)&c,2,*(float*)&flage,2,
-		x-r,y-r,*(float*)&c,3,*(float*)&flage,3
-	};
+	
+	float verteces[5];
 
-	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32), ctx);
+
+//	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32), ctx);
 
 	return;
 
@@ -349,7 +361,7 @@ void TickNewFrame(){
 
 
 
-void regenRendrerData(TickRendrerStruct* rendr){
+bool regenRendrerData(TickRendrerStruct* rendr){
 	bool isitChanged = true;
 	if(rendr->isVertexChanged){
 		if(rendr->vertexbatchPtr*sizeof(float)>rendr->VertexBufferSize){
@@ -376,10 +388,7 @@ void regenRendrerData(TickRendrerStruct* rendr){
 			
 		}
 	}
-	if(isitChanged){
-		RegenrateVetexArray(&rendr->VAO);
-		GenrateAttribute2DShape(rendr->VAO, rendr->VertexBuffer, rendr->IndexBuffer);
-	}
+	return isitChanged;
 
 }
 
@@ -405,11 +414,17 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		context.window_h=window_h;
 	}
 
-	static int points=0; 
 	
-	regenRendrerData(&context.Shape2D);
-		
-	
+	bool shapeChanged =  regenRendrerData(&context.Shape2D);
+	bool circChanged  = regenRendrerData(&context.ShapeCir2D);	
+	if(shapeChanged){
+		RegenrateVetexArray(&context.Shape2D.VAO);
+		GenrateAttribute2DShape(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
+	}
+	if(circChanged){
+		RegenrateVetexArray(&context.ShapeCir2D.VAO);
+		GenrateAttribute2DShape(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
+	}
 
 	CHECK_GL_ERORR(glBindVertexArray(context.Shape2D.VAO));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.Shape2D.VertexBuffer));
@@ -424,6 +439,11 @@ void TickNewFrame_ctx(TickContext* context){
 	context->Shape2D.vertexbatchPtr=0;
 	context->Shape2D.isVertexChanged=false;
 	context->Shape2D.isIndexChanged=false;
+	
+	context->ShapeCir2D.indexbatchPtr=0;
+	context->ShapeCir2D.vertexbatchPtr=0;
+	context->ShapeCir2D.isVertexChanged=false;
+	context->ShapeCir2D.isIndexChanged=false;
 	return;
 }
 
