@@ -19,6 +19,7 @@
 #include "include/tick-tack-to/basics.h"
 #include "utils.hpp"
 #include "src/utils.h"
+#include <unistd.h>
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
 
@@ -108,7 +109,7 @@ int main(){
 	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
-	float segments = 1.0;
+	float segments = 100.0;
 	glm::mat4 proj; 
 	glm::mat4 trans= glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	glm::mat4 mv;
@@ -123,7 +124,7 @@ int main(){
 		ImGui::Text("Hi, he , hallo, hi");
 		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
 		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
-		ImGui::SliderFloat("steps", &segments, 1, 100);
+		ImGui::SliderFloat("steps", &segments, 1, 360);
 		ImGui::End();
 		
 		ImGui::Render();
@@ -162,7 +163,7 @@ int main(){
 
 		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
 		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
-		DrawCercel((float)pw/2.0, (float)ph/2, r, 1, {0,255,0,255});
+		DrawCercel((float)pw/2.0, (float)ph/2,/*sqrt((x-pw/2.0) * (x-pw/2.0) + (y-ph/2.0)*(y-ph/2.0))*/y, segments, {0,255,0,100});
 	
 
 		glfwMakeContextCurrent(window);
@@ -172,8 +173,7 @@ int main(){
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-
+		//usleep(1000000);
 	
 	}
 	ImGuiStop();

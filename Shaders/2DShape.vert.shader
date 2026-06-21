@@ -17,19 +17,19 @@ vec2 Rotate(vec2 pos,vec2 center,float theta){
 	float raduian=(theta*3.14159)/(180.0);
 	float X = pos.x-center.x;
 	float Y = pos.y-center.y;
-	pos.x=center.x+X*cos(raduian)-Y*sin(raduian);
-	pos.y=center.y+X*sin(raduian)+Y*cos(raduian);
-	return pos;
+	float posx=center.x+X*cos(raduian)-Y*sin(raduian);
+	float posy=center.y+X*sin(raduian)+Y*cos(raduian);
+	return vec2(posx,posy);
 }
 
 
 void main(){
+	vec4 posi = position;
 	if( (Flags & 0xfu) == uint(1)){
-		position = Rotate(position.xy,location3.xy,location3.z); // the thread float of 'location3' will hold the theta
+		posi= vec4(Rotate(position.xy,location3.xy,location3.z),position.zw); // the thread float of 'location3' will hold the theta
 	}
-	gl_Position=u_MVP*position;
-	pos=position;
-	
+	gl_Position=u_MVP*posi;
+	pos=posi;
 	flags=Flags;
 	color=inColor;
 
