@@ -113,7 +113,7 @@ int main(){
 	glm::mat4 proj; 
 	glm::mat4 trans= glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
 	glm::mat4 mv;
-
+	SetScale(0.5);
 	while(!glfwWindowShouldClose(window) ){
 		
 		ImGuiNewFrame();
@@ -159,11 +159,12 @@ int main(){
 		}
 			
 		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
+		DrawCircle(200.0f, 100.0f, 10, 20, {0,0,255,255});
 		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
 
 		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
 		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
-		DrawCercel((float)pw/2.0, (float)ph/2,/*sqrt((x-pw/2.0) * (x-pw/2.0) + (y-ph/2.0)*(y-ph/2.0))*/y, segments, {0,255,0,100});
+		DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
 
 		glfwMakeContextCurrent(window);

@@ -29,6 +29,7 @@ typedef struct{
 
 typedef struct {
 	u32 window_w,window_h;
+	float scaleX, scaleY;
 	int Shader2D;
 	TickRendrerStruct Shape2D;
 	TickRendrerStruct ShapeCir2D;
@@ -39,6 +40,20 @@ typedef struct {
 
 TickContext TickInit();
 
+
+
+void SetScaleX(float scale);
+void SetScaleY(float scale);
+void SetScaleXY( float scalex, float scaley);
+void SetScale( float scale);
+
+void SetScaleX_ctx(TickContext* ctx, float scale);//bascly sete the context->scaleX to wwhat ever your number
+void SetScaleY_ctx(TickContext* ctx, float scale);//the same thing
+void SetScaleXY_ctx(TickContext* ctx, float scalex, float scaley);//...
+void SetScale_ctx(TickContext* ctx, float scale);//...
+
+
+
 void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1___v2
 									  //  |   |
 									  //  |   |
@@ -48,7 +63,7 @@ void DrawRectangel(float x, float y , float w , float h,Vec4c cl);
 void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
-void DrawCercel(float x , float y , float r, float steps , Vec4c cl);
+void DrawCircle(float x , float y , float r, float steps , Vec4c cl);
 void TickNewFrame();
 void TickRendre(GLFWwindow* window);
 
@@ -59,7 +74,7 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,TickContext* ctx);
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
-void DrawCercel_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
+void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
 void TickNewFrame_ctx(TickContext* context);
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
 
