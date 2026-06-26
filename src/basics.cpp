@@ -1,10 +1,13 @@
 #include "indexbuff.h"
 #include "shader.h"
+#include "texture.hpp"
 #include "utils.h"
 #include "batch.hpp"
 #include "vertexbuff.h"
 #include "vertexarray.h"
 #include "shaders.hpp"
+#include <GL/gl.h>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdio>
@@ -13,7 +16,10 @@
 #include <atomic>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <string>
+#include <strings.h>
 
+#include "externel/stb_image.h"
 #include "../include/tick-tack-to/basics.h"
 
 #define debugy(x) std::cout<<"\n"<<#x<<" : " << x ;
@@ -28,8 +34,7 @@ typedef struct {float x,y;u32 c;} Vertex;
 typedef struct {
 	char Practicul:4;
 	bool Enbletextures:1;
-	char textureSlot:5;//0x1f = ignore
-	int rsv:22;
+	int rsv:27;
 }__attribute__((packed)) VertexFlags;
 
 
@@ -39,7 +44,7 @@ std::atomic<bool> g_defultContextIsAlreadySet;
 
 
 
-void  GenrateAttribute2DShape(u32 vao, u32 vb, u32 ib){
+void  GenrateAttribute(u32 vao, u32 vb, u32 ib){
 	CHECK_GL_ERORR(glBindVertexArray(vao));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
@@ -52,7 +57,7 @@ void  GenrateAttribute2DShape(u32 vao, u32 vb, u32 ib){
 	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
 }
 
-void  GenrateAttribute2DCirShape(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
+void  GenrateExtendedAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
 	CHECK_GL_ERORR(glBindVertexArray(vao));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
@@ -68,6 +73,22 @@ void  GenrateAttribute2DCirShape(u32 vao, u32 vb, u32 ib){ // yeah, circuls are 
 	
 }
 
+
+void  GenrateTextureAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
+	CHECK_GL_ERORR(glBindVertexArray(vao));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
+	
+	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
+	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,6*sizeof(float),0));//pos
+	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)8));//cl
+	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)12));	//flags
+	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
+	CHECK_GL_ERORR(glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)16));	// center + offset
+	
+}
 void InitlizeRendrer(TickRendrerStruct* rendrer){
 	rendrer->VAO = GenVertexArray();
 	rendrer->VertexBuffer=GenVertexBuffer(NULL, 0);
@@ -85,6 +106,42 @@ void InitlizeRendrer(TickRendrerStruct* rendrer){
 	return;
 }
 
+void ResetRendrer(TickRendrerStruct* rendrer){
+	rendrer->indexbatchPtr=0;
+	rendrer->vertexbatchPtr=0;
+	rendrer->isVertexChanged=false;
+	rendrer->isIndexChanged=false;
+	return;
+
+}
+
+void DeletRendrer(TickRendrerStruct* rendrer){
+	DeletVertexArray(&rendrer->VAO);
+	DeletVertexBuffer(&rendrer->VertexBuffer);
+	DeletIndexBuff(&rendrer->IndexBuffer);
+	
+	
+	CHECK_GL_ERORR(glBindVertexArray(0));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,0));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0));
+	if(rendrer->vertexbatchr){
+		free(rendrer->vertexbatchr);
+		rendrer->vertexbatchr=NULL;
+	}
+	if(rendrer->indexbatchr){
+		free(rendrer->indexbatchr);
+		rendrer->indexbatchr=NULL;
+	}
+	rendrer->indexbatchPtr=0;
+	rendrer->vertexbatchPtr=0;
+	rendrer->indexbatchSize=0;
+	rendrer->vertexbatchSize=0;
+	rendrer->isVertexChanged=false;
+	rendrer->isIndexChanged=false;
+	return;
+}
+
+
 
 TickContext TickInit(){
 	TickContext context;
@@ -95,14 +152,42 @@ TickContext TickInit(){
 		context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
 	}
 	context.uniform2DMvp = GetUniform("u_MVP", context.Shader2D);		
+
 	if(context.uniform2DMvp == -1){
 		Eloge("SHADER ERORR");
 	}
 	InitlizeRendrer(&context.Shape2D);
 	InitlizeRendrer(&context.ShapeCir2D);
-	GenrateAttribute2DShape(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
-	GenrateAttribute2DCirShape(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
+	GenrateAttribute(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
+	GenrateExtendedAttribute(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (int*)&context.maxTexturesSlotsSepurted);//geting the maximum texture slots per texture
+	if(context.maxTexturesSlotsSepurted > TICK_MAX_TEXTURE_SLOTS_SEPURTED){ 
+		context.maxTexturesSlotsSepurted=TICK_MAX_TEXTURE_SLOTS_SEPURTED;
+			Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use "
+			       +std::to_string(TICK_MAX_TEXTURE_SLOTS_SEPURTED)+" slots");
+	}
 
+	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
+		char textureN[20];
+		sprintf(textureN,"texture%d",i);
+		u32 text =GetUniform((const char*)textureN, context.Shader2D);
+		if(text!=-1){
+			glUniform1i(text,i);
+		}
+		//goood bruh in her
+	}
+	
+	debugy(context.maxTexturesSlotsSepurted);
+	
+	context.textureCount=0;
+	context.textures = (TickTextureRendrerStruct*)malloc(context.textureCount*(sizeof(TickTextureRendrerStruct)));//dost it make sense
+	/*for(int i =0 ; i <context.textureCount ; i++){
+
+		context.textures[i].slotsbp=0;
+		//ugly? shure! but this is the only way to keep track the user what texture he delet
+	}*/
+	context.texturesPtr=0;
+	
 	context.window_w=0;
 	context.window_h=0;
 	context.scaleX=1.0f;
@@ -231,7 +316,7 @@ void DrawCircle(float x , float y , float r, float steps , Vec4c cl){
 void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 {
 	
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	float verteces[]{
@@ -270,7 +355,7 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 
 void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, TickContext* ctx)
 {
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 	u32 indeces[6]{
 		0,1,2,
@@ -294,7 +379,7 @@ void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext
 
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 
 	float* Vertex = (float*)malloc((Vertecount*5)*sizeof(float));
@@ -334,7 +419,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl,TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false,.textureSlot=0};
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 
 
 	float* Vertex = (float*)malloc((Vertecount*5)*sizeof(float));
@@ -355,7 +440,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 
 
 void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false,.textureSlot=0};
+	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
@@ -386,11 +471,218 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 }
 
 
+/************************************** Textures ***************************************/
 
 
 
 
-/************************************** Rendrer ****************************************/
+u32 LoadTexture(void* bitmap,float w, float h, u32 bpp){
+	return LoadTexture_ctx(bitmap,w, h, bpp, &g_defultContext);
+}
+u32 LoadTextureFromeFile(const char * fileName){
+	return LoadTextureFromeFile_ctx(fileName, &g_defultContext);
+}
+void DrawTexture(u32 index,float x , float y , float w,  float h ){
+	DrawTexture_ctx(index, x, y, w,  h, &g_defultContext);
+	return;
+}
+void RemoveTexture(u32 index){
+	RemoveTexture_ctx(index, &g_defultContext);
+	return;
+}
+
+void ReloadTextureFromeFile(u32 index, const char* fileName){
+	ReloadTextureFromeFile_ctx(index, fileName, &g_defultContext);
+	return;
+}
+
+void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp ){
+	ReloadTexture_ctx(index, data, w, h, bpp, &g_defultContext);
+	return;
+}
+
+
+
+void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx){
+	
+	int texture = index/ctx->maxTexturesSlotsSepurted;
+	if(index==-1 || 
+	  texture >= ctx->texturesPtr ||
+	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<(index%ctx->maxTexturesSlotsSepurted))){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	int slot = index%ctx->maxTexturesSlotsSepurted;
+	printf("\nDrawing @ slot %d (index = %d)",slot,index);
+	u32 indeces[6]{
+		0,1,2,
+		2,3,1
+	};
+	float verteces[]{ 
+		x,y    , *(float*)&slot,*(float*)&flage,0.0f,0.0f, 
+		x,y+h  , *(float*)&slot,*(float*)&flage,0.0f,1.0f, 
+		x+w,y  , *(float*)&slot,*(float*)&flage,1.0f,0.0f,
+		x+w,y+h, *(float*)&slot,*(float*)&flage,1.0f,1.0f 
+	};
+	BatcheRendrerAdd2DShape(verteces, 28, indeces, 6,6,&ctx->textures[index/ctx->maxTexturesSlotsSepurted].rendrer);
+
+
+}
+
+
+
+u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
+	u32 textureNumber = -1;
+	u32 textureSlot=0;
+	for(int i = 0 ; i < ctx->texturesPtr ; i++){
+		if(ctx->textures[i].slotsbp < ~( (~textureSBitmap(0)) << (ctx->maxTexturesSlotsSepurted-1)))//minmaeing the proces of is ther is a free slot?
+		{
+			printf("\nYep ther is a evliable slot");
+			for(int ii = 0 ; ii < ctx->maxTexturesSlotsSepurted ; ii++){
+				if(!(ctx->textures[i].slotsbp & ((textureSBitmap)1 << ii))){
+					if(!ctx->textures[i].slotsbp){
+						ctx->textures[i].texture = GenTexture();
+						InitlizeRendrer(&ctx->textures[i].rendrer);
+					}
+					textureSlot=ii;
+					textureNumber=i;
+
+					break;
+				}
+			}
+			break;
+		}
+	}
+	if(textureNumber==-1){
+		if(ctx->textureCount<=ctx->texturesPtr+1){
+			ctx->textureCount+=50;
+			ctx->textures=(TickTextureRendrerStruct*)realloc(ctx->textures, ctx->textureCount*sizeof(TickTextureRendrerStruct));
+			
+		}
+		
+		textureNumber=ctx->texturesPtr;
+		ctx->textures[textureNumber].slotsbp=0;
+		ctx->textures[textureNumber].texture = GenTexture();
+		InitlizeRendrer(&ctx->textures[textureNumber].rendrer);
+		ctx->texturesPtr++;
+	}
+	
+	ctx->textures[textureNumber].slotsbp |= 1<<textureSlot;
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[textureNumber].texture));
+	glActiveTexture(GL_TEXTURE0+textureSlot);
+	//SetTextureData((u8*)bitmap, w, h, bpp);
+	glTexImage2D(GL_TEXTURE_2D, textureSlot,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)bitmap);
+
+	printf("\nTexture # %d @ slot %d is tooken (%d)",textureNumber,textureSlot,ctx->textures[textureNumber].slotsbp);
+	fflush(stdout);
+	return textureNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
+}
+
+
+
+
+
+u32 LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
+	int w,h,bpp;
+
+	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
+	if(!pb){
+		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		return -1;
+	}	
+
+	int index = LoadTexture_ctx(pb, w,h,  4, ctx);	
+	stbi_image_free(pb);
+	
+	return index;
+}
+
+
+
+void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx){
+	int texture = index/ctx->maxTexturesSlotsSepurted;
+	if(index==-1 || 
+	  (texture) >= ctx->texturesPtr ||
+	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
+
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
+	glActiveTexture(GL_TEXTURE0+textureSlot);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)data);
+
+
+	//SetTextureData((u8*)data, w, h, bpp);
+	return;
+}
+
+
+void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx){
+	int texture = index/ctx->maxTexturesSlotsSepurted;
+
+	if(index==-1 || 
+	  (texture) >= ctx->texturesPtr ||
+	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+
+	int w,h,bpp;
+	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
+	if(!pb){
+		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		return;
+	}
+	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
+	
+	glActiveTexture(GL_TEXTURE0+textureSlot);
+	SetTextureData((u8*)pb, w, h, 4);
+	stbi_image_free(pb);
+	return;
+}
+
+
+
+void RemoveTexture_ctx(u32 index, TickContext* ctx){
+	int texture = index/ctx->maxTexturesSlotsSepurted;
+	if(index==-1 || 
+	  (texture) >= ctx->texturesPtr ||
+	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+	u32 slot = index%ctx->maxTexturesSlotsSepurted;
+	ctx->textures[index].slotsbp ^= (textureSBitmap)1 << slot; 
+	
+	if(!ctx->textures[index].slotsbp){
+		CHECK_GL_ERORR(glDeleteTextures(1, &ctx->textures[index/ctx->maxTexturesSlotsSepurted].texture));
+		DeletRendrer(&ctx->textures[texture].rendrer);
+	}else{
+		glActiveTexture(GL_TEXTURE0+slot);
+		CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
+		int balnk = 0;
+		SetTextureData((u8*)&balnk, 1, 1, 4);
+
+	}
+	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 
+	//return a texture object becuse we want to use all the avliable slots for max profourmence
+	//it is a traide of betwen gpu profourmence and tiny system memory
+	//TODO: my be beter layout?
+	return;
+}
+
+
+
+
+
+/************************************** Rendrer  ****************************************/
+
+
+
 
 
 
@@ -407,6 +699,7 @@ void TickNewFrame(){
 	return;
 
 }
+
 
 
 
@@ -442,6 +735,53 @@ bool regenRendrerData(TickRendrerStruct* rendr){
 }
 
 
+void Render(TickRendrerStruct* rendrer){
+	bool rndChanged = regenRendrerData(rendrer);
+	if(rndChanged){
+		RegenrateVetexArray(&rendrer->VAO);
+		GenrateAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
+	}
+
+	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
+	
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+}
+void RenderExtended(TickRendrerStruct* rendrer){
+	bool rndChanged = regenRendrerData(rendrer);
+	if(rndChanged){
+		RegenrateVetexArray(&rendrer->VAO);
+		GenrateExtendedAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
+	}
+
+	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
+	
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+}
+void RenderTexture(TickTextureRendrerStruct*texture){
+	bool rndChanged = regenRendrerData(&texture->rendrer);
+	if(rndChanged){
+		RegenrateVetexArray(&texture->rendrer.VAO);
+		GenrateTextureAttribute(texture->rendrer.VAO, texture->rendrer.VertexBuffer, texture->rendrer.IndexBuffer);
+	}
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D,texture->texture));
+	CHECK_GL_ERORR(glBindVertexArray(texture->rendrer.VAO));
+	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,texture->rendrer.VertexBuffer));
+	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,texture->rendrer.IndexBuffer));
+	
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, texture->rendrer.indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+}
+
+
+
+
+
+
+
+
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	TickContext& context = *ctx;
 	
@@ -449,6 +789,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 		return;
 	}
+	
 	int usedShader ;
 	glGetIntegerv(GL_ACTIVE_PROGRAM,&usedShader);
 	if(usedShader!=ctx->Shader2D){
@@ -468,67 +809,35 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 
 	
-	bool shapeChanged =  regenRendrerData(&context.Shape2D);
-	bool circChanged  = regenRendrerData(&context.ShapeCir2D);	
-	if(shapeChanged){
-		RegenrateVetexArray(&context.Shape2D.VAO);
-		GenrateAttribute2DShape(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
+	Render(&context.Shape2D);
+	RenderExtended(&context.ShapeCir2D);	
+	for(int i = 0 ; i < (context.texturesPtr+context.maxTexturesSlotsSepurted-1) / context.maxTexturesSlotsSepurted ; i++){
+		RenderTexture(&context.textures[i]);
 	}
-	if(circChanged){
-		RegenrateVetexArray(&context.ShapeCir2D.VAO);
-		GenrateAttribute2DCirShape(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
-	}
-
-	CHECK_GL_ERORR(glBindVertexArray(context.Shape2D.VAO));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.Shape2D.VertexBuffer));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.Shape2D.IndexBuffer));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.Shape2D.indexbatchPtr, GL_UNSIGNED_INT, nullptr));
-		
-	CHECK_GL_ERORR(glBindVertexArray(context.ShapeCir2D.VAO));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,context.ShapeCir2D.VertexBuffer));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,context.ShapeCir2D.IndexBuffer));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, context.ShapeCir2D.indexbatchPtr, GL_UNSIGNED_INT, nullptr));
-	
-
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){
-	context->Shape2D.indexbatchPtr=0;
-	context->Shape2D.vertexbatchPtr=0;
-	context->Shape2D.isVertexChanged=false;
-	context->Shape2D.isIndexChanged=false;
-	
-	context->ShapeCir2D.indexbatchPtr=0;
-	context->ShapeCir2D.vertexbatchPtr=0;
-	context->ShapeCir2D.isVertexChanged=false;
-	context->ShapeCir2D.isIndexChanged=false;
+	ResetRendrer(&context->Shape2D);
+	ResetRendrer(&context->ShapeCir2D);
+	for(int i = 0 ; i < (context->texturesPtr+context->maxTexturesSlotsSepurted-1) / context->maxTexturesSlotsSepurted ; i++){
+		ResetRendrer(&context->textures[i].rendrer);
+	}
 	return;
 }
 
 
 void TickClose(){
-	if(g_defultContextIsAlreadySet){
-		free(g_defultContext.Shape2D.indexbatchr);
-		free(g_defultContext.Shape2D.vertexbatchr);
-		free(g_defultContext.ShapeCir2D.indexbatchr);
-		free(g_defultContext.ShapeCir2D.vertexbatchr);
-		g_defultContextIsAlreadySet=false;
-	}else {
+	if(!g_defultContextIsAlreadySet){
 		Eloge("Tick never init to close");
+		return;
 	}
+	g_defultContextIsAlreadySet=false;
+
 }
 
 
 void TickClose_ctx(TickContext* context){
-	if(!memcmp(context,&g_defultContext,sizeof(TickContext))){
-		TickClose();
-		return;
-	}else{
-		free(context->Shape2D.indexbatchr);
-		free(context->Shape2D.vertexbatchr);
-		free(context->ShapeCir2D.indexbatchr);
-		free(context->ShapeCir2D.vertexbatchr);
-	}
+
+	DeletRendrer(&context->Shape2D);	
+	DeletRendrer(&context->ShapeCir2D);
 }

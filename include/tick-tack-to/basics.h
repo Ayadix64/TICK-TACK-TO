@@ -6,7 +6,8 @@
 #include <GLFW/glfw3.h>
 
 
-
+#define TICK_MAX_TEXTURE_SLOTS_SEPURTED 32
+typedef u32 textureSBitmap ;//slots bitmap
 typedef struct{
 	u32 VAO;
 	u32 VertexBuffer;
@@ -26,6 +27,14 @@ typedef struct{
 
 }TickRendrerStruct;
 
+typedef struct {
+	u32 texture;
+	textureSBitmap slotsbp;//slots 128 bitmap
+	
+	TickRendrerStruct rendrer;
+
+} TickTextureRendrerStruct;
+
 
 typedef struct {
 	u32 window_w,window_h;
@@ -33,13 +42,18 @@ typedef struct {
 	int Shader2D;
 	TickRendrerStruct Shape2D;
 	TickRendrerStruct ShapeCir2D;
+
+	TickTextureRendrerStruct*textures;
+	u32 textureCount;
+	u32 texturesPtr;
+	u32 maxTexturesSlotsSepurted;
+
 	int uniform2DMvp;
 
 }TickContext;
 
 
 TickContext TickInit();
-
 
 
 void SetScaleX(float scale);
@@ -77,5 +91,22 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Ind
 void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
 void TickNewFrame_ctx(TickContext* context);
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
+
+
+
+u32 LoadTexture(void* bitmap,float w, float h, u32 bpp);
+u32 LoadTextureFromeFile(const char * fileName);
+void DrawTexture(u32 index,float x , float y , float w,  float h );
+void RemoveTexture(u32 index);
+void ReloadTextureFromeFile(u32 index, const char* fileName);
+void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp );
+
+
+u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx);
+u32 LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx);
+void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx);
+void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx);
+void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx);
+void RemoveTexture_ctx(u32 index, TickContext* ctx);
 
 #endif

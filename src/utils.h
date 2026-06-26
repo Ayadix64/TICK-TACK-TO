@@ -18,6 +18,8 @@
 
 #include <GLFW/glfw3.h>
 
+//#define TEXTURES_MAX_SLOT 32
+
 
 #define DEBUG_MODE //if you want to dosnt enter debug mod and save memory , comment this
 

@@ -2,14 +2,14 @@
 layout(location=0) in vec4 position;
 layout(location=1) in uint inColor;
 layout(location=2) in uint Flags;
-layout(location=3) in vec4 location3; // cneter of the cercul / texture 
+layout(location=3) in vec3 location3; // cneter of the cercul / texture 
 // so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs
 
 //out pos;
 flat out uint color;
 flat out uint flags;
-
 out vec4 pos;
+out vec2 texCoord;
 
 uniform mat4 u_MVP;
 
@@ -27,10 +27,13 @@ void main(){
 	vec4 posi = position;
 	if( (Flags & 0xfu) == uint(1)){
 		posi= vec4(Rotate(position.xy,location3.xy,location3.z),position.zw); // the thread float of 'location3' will hold the theta
+	}else if( (flags & 0x10u) > uint(0)){
+		texCoord = location3.xy;
 	}
 	gl_Position=u_MVP*posi;
 	pos=posi;
 	flags=Flags;
 	color=inColor;
+	
 
 }
