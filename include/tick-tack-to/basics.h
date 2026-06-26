@@ -28,9 +28,8 @@ typedef struct{
 }TickRendrerStruct;
 
 typedef struct {
-	u32 texture;
-	textureSBitmap slotsbp;//slots 128 bitmap
-	
+	u32 texture[TICK_MAX_TEXTURE_SLOTS_SEPURTED];
+		
 	TickRendrerStruct rendrer;
 
 } TickTextureRendrerStruct;
@@ -43,9 +42,9 @@ typedef struct {
 	TickRendrerStruct Shape2D;
 	TickRendrerStruct ShapeCir2D;
 
-	TickTextureRendrerStruct*textures;
-	u32 textureCount;
-	u32 texturesPtr;
+	TickTextureRendrerStruct* samplers;
+	u32 samplerCount;
+	u32 samplerPtr;
 	u32 maxTexturesSlotsSepurted;
 
 	int uniform2DMvp;
