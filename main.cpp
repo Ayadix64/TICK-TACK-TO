@@ -71,6 +71,20 @@ void GoodOldTesting(){
 	glDeleteBuffers(1,&ib);
 	return;
 }
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 
 int main(){
 	/****************************Init*************************/
@@ -89,11 +103,14 @@ int main(){
 	//GLFWwindow* window2 = CreatWindow("window2", 800, 600);
 	GlewInit();
 	
-
+	// During init, enable debug output
+	//glEnable              ( GL_DEBUG_OUTPUT );
+	//glDebugMessageCallback( MessageCallback, 0 );
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	ImGuiInit(window);
 	TickInit();
 	TickContext window1TickContex= TickInit();	
@@ -102,30 +119,42 @@ int main(){
 	
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
+		
 	
-
 	//int shader = CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);	
 	//glUseProgram(shader);
 	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
 	float segments = 100.0;
-	glm::mat4 proj; 
-	glm::mat4 trans= glm::translate(glm::mat4(1.0), {0.0,0.0,1.0});
-	glm::mat4 mv;
 	SetScale(0.5);
+	float scale = 1.0f;
+	u32 image[320*250];
+	
+	u32 ertheRise = LoadTextureFromeFile("NASA-Apollo8-Dec24-Earthrise.jpg");
+	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
+	u8 animation=0;
+	int adder=1;
 	while(!glfwWindowShouldClose(window) ){
-		
+		for(int i = 0 ; i < 250 ; i++ ){
+			for(int ii = 0 ; ii < 320 ; ii++){
+				int cl = ((i+animation)&0xff) << 24 | ((i+animation)&0xff) << 16 | ((animation+i)&0xff) << 8 | (i+animation)&0xff;
+				image[i*320+ii] = cl;
+			}
+		}
+		if(animation==255)adder=-1;
+		if(!animation)adder=1;
+		animation+=adder;
 		ImGuiNewFrame();
 		TickNewFrame();
 
 		ImGui::Begin("Hello TICK-TACK-TO");
 		
 		ImGui::Text("Hi, he , hallo, hi");
-		ImGui::SliderFloat("z", &z, 0.0f, 10.0f);
-		ImGui::SliderFloat("r1", &r, 0.0f, 360.0f);
 		ImGui::SliderFloat("steps", &segments, 1, 360);
+		ImGui::SliderFloat("Scale", &scale , 0.0f,10.0f);
 		ImGui::End();
+		SetScale(scale);
 		
 		ImGui::Render();
 		
@@ -157,15 +186,17 @@ int main(){
 				yp2-=5.0;
 			}
 		}
-			
+		
 		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
 		DrawCircle(200.0f, 100.0f, 10, 20, {0,0,255,255});
 		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
 
-		//DrawRectangel((float)pw-20.0, yp1, 10.0f+r, 50.0f+r, {255,0,0,255});
-		//DrawRectangel(0.0f, 0.0f, 100.0f, 100.0f, {255,0,0,255});
 		DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
+		DrawTexture(ertheRise, 60, 60, 600, 600);
+
+		DrawTexture(animatedTextutr, 60,300, 300, 600);
+		ReloadTexture(animatedTextutr, image, 320, 250, 4);
 
 		glfwMakeContextCurrent(window);
 		TickRendre(window);
