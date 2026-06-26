@@ -179,14 +179,14 @@ TickContext TickInit(){
 	
 	debugy(context.maxTexturesSlotsSepurted);
 	
-	context.textureCount=0;
-	context.textures = (TickTextureRendrerStruct*)malloc(context.textureCount*(sizeof(TickTextureRendrerStruct)));//dost it make sense
-	/*for(int i =0 ; i <context.textureCount ; i++){
+	context.samplerCount=0;
+	//context.textures = (TickTextureRendrerStruct*)malloc(context.samplerCount*(sizeof(TickTextureRendrerStruct)));//dost it make sense
+	/*for(int i =0 ; i <context.samplerCount ; i++){
 
 		context.textures[i].slotsbp=0;
 		//ugly? shure! but this is the only way to keep track the user what texture he delet
 	}*/
-	context.texturesPtr=0;
+	context.samplerPtr=0;
 	
 	context.window_w=0;
 	context.window_h=0;
@@ -505,16 +505,16 @@ void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp ){
 
 void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx){
 	
-	int texture = index/ctx->maxTexturesSlotsSepurted;
+	int sampler = index/ctx->maxTexturesSlotsSepurted;
+	int slot = index%ctx->maxTexturesSlotsSepurted;
 	if(index==-1 || 
-	  texture >= ctx->texturesPtr ||
-	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<(index%ctx->maxTexturesSlotsSepurted))){
+	  sampler >= ctx->samplerPtr ||
+	  !(ctx->samplers[sampler].texture[slot])){
 		Eloge("Unvaliad Texture");
 		return;
 	}
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
-	int slot = index%ctx->maxTexturesSlotsSepurted;
-	printf("\nDrawing @ slot %d (index = %d)",slot,index);
+	//printf("\nDrawing texture %d @ slot %d (index = %d)",sampler,slot,index);
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
@@ -525,7 +525,7 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 		x+w,y  , *(float*)&slot,*(float*)&flage,1.0f,0.0f,
 		x+w,y+h, *(float*)&slot,*(float*)&flage,1.0f,1.0f 
 	};
-	BatcheRendrerAdd2DShape(verteces, 28, indeces, 6,6,&ctx->textures[index/ctx->maxTexturesSlotsSepurted].rendrer);
+	BatcheRendrerAdd2DShape(verteces, 28, indeces, 6,6,&ctx->samplers[sampler].rendrer);
 
 
 }
@@ -533,50 +533,42 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 
 
 u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
-	u32 textureNumber = -1;
+	u32 samplerNumber = -1;
 	u32 textureSlot=0;
-	for(int i = 0 ; i < ctx->texturesPtr ; i++){
-		if(ctx->textures[i].slotsbp < ~( (~textureSBitmap(0)) << (ctx->maxTexturesSlotsSepurted-1)))//minmaeing the proces of is ther is a free slot?
-		{
-			printf("\nYep ther is a evliable slot");
-			for(int ii = 0 ; ii < ctx->maxTexturesSlotsSepurted ; ii++){
-				if(!(ctx->textures[i].slotsbp & ((textureSBitmap)1 << ii))){
-					if(!ctx->textures[i].slotsbp){
-						ctx->textures[i].texture = GenTexture();
-						InitlizeRendrer(&ctx->textures[i].rendrer);
-					}
-					textureSlot=ii;
-					textureNumber=i;
+	for(int i = 0 ; i < ctx->samplerPtr ; i++){
 
-					break;
-				}
+		printf("\nYep ther is a evliable slot");
+		for(int ii = 0 ; ii < ctx->maxTexturesSlotsSepurted ; ii++){
+			if(!ctx->samplers[i].texture[ii] ){
+				textureSlot=ii;
+				samplerNumber=i;
+				break;
 			}
-			break;
 		}
+		break;
 	}
-	if(textureNumber==-1){
-		if(ctx->textureCount<=ctx->texturesPtr+1){
-			ctx->textureCount+=50;
-			ctx->textures=(TickTextureRendrerStruct*)realloc(ctx->textures, ctx->textureCount*sizeof(TickTextureRendrerStruct));
+	if(samplerNumber==-1){
+		if(ctx->samplerCount<=ctx->samplerPtr+1){
+			ctx->samplerCount+=50;
+			ctx->samplers=(TickTextureRendrerStruct*)realloc(ctx->samplers, ctx->samplerCount*sizeof(TickTextureRendrerStruct));
 			
 		}
 		
-		textureNumber=ctx->texturesPtr;
-		ctx->textures[textureNumber].slotsbp=0;
-		ctx->textures[textureNumber].texture = GenTexture();
-		InitlizeRendrer(&ctx->textures[textureNumber].rendrer);
-		ctx->texturesPtr++;
+		samplerNumber=ctx->samplerPtr;
+		memset(ctx->samplers[samplerNumber].texture,0,sizeof(ctx->samplers[samplerNumber].texture));
+		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
+		ctx->samplerPtr++;
 	}
 	
-	ctx->textures[textureNumber].slotsbp |= 1<<textureSlot;
-	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[textureNumber].texture));
 	glActiveTexture(GL_TEXTURE0+textureSlot);
-	//SetTextureData((u8*)bitmap, w, h, bpp);
-	glTexImage2D(GL_TEXTURE_2D, textureSlot,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)bitmap);
+	ctx->samplers[samplerNumber].texture[textureSlot] = GenTexture();
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
+	SetTextureData((u8*)bitmap, w, h, bpp);
+	//glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)bitmap);
 
-	printf("\nTexture # %d @ slot %d is tooken (%d)",textureNumber,textureSlot,ctx->textures[textureNumber].slotsbp);
+	printf("\nTexture # %d @ slot %d is tooken ",samplerNumber,textureSlot);
 	fflush(stdout);
-	return textureNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
+	return samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
 }
 
 
@@ -601,31 +593,29 @@ u32 LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
 
 
 void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx){
-	int texture = index/ctx->maxTexturesSlotsSepurted;
+	int sampler = index/ctx->maxTexturesSlotsSepurted;
+	int slot = index%ctx->maxTexturesSlotsSepurted;
 	if(index==-1 || 
-	  (texture) >= ctx->texturesPtr ||
-	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+	   sampler >= ctx->samplerPtr ||
+	  !(ctx->samplers[sampler].texture[slot])){
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
-
-	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
-	glActiveTexture(GL_TEXTURE0+textureSlot);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)data);
-
-
-	//SetTextureData((u8*)data, w, h, bpp);
+	
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[slot]));
+	glActiveTexture(GL_TEXTURE0+slot);
+	SetTextureData((u8*)data, w, h, bpp);
 	return;
 }
 
 
 void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx){
-	int texture = index/ctx->maxTexturesSlotsSepurted;
-
+	int sampler = index/ctx->maxTexturesSlotsSepurted;
+	
+	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
 	if(index==-1 || 
-	  (texture) >= ctx->texturesPtr ||
-	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+	  sampler >= ctx->samplerPtr ||
+	  !ctx->samplers[sampler].texture[textureSlot]){
 		Eloge("Unvaliad Texture");
 		return;
 	}
@@ -636,9 +626,8 @@ void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ct
 		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
 		return;
 	}
-	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
-	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
 	
+	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[textureSlot]));
 	glActiveTexture(GL_TEXTURE0+textureSlot);
 	SetTextureData((u8*)pb, w, h, 4);
 	stbi_image_free(pb);
@@ -648,25 +637,29 @@ void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ct
 
 
 void RemoveTexture_ctx(u32 index, TickContext* ctx){
-	int texture = index/ctx->maxTexturesSlotsSepurted;
+	int sampler = index/ctx->maxTexturesSlotsSepurted;
+	
+	u32 slot = index%ctx->maxTexturesSlotsSepurted;
 	if(index==-1 || 
-	  (texture) >= ctx->texturesPtr ||
-	  !(ctx->textures[texture].slotsbp & textureSBitmap(1)<<index%ctx->maxTexturesSlotsSepurted)){
+	  sampler >= ctx->samplerPtr ||
+	  !ctx->samplers[sampler].texture[slot]){
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	u32 slot = index%ctx->maxTexturesSlotsSepurted;
-	ctx->textures[index].slotsbp ^= (textureSBitmap)1 << slot; 
 	
-	if(!ctx->textures[index].slotsbp){
-		CHECK_GL_ERORR(glDeleteTextures(1, &ctx->textures[index/ctx->maxTexturesSlotsSepurted].texture));
-		DeletRendrer(&ctx->textures[texture].rendrer);
-	}else{
-		glActiveTexture(GL_TEXTURE0+slot);
-		CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->textures[texture].texture));
-		int balnk = 0;
-		SetTextureData((u8*)&balnk, 1, 1, 4);
 
+	CHECK_GL_ERORR(glDeleteTextures(1, &ctx->samplers[sampler].texture[slot]));
+	ctx->samplers[sampler].texture[slot]=0;
+
+	u32 empty = false;
+	for(int i = 0 ; i < sizeof(ctx->samplers[sampler].texture) / sizeof(u32);++i){
+		empty|=ctx->samplers[sampler].texture[i]; 
+		if(empty)break;
+	};
+	
+
+	if(empty){
+		DeletRendrer(&ctx->samplers[sampler].rendrer);
 	}
 	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 
 	//return a texture object becuse we want to use all the avliable slots for max profourmence
@@ -748,6 +741,8 @@ void Render(TickRendrerStruct* rendrer){
 	
 	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
 }
+
+
 void RenderExtended(TickRendrerStruct* rendrer){
 	bool rndChanged = regenRendrerData(rendrer);
 	if(rndChanged){
@@ -761,13 +756,23 @@ void RenderExtended(TickRendrerStruct* rendrer){
 	
 	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
 }
+
+
 void RenderTexture(TickTextureRendrerStruct*texture){
 	bool rndChanged = regenRendrerData(&texture->rendrer);
 	if(rndChanged){
 		RegenrateVetexArray(&texture->rendrer.VAO);
 		GenrateTextureAttribute(texture->rendrer.VAO, texture->rendrer.VertexBuffer, texture->rendrer.IndexBuffer);
 	}
-	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D,texture->texture));
+	
+	for(int i = 0 ; i <  TICK_MAX_TEXTURE_SLOTS_SEPURTED; ++i){
+		if(texture->texture[i]){
+			glActiveTexture(GL_TEXTURE0+i);
+			CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D,texture->texture[i]));
+			printf("\nRendring slots# %d",i);
+		}
+	}
+		
 	CHECK_GL_ERORR(glBindVertexArray(texture->rendrer.VAO));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,texture->rendrer.VertexBuffer));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,texture->rendrer.IndexBuffer));
@@ -811,16 +816,16 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	
 	Render(&context.Shape2D);
 	RenderExtended(&context.ShapeCir2D);	
-	for(int i = 0 ; i < (context.texturesPtr+context.maxTexturesSlotsSepurted-1) / context.maxTexturesSlotsSepurted ; i++){
-		RenderTexture(&context.textures[i]);
+	for(int i = 0 ; i < context.samplerPtr ; i++){
+		RenderTexture(&context.samplers[i]);
 	}
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){
 	ResetRendrer(&context->Shape2D);
 	ResetRendrer(&context->ShapeCir2D);
-	for(int i = 0 ; i < (context->texturesPtr+context->maxTexturesSlotsSepurted-1) / context->maxTexturesSlotsSepurted ; i++){
-		ResetRendrer(&context->textures[i].rendrer);
+	for(int i = 0 ; i < context->samplerPtr ; i++){
+		ResetRendrer(&context->samplers[i].rendrer);
 	}
 	return;
 }

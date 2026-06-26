@@ -99,8 +99,6 @@ int main(){
 	
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
-	//GlewInit();
-	//GLFWwindow* window2 = CreatWindow("window2", 800, 600);
 	GlewInit();
 	
 	// During init, enable debug output
@@ -113,8 +111,6 @@ int main(){
 	
 	ImGuiInit(window);
 	TickInit();
-	TickContext window1TickContex= TickInit();	
-	//TickContext window2TickContex= TickInit();
 	/**********************************************************/
 	
 	int pw,ph ;
@@ -129,21 +125,28 @@ int main(){
 	float segments = 100.0;
 	SetScale(0.5);
 	float scale = 1.0f;
-	u32 image[320*250];
+	u32 image[320*255]{0xffffffff};
 	
 	u32 ertheRise = LoadTextureFromeFile("NASA-Apollo8-Dec24-Earthrise.jpg");
+	u32 otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
+	for(int i = 0 ; i < 255 ; i++ ){
+			for(int ii = 0 ; ii < 320 ; ii++){
+				int cl = ((i)&0xff) << 24 | ((i)&0xff) << 16 | ((i)&0xff) << 8 | (i)&0xff;
+				image[i*320+ii] = cl;
+			}
+		}
 	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
 	u8 animation=0;
 	int adder=1;
 	while(!glfwWindowShouldClose(window) ){
-		for(int i = 0 ; i < 250 ; i++ ){
+		for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
-				int cl = ((i+animation)&0xff) << 24 | ((i+animation)&0xff) << 16 | ((animation+i)&0xff) << 8 | (i+animation)&0xff;
+				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | ((abs((i+animation)-255/2)*2)&0xff) << 16 | ((abs((i+animation)-255/2)*2)&0xff) << 8 | (abs((i+animation)-255/2)*2)&0xff;
 				image[i*320+ii] = cl;
 			}
 		}
 		if(animation==255)adder=-1;
-		if(!animation)adder=1;
+		if(animation==0)adder=1;
 		animation+=adder;
 		ImGuiNewFrame();
 		TickNewFrame();
@@ -186,19 +189,21 @@ int main(){
 				yp2-=5.0;
 			}
 		}
+		DrawCircle(x, y,40.0, segments, {0,255,0,255});
+	
+		DrawTexture(ertheRise,x, y, 200, 200);
+
+		DrawTexture(otherertheRise, 0,0, 200, 200);
+		ReloadTexture(animatedTextutr, image, 320, 255, 4);
+
+		glfwMakeContextCurrent(window);
 		
 		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
 		DrawCircle(200.0f, 100.0f, 10, 20, {0,0,255,255});
 		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
 
-		DrawCircle(x, y,40.0, segments, {0,255,0,255});
-	
-		DrawTexture(ertheRise, 60, 60, 600, 600);
 
-		DrawTexture(animatedTextutr, 60,300, 300, 600);
-		ReloadTexture(animatedTextutr, image, 320, 250, 4);
 
-		glfwMakeContextCurrent(window);
 		TickRendre(window);
 		//TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
