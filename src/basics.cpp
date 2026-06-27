@@ -1,11 +1,8 @@
-#include "indexbuff.h"
-#include "shader.h"
-#include "texture.hpp"
+#include "core.h"
 #include "utils.h"
-#include "batch.hpp"
-#include "vertexbuff.h"
-#include "vertexarray.h"
-#include "shaders.hpp"
+#include "shaders.h"
+#include "render.h"
+
 #include <GL/gl.h>
 #include <cassert>
 #include <cmath>
@@ -44,105 +41,6 @@ std::atomic<bool> g_defultContextIsAlreadySet;
 
 
 
-void  GenrateAttribute(u32 vao, u32 vb, u32 ib){
-	CHECK_GL_ERORR(glBindVertexArray(vao));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
-	
-	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),0));
-	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)8));
-	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)12));	
-}
-
-void  GenrateExtendedAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
-	CHECK_GL_ERORR(glBindVertexArray(vao));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
-	
-	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,7*sizeof(float),0));//pos
-	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)8));//cl
-	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)12));	//flags
-	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
-	CHECK_GL_ERORR(glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)16));	// center + offset
-	
-}
-
-
-void  GenrateTextureAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a defrunt kinde of shape, how about that?
-	CHECK_GL_ERORR(glBindVertexArray(vao));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,vb));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
-	
-	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,6*sizeof(float),0));//pos
-	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)8));//cl
-	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)12));	//flags
-	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
-	CHECK_GL_ERORR(glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)16));	// center + offset
-	
-}
-void InitlizeRendrer(TickRendrerStruct* rendrer){
-	rendrer->VAO = GenVertexArray();
-	rendrer->VertexBuffer=GenVertexBuffer(NULL, 0);
-	rendrer->IndexBuffer =GenIndexBuff(NULL, 0 );
-	rendrer->VertexBufferSize=0;
-	rendrer->IndexBufferSize=0;
-
-	rendrer->vertexbatchSize=0x1000;
-	rendrer->vertexbatchPtr=0;
-	rendrer->vertexbatchr=(float*)malloc(0x1000);
-	
-	rendrer->indexbatchSize=0x1000;
-	rendrer->indexbatchPtr=0;
-	rendrer->indexbatchr=(u32*)malloc(0x1000);
-	return;
-}
-
-void ResetRendrer(TickRendrerStruct* rendrer){
-	rendrer->indexbatchPtr=0;
-	rendrer->vertexbatchPtr=0;
-	rendrer->isVertexChanged=false;
-	rendrer->isIndexChanged=false;
-	return;
-
-}
-
-void DeletRendrer(TickRendrerStruct* rendrer){
-	DeletVertexArray(&rendrer->VAO);
-	DeletVertexBuffer(&rendrer->VertexBuffer);
-	DeletIndexBuff(&rendrer->IndexBuffer);
-	
-	
-	CHECK_GL_ERORR(glBindVertexArray(0));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,0));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0));
-	if(rendrer->vertexbatchr){
-		free(rendrer->vertexbatchr);
-		rendrer->vertexbatchr=NULL;
-	}
-	if(rendrer->indexbatchr){
-		free(rendrer->indexbatchr);
-		rendrer->indexbatchr=NULL;
-	}
-	rendrer->indexbatchPtr=0;
-	rendrer->vertexbatchPtr=0;
-	rendrer->indexbatchSize=0;
-	rendrer->vertexbatchSize=0;
-	rendrer->isVertexChanged=false;
-	rendrer->isIndexChanged=false;
-	return;
-}
-
-
-
 TickContext TickInit(){
 	TickContext context;
 	if(g_defultContextIsAlreadySet){
@@ -157,9 +55,7 @@ TickContext TickInit(){
 		Eloge("SHADER ERORR");
 	}
 	InitlizeRendrer(&context.Shape2D);
-	InitlizeRendrer(&context.ShapeCir2D);
-	GenrateAttribute(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
-	GenrateExtendedAttribute(context.ShapeCir2D.VAO, context.ShapeCir2D.VertexBuffer, context.ShapeCir2D.IndexBuffer);
+	Genrate2DShapeAttribute(context.Shape2D.VAO, context.Shape2D.VertexBuffer, context.Shape2D.IndexBuffer);
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (int*)&context.maxTexturesSlotsSepurted);//geting the maximum texture slots per texture
 	if(context.maxTexturesSlotsSepurted > TICK_MAX_TEXTURE_SLOTS_SEPURTED){ 
 		context.maxTexturesSlotsSepurted=TICK_MAX_TEXTURE_SLOTS_SEPURTED;
@@ -210,7 +106,7 @@ void SetScaleY(float scale){
 void SetScaleXY( float scalex, float scaley){
 	SetScaleXY_ctx(&g_defultContext, scalex, scaley);
 }
-void SetScale( float scale){
+void SetScale(float scale){
 	SetScale_ctx(&g_defultContext, scale);
 }
 
@@ -232,21 +128,6 @@ void SetScale_ctx(TickContext* ctx, float scale){
 	ctx->scaleX=scale;
 	ctx->scaleY=scale;
 }
-
-
-
-void BatcheRendrerAdd2DShape(float* vetex , u32 vcount , u32* index, u32 icount ,u32 steps, TickRendrerStruct* render){
-	BatchRendringAddIndex(&render->indexbatchr, 
-			&render->indexbatchSize,
-			&render->indexbatchPtr,
-			&render->isIndexChanged,
-		 	index, icount, render->vertexbatchPtr, steps);
-	BatchRendringAddVertex(&render->vertexbatchr,&render->vertexbatchSize , &render->vertexbatchPtr, &render->isVertexChanged 
-			, vetex, vcount);
-	return;
-}
-
-
 
 
 
@@ -320,15 +201,15 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	float verteces[]{
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,
+		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,0,0,
+		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,0,0,
+		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,0,0
 	};
 	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
 
 	//u32 verty , indexy;
 	//g_2DShapesBatchRen	derer->Push(verteces,9,indece,3);
-	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,4, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,7, &ctx->Shape2D);
 }
 
 
@@ -363,14 +244,14 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,
-		v4.x,v4.y,*(float*)&c,*(float*)&flage,
+		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,0,0,
+		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,0,0,
+		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,0,0,
+		v4.x,v4.y,*(float*)&c,*(float*)&flage,0,0,0
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),4, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7, &ctx->Shape2D);
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
@@ -382,15 +263,18 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 
-	float* Vertex = (float*)malloc((Vertecount*5)*sizeof(float));
+	float* Vertex = (float*)malloc((Vertecount*7)*sizeof(float));
 	u32* indeces = (u32*)malloc(Vertecount*3*sizeof(u32));
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*4]=verteces[i].x;
-		Vertex[i*4+1]=verteces[i].y;
-		Vertex[i*4+2]=*(float*)&c;
-		Vertex[i*4+3]=*(float*)&flage;
+		Vertex[i*7]=verteces[i].x;
+		Vertex[i*7+1]=verteces[i].y;
+		Vertex[i*7+2]=*(float*)&c;
+		Vertex[i*7+3]=*(float*)&flage;
+		Vertex[i*7+4]=0;
+		Vertex[i*7+5]=0;
+		Vertex[i*7+6]=0;
 	}
 	for(u32 i = 0 ; i < Vertecount ; i++){
 		indeces[i*3] = i;
@@ -409,7 +293,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 		}
 	}
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
-	BatcheRendrerAdd2DShape(Vertex, Vertecount*4, indeces, Vertecount*3,4, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(Vertex, Vertecount*7, indeces, Vertecount*3,7, &ctx->Shape2D);
 	free(Vertex);
 	free(indeces);
 	return;
@@ -448,7 +332,7 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 		 	   x,y-r,*(float*)&c,*(float*)&flage,x,y,0.0f,
 			   x,y-r,*(float*)&c,*(float*)&flage,x,y,360.0f/steps};
 	u32 indeces[3]{0,1,2};
-	BatcheRendrerAdd2DShape(verteces, 21, indeces, 3,7, &ctx->ShapeCir2D);
+	BatcheRendrerAdd2DShape(verteces, 21, indeces, 3,7, &ctx->Shape2D);
 	
 	for(int i = 1; i < steps ; i++){
 		verteces[0] = x;
@@ -462,7 +346,7 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 		indeces[0]=-i-2;
 		indeces[1]=-1;
 		indeces[2]=0;
-		BatcheRendrerAdd2DShape(verteces, 7, indeces, 3,7,&ctx->ShapeCir2D);
+		BatcheRendrerAdd2DShape(verteces, 7, indeces, 3,7,&ctx->Shape2D);
 	}
 	
 	// now this is kinde good
@@ -472,6 +356,9 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 
 
 /************************************** Textures ***************************************/
+
+
+
 
 
 
@@ -672,6 +559,9 @@ void RemoveTexture_ctx(u32 index, TickContext* ctx){
 
 
 
+
+
+
 /************************************** Rendrer  ****************************************/
 
 
@@ -692,99 +582,6 @@ void TickNewFrame(){
 	return;
 
 }
-
-
-
-
-bool regenRendrerData(TickRendrerStruct* rendr){
-	bool isitChanged = true;
-	if(rendr->isVertexChanged){
-		if(rendr->vertexbatchPtr*sizeof(float)>rendr->VertexBufferSize){
-			RegenrateVertexBuffer(&rendr->VertexBuffer,rendr->vertexbatchr,rendr->vertexbatchPtr*sizeof(float));
-			rendr->VertexBufferSize=rendr->vertexbatchPtr*sizeof(float);
-			
-			//std::cout<<"\nRegnarate Vertex Buffer to " << context.VertexBuffer2DSize;
-			isitChanged=true;
-		}else {
-			glBindBuffer(GL_ARRAY_BUFFER,rendr->VertexBuffer);
-			glBufferSubData(GL_ARRAY_BUFFER,0,rendr->vertexbatchPtr*4,rendr->vertexbatchr);
-		}
-	}
-	if(rendr->isIndexChanged){
-		if(rendr->indexbatchPtr*sizeof(u32)>rendr->IndexBufferSize){
-			RegenrateIndexBuffer(&rendr->IndexBuffer,rendr->indexbatchr,rendr->indexbatchPtr*sizeof(u32));
-
-			rendr->IndexBufferSize=rendr->indexbatchPtr*sizeof(u32);
-			//std::cout<<"\nRegnarate Index Buffer to " << context.IndexBuffer2DSize;
-			isitChanged=true;
-		}else {
-			CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendr->IndexBuffer));
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,rendr->indexbatchPtr*sizeof(u32),rendr->indexbatchr);
-			
-		}
-	}
-	return isitChanged;
-
-}
-
-
-void Render(TickRendrerStruct* rendrer){
-	bool rndChanged = regenRendrerData(rendrer);
-	if(rndChanged){
-		RegenrateVetexArray(&rendrer->VAO);
-		GenrateAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
-	}
-
-	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
-}
-
-
-void RenderExtended(TickRendrerStruct* rendrer){
-	bool rndChanged = regenRendrerData(rendrer);
-	if(rndChanged){
-		RegenrateVetexArray(&rendrer->VAO);
-		GenrateExtendedAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
-	}
-
-	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
-}
-
-
-void RenderTexture(TickTextureRendrerStruct*texture){
-	bool rndChanged = regenRendrerData(&texture->rendrer);
-	if(rndChanged){
-		RegenrateVetexArray(&texture->rendrer.VAO);
-		GenrateTextureAttribute(texture->rendrer.VAO, texture->rendrer.VertexBuffer, texture->rendrer.IndexBuffer);
-	}
-	
-	for(int i = 0 ; i <  TICK_MAX_TEXTURE_SLOTS_SEPURTED; ++i){
-		if(texture->texture[i]){
-			glActiveTexture(GL_TEXTURE0+i);
-			CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D,texture->texture[i]));
-			printf("\nRendring slots# %d",i);
-		}
-	}
-		
-	CHECK_GL_ERORR(glBindVertexArray(texture->rendrer.VAO));
-	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,texture->rendrer.VertexBuffer));
-	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,texture->rendrer.IndexBuffer));
-	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, texture->rendrer.indexbatchPtr, GL_UNSIGNED_INT, nullptr));
-}
-
-
-
-
-
-
 
 
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){

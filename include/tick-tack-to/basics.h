@@ -54,7 +54,6 @@ typedef struct {
 
 TickContext TickInit();
 
-
 void SetScaleX(float scale);
 void SetScaleY(float scale);
 void SetScaleXY( float scalex, float scaley);
