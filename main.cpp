@@ -109,7 +109,7 @@ int main(){
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	ImGuiInit(window);
+	ImGuiIO& io=*ImGuiInit(window);
 	TickInit();
 	/**********************************************************/
 	
@@ -156,9 +156,10 @@ int main(){
 		ImGui::Text("Hi, he , hallo, hi");
 		ImGui::SliderFloat("steps", &segments, 1, 360);
 		ImGui::SliderFloat("Scale", &scale , 0.0f,10.0f);
+		
+		ImGui::Text("latency: %.3f ms/frame\nFPS: %.1f", 1000.0f / io.Framerate, io.Framerate);
 		ImGui::End();
 		SetScale(scale);
-		
 		ImGui::Render();
 		
 		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
@@ -191,18 +192,18 @@ int main(){
 		}
 		DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
-		DrawTexture(ertheRise,x, y, 200, 200);
 
-		DrawTexture(otherertheRise, 0,0, 200, 200);
-		ReloadTexture(animatedTextutr, image, 320, 255, 4);
+		//DrawTexture(animatedTextutr, 0,0, 200, 200);
+		//ReloadTexture(animatedTextutr, image, 320, 255, 4);
 
 		glfwMakeContextCurrent(window);
 		
+		DrawTexture(ertheRise,x, y, 200, 200);
 		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
 		DrawCircle(200.0f, 100.0f, 10, 20, {0,0,255,255});
 		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
 
-
+		
 
 		TickRendre(window);
 		//TickRendre_ctx(window,&window1TickContex);

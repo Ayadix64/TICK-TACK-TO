@@ -12,13 +12,13 @@ void  Genrate2DShapeAttribute(u32 vao, u32 vb, u32 ib){
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
 	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,7*sizeof(float),0));//pos
+	CHECK_GL_ERORR(glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8*sizeof(float),0));//pos
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)8));//cl
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)12));//cl
 	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)12));	//flags
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)16));	//flags
 	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
-	CHECK_GL_ERORR(glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)16));	// center + offset
+	CHECK_GL_ERORR(glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)20));	// center + offset
 	
 }
 
@@ -28,13 +28,13 @@ void  GenrateTextureAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a d
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
 	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,6*sizeof(float),0));//pos
+	CHECK_GL_ERORR(glVertexAttribPointer(0,3	,GL_FLOAT,GL_FALSE,7*sizeof(float),0));//pos
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
-	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)8));//cl
+	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)12));//cl
 	CHECK_GL_ERORR(glEnableVertexAttribArray(2));
-	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)12));	//flags
+	CHECK_GL_ERORR(glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)16));	//flags
 	CHECK_GL_ERORR(glEnableVertexAttribArray(3));
-	CHECK_GL_ERORR(glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)16));	// center + offset
+	CHECK_GL_ERORR(glVertexAttribPointer(3,2,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)20));	// center + offset
 	
 }
 
@@ -147,7 +147,7 @@ void Render(TickRendrerStruct* rendrer){
 	bool rndChanged = regenRendrerData(rendrer);
 	if(rndChanged){
 		RegenrateVetexArray(&rendrer->VAO);
-		GenrateAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
+		Genrate2DShapeAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
 	}
 
 	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
@@ -162,7 +162,8 @@ void RenderExtended(TickRendrerStruct* rendrer){
 	bool rndChanged = regenRendrerData(rendrer);
 	if(rndChanged){
 		RegenrateVetexArray(&rendrer->VAO);
-		GenrateExtendedAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
+		
+		Genrate2DShapeAttribute(rendrer->VAO, rendrer->VertexBuffer, rendrer->IndexBuffer);
 	}
 
 	CHECK_GL_ERORR(glBindVertexArray(rendrer->VAO));
@@ -184,7 +185,7 @@ void RenderTexture(TickTextureRendrerStruct*texture){
 		if(texture->texture[i]){
 			glActiveTexture(GL_TEXTURE0+i);
 			CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D,texture->texture[i]));
-			printf("\nRendring slots# %d",i);
+			//printf("\nRendring slots# %d",i);
 		}
 	}
 		

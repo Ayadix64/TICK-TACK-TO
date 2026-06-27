@@ -88,6 +88,7 @@ TickContext TickInit(){
 	context.window_h=0;
 	context.scaleX=1.0f;
 	context.scaleY=1.0f;
+	context.Z = TICK_TOP_Z;	
 	if(!g_defultContextIsAlreadySet){
 		g_defultContext=context;
 		g_defultContextIsAlreadySet=true;
@@ -201,15 +202,16 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	float verteces[]{
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,0,0,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,0,0,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,0,0
+		v1.x,v1.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
+		v2.x,v2.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
+		v3.x,v3.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0
 	};
 	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
 
 	//u32 verty , indexy;
 	//g_2DShapesBatchRen	derer->Push(verteces,9,indece,3);
-	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,7, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,8, &ctx->Shape2D);
+	ctx->Z -= TICK_Z_OFSSET;
 }
 
 
@@ -244,14 +246,15 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	float verteces[]{ 
-		v1.x,v1.y,*(float*)&c,*(float*)&flage,0,0,0,
-		v2.x,v2.y,*(float*)&c,*(float*)&flage,0,0,0,
-		v3.x,v3.y,*(float*)&c,*(float*)&flage,0,0,0,
-		v4.x,v4.y,*(float*)&c,*(float*)&flage,0,0,0
+		v1.x,v1.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
+		v2.x,v2.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
+		v3.x,v3.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
+		v4.x,v4.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0
 	};
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
-	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),8, &ctx->Shape2D);
+	ctx->Z-=TICK_Z_OFSSET;
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
@@ -263,18 +266,19 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 
-	float* Vertex = (float*)malloc((Vertecount*7)*sizeof(float));
+	float* Vertex = (float*)malloc((Vertecount*8)*sizeof(float));
 	u32* indeces = (u32*)malloc(Vertecount*3*sizeof(u32));
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*7]=verteces[i].x;
-		Vertex[i*7+1]=verteces[i].y;
-		Vertex[i*7+2]=*(float*)&c;
-		Vertex[i*7+3]=*(float*)&flage;
-		Vertex[i*7+4]=0;
-		Vertex[i*7+5]=0;
-		Vertex[i*7+6]=0;
+		Vertex[i*8]=verteces[i].x;
+		Vertex[i*8+1]=verteces[i].y;
+		Vertex[i*8+2]=ctx->Z;
+		Vertex[i*8+3]=*(float*)&c;
+		Vertex[i*8+4]=*(float*)&flage;
+		Vertex[i*8+5]=0;
+		Vertex[i*8+6]=0;
+		Vertex[i*8+7]=0;
 	}
 	for(u32 i = 0 ; i < Vertecount ; i++){
 		indeces[i*3] = i;
@@ -293,7 +297,8 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 		}
 	}
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
-	BatcheRendrerAdd2DShape(Vertex, Vertecount*7, indeces, Vertecount*3,7, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Vertecount*3,8, &ctx->Shape2D);
+	ctx->Z-=TICK_Z_OFSSET;
 	free(Vertex);
 	free(indeces);
 	return;
@@ -306,19 +311,23 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 
 
-	float* Vertex = (float*)malloc((Vertecount*5)*sizeof(float));
+	float* Vertex = (float*)malloc((Vertecount*8)*sizeof(float));
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
 	for(u32 i = 0 ; i < Vertecount; i++){
-		Vertex[i*4]=verteces[i].x;
-		Vertex[i*4+1]=verteces[i].y;
-		Vertex[i*4+2]=*(float*)&c;
-		Vertex[i*4+3]=*(float*)&flage;
+		Vertex[i*8]=verteces[i].x;
+		Vertex[i*8+1]=verteces[i].y;
+		Vertex[i*8+2]=ctx->Z;
+		Vertex[i*8+3]=*(float*)&c;
+		Vertex[i*8+4]=*(float*)&flage;
+		Vertex[i*8+5]=0;
+		Vertex[i*8+6]=0;
+		Vertex[i*8+7]=0;
 	}
 
-	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Indexcont);
-	BatcheRendrerAdd2DShape(Vertex, Vertecount*4, indeces, Indexcont, 4,&ctx->Shape2D);
+	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Indexcont, 8,&ctx->Shape2D);
 	free(Vertex);
+	ctx->Z-=TICK_Z_OFSSET;
 	return;
 }
 
@@ -328,27 +337,28 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 	
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
-	float verteces[21]{x,y  ,*(float*)&c,*(float*)&flage,x,y,0.0f,
-		 	   x,y-r,*(float*)&c,*(float*)&flage,x,y,0.0f,
-			   x,y-r,*(float*)&c,*(float*)&flage,x,y,360.0f/steps};
+	float verteces[24]{x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+		 	   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+			   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,360.0f/steps};
 	u32 indeces[3]{0,1,2};
-	BatcheRendrerAdd2DShape(verteces, 21, indeces, 3,7, &ctx->Shape2D);
+	BatcheRendrerAdd2DShape(verteces, 24, indeces, 3,8, &ctx->Shape2D);
 	
 	for(int i = 1; i < steps ; i++){
 		verteces[0] = x;
 		verteces[1] = y-r;
-		verteces[2] = *(float*)&c;
-		verteces[3] = *(float*)&flage;
-		verteces[4] = x;
-		verteces[5] = y;
+		verteces[2] = ctx->Z;
+		verteces[3] = *(float*)&c;
+		verteces[4] = *(float*)&flage;
+		verteces[5] = x;
+		verteces[6] = y;
 		float offset = ((float)(i+1))*(360.0f/(steps));
-		verteces[6] =  offset>360.0f?360.0f:offset;
+		verteces[7] =  offset>360.0f?360.0f:offset;
 		indeces[0]=-i-2;
 		indeces[1]=-1;
 		indeces[2]=0;
-		BatcheRendrerAdd2DShape(verteces, 7, indeces, 3,7,&ctx->Shape2D);
+		BatcheRendrerAdd2DShape(verteces, 8, indeces, 3,8,&ctx->Shape2D);
 	}
-	
+	ctx->Z-=TICK_Z_OFSSET;
 	// now this is kinde good
 	return;
 
@@ -401,20 +411,18 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 		return;
 	}
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
-	//printf("\nDrawing texture %d @ slot %d (index = %d)",sampler,slot,index);
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
 	};
 	float verteces[]{ 
-		x,y    , *(float*)&slot,*(float*)&flage,0.0f,0.0f, 
-		x,y+h  , *(float*)&slot,*(float*)&flage,0.0f,1.0f, 
-		x+w,y  , *(float*)&slot,*(float*)&flage,1.0f,0.0f,
-		x+w,y+h, *(float*)&slot,*(float*)&flage,1.0f,1.0f 
+		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,0.0f, 
+		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,1.0f, 
+		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,0.0f,
+		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,1.0f 
 	};
-	BatcheRendrerAdd2DShape(verteces, 28, indeces, 6,6,&ctx->samplers[sampler].rendrer);
-
-
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
+	ctx->Z-=TICK_Z_OFSSET;
 }
 
 
@@ -447,11 +455,10 @@ u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 		ctx->samplerPtr++;
 	}
 	
-	glActiveTexture(GL_TEXTURE0+textureSlot);
+	//glActiveTexture(GL_TEXTURE0+textureSlot);
 	ctx->samplers[samplerNumber].texture[textureSlot] = GenTexture();
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
 	SetTextureData((u8*)bitmap, w, h, bpp);
-	//glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)bitmap);
 
 	printf("\nTexture # %d @ slot %d is tooken ",samplerNumber,textureSlot);
 	fflush(stdout);
@@ -490,7 +497,7 @@ void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickConte
 	}
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[slot]));
-	glActiveTexture(GL_TEXTURE0+slot);
+	//glActiveTexture(GL_TEXTURE0+slot);
 	SetTextureData((u8*)data, w, h, bpp);
 	return;
 }
@@ -515,7 +522,7 @@ void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ct
 	}
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[textureSlot]));
-	glActiveTexture(GL_TEXTURE0+textureSlot);
+	//glActiveTexture(GL_TEXTURE0+textureSlot);
 	SetTextureData((u8*)pb, w, h, 4);
 	stbi_image_free(pb);
 	return;
@@ -586,7 +593,10 @@ void TickNewFrame(){
 
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	TickContext& context = *ctx;
-	
+	if(ctx->Z<=TICK_BUTTOM_Z){
+		Eloge("Z <=  "+std::to_string(TICK_BUTTOM_Z)+" you draw too much and part of that will not been rendred!");
+	}
+	ctx->Z=TICK_TOP_Z;
 	if(!g_defultContextIsAlreadySet){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 		return;
@@ -603,7 +613,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	int window_w= (int)(((float)real_w)/context.scaleX);
 	int window_h= (int)(((float)real_h)/context.scaleY);
 	if(window_w!=context.window_w || window_h!=context.window_h){
-		glm::mat4 proj = glm::ortho(0.0f,(float)window_w,(float)window_h,0.0f,-1.0f,1.0f);
+		glm::mat4 proj = glm::ortho(0.0f,(float)window_w,(float)window_h,0.0f,-TICK_TOP_Z,TICK_TOP_Z);
 		glViewport(0,0,real_w,real_h);
 		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
 		context.window_w=window_w;
@@ -612,10 +622,19 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 
 	
 	Render(&context.Shape2D);
-	RenderExtended(&context.ShapeCir2D);	
+	////////////////////// TODO: REMOVE THIS	
+	/*for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
+		char textureN[50];
+		sprintf(textureN,"texture%d",i);
+		u32 text =GetUniform((const char*)textureN, context.Shader2D);
+		glUniform1i(text,i);
+		//goood bruh in her
+	}*/
+	/////////////////////////
 	for(int i = 0 ; i < context.samplerPtr ; i++){
 		RenderTexture(&context.samplers[i]);
 	}
+	
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){

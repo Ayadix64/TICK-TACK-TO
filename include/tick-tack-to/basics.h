@@ -5,9 +5,14 @@
 #include <glm/ext/matrix_float4x4.hpp>
 #include <GLFW/glfw3.h>
 
+#define TICK_TOP_Z 1000.0f  //the top z level
+#define TICK_BUTTOM_Z 0.0f //the buttom z level
+#define TICK_Z_OFSSET 1.0f; // the amount of Z getting reduced in evry draw
 
 #define TICK_MAX_TEXTURE_SLOTS_SEPURTED 32
 typedef u32 textureSBitmap ;//slots bitmap
+
+
 typedef struct{
 	u32 VAO;
 	u32 VertexBuffer;
@@ -24,7 +29,6 @@ typedef struct{
 	u32 indexbatchPtr;
 	u32 indexbatchSize;
 	char isIndexChanged;
-
 }TickRendrerStruct;
 
 typedef struct {
@@ -48,6 +52,7 @@ typedef struct {
 	u32 maxTexturesSlotsSepurted;
 
 	int uniform2DMvp;
+	float Z; // the zed of elements; for evry element been drawn, this will enable drawing batching with drawing ordring for textures
 
 }TickContext;
 

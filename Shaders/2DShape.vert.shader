@@ -24,9 +24,9 @@ vec2 Rotate(vec2 pos,vec2 center,float theta){
 
 
 void main(){
-	vec4 posi = position;
+	vec4 posi=position;
 	if( (Flags & 0xfu) == uint(1)){
-		posi= vec4(Rotate(position.xy,location3.xy,location3.z),position.zw); // the thread float of 'location3' will hold the theta
+		posi.xy= Rotate(position.xy,location3.xy,location3.z); // the thread float of 'location3' will hold the theta
 	}else if( (flags & 0x10u) > uint(0)){
 		texCoord = location3.xy;
 	}
@@ -34,6 +34,4 @@ void main(){
 	pos=posi;
 	flags=Flags;
 	color=inColor;
-	
-
 }

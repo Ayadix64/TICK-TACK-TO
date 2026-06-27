@@ -4,13 +4,13 @@
 
 
 
-static void  ImGuiInit(GLFWwindow* window){
+static ImGuiIO* ImGuiInit(GLFWwindow* window){
 	ImGui::CreateContext();
 	ImGuiIO &io =  ImGui::GetIO();(void)io;
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init();
 	ImGui::StyleColorsDark();
-	return;
+	return &io;
 
 }
 
