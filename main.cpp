@@ -193,8 +193,8 @@ int main(){
 		DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
 
-		//DrawTexture(animatedTextutr, 0,0, 200, 200);
-		//ReloadTexture(animatedTextutr, image, 320, 255, 4);
+		DrawTexture(animatedTextutr, 0,0, 200, 200);
+		ReloadTexture(animatedTextutr, image, 320, 255, 4);
 
 		glfwMakeContextCurrent(window);
 		

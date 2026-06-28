@@ -46,7 +46,6 @@ TickContext TickInit(){
 	if(g_defultContextIsAlreadySet){
 		context.Shader2D = g_defultContext.Shader2D;
 	}else {
-		
 		context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
 	}
 	context.uniform2DMvp = GetUniform("u_MVP", context.Shader2D);		
@@ -63,25 +62,9 @@ TickContext TickInit(){
 			       +std::to_string(TICK_MAX_TEXTURE_SLOTS_SEPURTED)+" slots");
 	}
 
-	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
-		char textureN[20];
-		sprintf(textureN,"texture%d",i);
-		u32 text =GetUniform((const char*)textureN, context.Shader2D);
-		if(text!=-1){
-			glUniform1i(text,i);
-		}
-		//goood bruh in her
-	}
-	
 	debugy(context.maxTexturesSlotsSepurted);
 	
 	context.samplerCount=0;
-	//context.textures = (TickTextureRendrerStruct*)malloc(context.samplerCount*(sizeof(TickTextureRendrerStruct)));//dost it make sense
-	/*for(int i =0 ; i <context.samplerCount ; i++){
-
-		context.textures[i].slotsbp=0;
-		//ugly? shure! but this is the only way to keep track the user what texture he delet
-	}*/
 	context.samplerPtr=0;
 	
 	context.window_w=0;
@@ -89,10 +72,25 @@ TickContext TickInit(){
 	context.scaleX=1.0f;
 	context.scaleY=1.0f;
 	context.Z = TICK_TOP_Z;	
+
+
 	if(!g_defultContextIsAlreadySet){
 		g_defultContext=context;
 		g_defultContextIsAlreadySet=true;
 	}
+	
+	glUseProgram(context.Shader2D);
+	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
+		char textureN[50];
+		sprintf(textureN,"texture%d",i);
+		u32 text =GetUniform((const char*)textureN, context.Shader2D);
+		if(text!=-1){
+			glUniform1i(text,i);
+		}
+		//goood bruh in her
+	}
+
+
 	return context;
 }
 
@@ -590,6 +588,7 @@ void TickNewFrame(){
 
 }
 
+	int lol = 0;
 
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	TickContext& context = *ctx;
@@ -622,15 +621,8 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 
 	
 	Render(&context.Shape2D);
-	////////////////////// TODO: REMOVE THIS	
-	/*for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
-		char textureN[50];
-		sprintf(textureN,"texture%d",i);
-		u32 text =GetUniform((const char*)textureN, context.Shader2D);
-		glUniform1i(text,i);
-		//goood bruh in her
-	}*/
-	/////////////////////////
+	
+
 	for(int i = 0 ; i < context.samplerPtr ; i++){
 		RenderTexture(&context.samplers[i]);
 	}
