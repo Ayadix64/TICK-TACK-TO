@@ -13,10 +13,10 @@ out vec2 texCoord;
 
 uniform mat4 u_MVP;
 
-vec2 Rotate(vec2 pos,vec2 center,float theta){
+vec2 Rotate(vec2 pos_,vec2 center,float theta){
 	float raduian=(theta*3.14159)/(180.0);
-	float X = pos.x-center.x;
-	float Y = pos.y-center.y;
+	float X = pos_.x-center.x;
+	float Y = pos_.y-center.y;
 	float posx=center.x+X*cos(raduian)-Y*sin(raduian);
 	float posy=center.y+X*sin(raduian)+Y*cos(raduian);
 	return vec2(posx,posy);
@@ -30,7 +30,7 @@ void main(){
 	}else if( (flags & 0x10u) > uint(0)){
 		texCoord = location3.xy;
 	}
-	gl_Position=u_MVP*posi;
+	gl_Position= u_MVP*posi;//vec4(posi.x/800.0,posi.y/600.0,posi.zw);
 	pos=posi;
 	flags=Flags;
 	color=inColor;
