@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <atomic>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <string>
@@ -19,7 +21,7 @@
 #include "externel/stb_image.h"
 #include "../include/tick-tack-to/basics.h"
 
-#define debugy(x) std::cout<<"\n"<<#x<<" : " << x ;
+#define debugy(x) std::cout<<#x<<" : " << x<<"\n" ;
 
 
 typedef struct {float x,y;u32 c;} Vertex;
@@ -89,6 +91,8 @@ TickContext TickInit(){
 		}
 		//goood bruh in her
 	}
+	//glEnable(GL_DEPTH);
+	//glDepthFunc(GL_LESS);
 
 
 	return context;
@@ -196,6 +200,7 @@ void DrawCircle(float x , float y , float r, float steps , Vec4c cl){
 void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 {
 	
+	ctx->Z-=TICK_Z_OFSSET;
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
@@ -209,7 +214,8 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 	//u32 verty , indexy;
 	//g_2DShapesBatchRen	derer->Push(verteces,9,indece,3);
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,8, &ctx->Shape2D);
-	ctx->Z -= TICK_Z_OFSSET;
+	
+	debugy(ctx->Z);
 }
 
 
@@ -238,6 +244,7 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 {
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
+	ctx->Z-=TICK_Z_OFSSET;
 	u32 indeces[6]{
 		0,1,2,
 		2,3,1
@@ -252,7 +259,7 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),8, &ctx->Shape2D);
-	ctx->Z-=TICK_Z_OFSSET;
+	debugy(ctx->Z);
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
@@ -263,6 +270,7 @@ void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx){
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
+	ctx->Z-=TICK_Z_OFSSET;
 
 	float* Vertex = (float*)malloc((Vertecount*8)*sizeof(float));
 	u32* indeces = (u32*)malloc(Vertecount*3*sizeof(u32));
@@ -296,7 +304,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 	}
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
 	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Vertecount*3,8, &ctx->Shape2D);
-	ctx->Z-=TICK_Z_OFSSET;
+	debugy(ctx->Z);
 	free(Vertex);
 	free(indeces);
 	return;
@@ -307,7 +315,8 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl,TickContext* ctx){
 	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
-
+	
+	ctx->Z-=TICK_Z_OFSSET;
 
 	float* Vertex = (float*)malloc((Vertecount*8)*sizeof(float));
 	
@@ -325,7 +334,8 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 
 	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Indexcont, 8,&ctx->Shape2D);
 	free(Vertex);
-	ctx->Z-=TICK_Z_OFSSET;
+
+	debugy(ctx->Z);
 	return;
 }
 
@@ -333,6 +343,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickContext* ctx){
 	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
+	ctx->Z-=TICK_Z_OFSSET;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
 	float verteces[24]{x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
@@ -356,7 +367,7 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 		indeces[2]=0;
 		BatcheRendrerAdd2DShape(verteces, 8, indeces, 3,8,&ctx->Shape2D);
 	}
-	ctx->Z-=TICK_Z_OFSSET;
+	debugy(ctx->Z);
 	// now this is kinde good
 	return;
 
@@ -400,6 +411,7 @@ void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp ){
 
 void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx){
 	
+	ctx->Z-=TICK_Z_OFSSET;
 	int sampler = index/ctx->maxTexturesSlotsSepurted;
 	int slot = index%ctx->maxTexturesSlotsSepurted;
 	if(index==-1 || 
@@ -420,7 +432,9 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,1.0f 
 	};
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
-	ctx->Z-=TICK_Z_OFSSET;
+	
+	debugy(ctx->Z);
+	
 }
 
 
@@ -453,7 +467,6 @@ u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 		ctx->samplerPtr++;
 	}
 	
-	//glActiveTexture(GL_TEXTURE0+textureSlot);
 	ctx->samplers[samplerNumber].texture[textureSlot] = GenTexture();
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
 	SetTextureData((u8*)bitmap, w, h, bpp);
@@ -495,7 +508,6 @@ void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickConte
 	}
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[slot]));
-	//glActiveTexture(GL_TEXTURE0+slot);
 	SetTextureData((u8*)data, w, h, bpp);
 	return;
 }
@@ -520,7 +532,6 @@ void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ct
 	}
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[textureSlot]));
-	//glActiveTexture(GL_TEXTURE0+textureSlot);
 	SetTextureData((u8*)pb, w, h, 4);
 	stbi_image_free(pb);
 	return;
@@ -595,7 +606,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	if(ctx->Z<=TICK_BUTTOM_Z){
 		Eloge("Z <=  "+std::to_string(TICK_BUTTOM_Z)+" you draw too much and part of that will not been rendred!");
 	}
-	ctx->Z=TICK_TOP_Z;
+	
 	if(!g_defultContextIsAlreadySet){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 		return;
@@ -606,23 +617,34 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	if(usedShader!=ctx->Shader2D){
 		CHECK_GL_ERORR(glUseProgram(ctx->Shader2D));
 	}
+	
 	//if the window changed, update the mvp
 	int real_w=0, real_h=0;
 	glfwGetFramebufferSize(window, &real_w, &real_h);
 	int window_w= (int)(((float)real_w)/context.scaleX);
 	int window_h= (int)(((float)real_h)/context.scaleY);
+	static float iw = 0.0;
 	if(window_w!=context.window_w || window_h!=context.window_h){
-		glm::mat4 proj = glm::ortho(0.0f,(float)window_w,(float)window_h,0.0f,-TICK_TOP_Z,TICK_TOP_Z);
+		float proj[4][4] ;
+		for(int i= 0 ; i < 16; i++){
+			proj[i/4][i%4]=0.0f;
+			
+		}
+		proj[0][0] = 2.0f / (float)window_w;
+		proj[1][1] =-2.0f / (float)window_h;
+		proj[2][2] = 1.0f;
+		proj[3][0] =-1.0f;
+		proj[3][1] = 1.0f;
+		proj[3][3] = 1.0f;
+
+
 		glViewport(0,0,real_w,real_h);
 		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
 		context.window_w=window_w;
 		context.window_h=window_h;
 	}
-
 	
 	Render(&context.Shape2D);
-	
-
 	for(int i = 0 ; i < context.samplerPtr ; i++){
 		RenderTexture(&context.samplers[i]);
 	}
@@ -635,6 +657,8 @@ void TickNewFrame_ctx(TickContext* context){
 	for(int i = 0 ; i < context->samplerPtr ; i++){
 		ResetRendrer(&context->samplers[i].rendrer);
 	}
+
+	context->Z=TICK_TOP_Z;
 	return;
 }
 

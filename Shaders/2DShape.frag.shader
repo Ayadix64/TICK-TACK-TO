@@ -47,9 +47,6 @@ uniform sampler2D texture29;
 uniform sampler2D texture30;
 uniform sampler2D texture31;
 uniform sampler2D texture32;
-uniform sampler2D texture33;
-uniform sampler2D texture34;
-uniform sampler2D texture35;
 void main(){
 	
 	

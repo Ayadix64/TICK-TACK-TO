@@ -28,7 +28,7 @@ void  GenrateTextureAttribute(u32 vao, u32 vb, u32 ib){ // yeah, circuls are a d
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib));
 	
 	CHECK_GL_ERORR(glEnableVertexAttribArray(0));
-	CHECK_GL_ERORR(glVertexAttribPointer(0,3	,GL_FLOAT,GL_FALSE,7*sizeof(float),0));//pos
+	CHECK_GL_ERORR(glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,7*sizeof(float),0));//pos
 	CHECK_GL_ERORR(glEnableVertexAttribArray(1));
 	CHECK_GL_ERORR(glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,7*sizeof(float),(void*)12));//cl
 	CHECK_GL_ERORR(glEnableVertexAttribArray(2));

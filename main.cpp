@@ -71,6 +71,38 @@ void GoodOldTesting(){
 	glDeleteBuffers(1,&ib);
 	return;
 }
+void GoodOldTesting2(float z){
+	u32 cl = 0xffff00ff;
+	float veteces[]{
+		0.0,100.0,z,*(float*)&cl,
+		100.0,0.0,z,*(float*)&cl,
+		100.0,100.0,z,*(float*)&cl
+	};
+	u32 indeces[]{0,1,2};
+	u32 vao;
+	glGenVertexArrays(1,&vao);
+	glBindVertexArray(vao);
+	u32 vb;
+	glGenBuffers(1,&vb);
+	glBindBuffer(GL_ARRAY_BUFFER,vb);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(veteces),veteces,GL_DYNAMIC_DRAW);
+	u32 ib;
+	glGenBuffers(1,&ib);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ib);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indeces),indeces,GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,4*4,0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,4*4,(void*)12);
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
+	glDeleteVertexArrays(1,&vao);
+	glDeleteBuffers(1,&vb);
+	glDeleteBuffers(1,&ib);
+	return;
+}
+
+
 void GLAPIENTRY
 MessageCallback( GLenum source,
                  GLenum type,
@@ -92,7 +124,8 @@ int main(){
 		//Eloge("GLFW not init");
 		return 1;
 	}
-		
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glEnable(GL_DEPTH_TEST);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -106,21 +139,32 @@ int main(){
 	//glDebugMessageCallback( MessageCallback, 0 );
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
+	
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	ImGuiIO& io=*ImGuiInit(window);
-	TickInit();
-	/**********************************************************/
 	
+	TickInit();
+	
+	glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LESS);
+
+
+
+	/**********************************************************/
+
+
+
+
+
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
-		
-	
-	//int shader = CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);	
-	//glUseProgram(shader);
-	float x=0.0,y=0.0,z=1.0f , r=2.0f, r2=0.0f;
 
+
+
+	float x=0.0,y=0.0,z=1000.0f , r=2.0f, r2=0.0f;
 	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
 	float segments = 100.0;
 	SetScale(0.5);
@@ -138,10 +182,17 @@ int main(){
 	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
 	u8 animation=0;
 	int adder=1;
+	
+
 	while(!glfwWindowShouldClose(window) ){
+		
+		//system("clear");
 		for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
-				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | ((abs((i+animation)-255/2)*2)&0xff) << 16 | ((abs((i+animation)-255/2)*2)&0xff) << 8 | (abs((i+animation)-255/2)*2)&0xff;
+				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | 
+					 ((abs((i+animation)-255/2)*2)&0xff) << 16 |
+					 ((abs((i+animation)-255/2)*2)&0xff) << 8  |
+					  (abs((i+animation)-255/2)*2)&0xff;
 				image[i*320+ii] = cl;
 			}
 		}
@@ -180,6 +231,7 @@ int main(){
 				yp1+=5.0;
 			}
 		}
+		z-=0.01f;
 		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
 			if(yp2+50.0<=(float)ph){
 				yp2+=5.0;
@@ -190,27 +242,37 @@ int main(){
 				yp2-=5.0;
 			}
 		}
-		DrawCircle(x, y,40.0, segments, {0,255,0,255});
+		//DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
 
-		DrawTexture(animatedTextutr, 0,0, 200, 200);
-		ReloadTexture(animatedTextutr, image, 320, 255, 4);
+		//ReloadTexture(animatedTextutr, image, 320, 255, 4);
 
 		glfwMakeContextCurrent(window);
+		//DrawTexture(ertheRise,x, y, 200, 200);
+		/*for(int i = 0 ; i < 512 ; i++){
+			DrawTexture(animatedTextutr, 0,0, 200, 200);
+		}
+		for(int i = 0 ; i < 512 ; i++){
+			DrawTexture(animatedTextutr, 200,200, 200, 200);
+		}*/
+		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
 		
-		DrawTexture(ertheRise,x, y, 200, 200);
-		DrawLine({0.0f,0.0f}, {200.0f,100.0f}, 20.0,{0,0,255,255});
-		DrawCircle(200.0f, 100.0f, 10, 20, {0,0,255,255});
-		DrawLine({200.0f,100.0f}, {x,y}, 20.0,{0,0,255,255});
+		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
+		
+		DrawTexture(animatedTextutr, 0,0, 200, 200);
+		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,255});
+		
 
 		
-
+		GoodOldTesting2(z);
 		TickRendre(window);
+		//GoodOldTesting();
 		//TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		printf("z:%f\n",z);	
 		//usleep(1000000);
 	
 	}

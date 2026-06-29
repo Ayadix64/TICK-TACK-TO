@@ -5,9 +5,11 @@
 #include <glm/ext/matrix_float4x4.hpp>
 #include <GLFW/glfw3.h>
 
-#define TICK_TOP_Z 1000.0f  //the top z level
+#define TICK_TOP_Z 1.0f  //the top z level
 #define TICK_BUTTOM_Z 0.0f //the buttom z level
-#define TICK_Z_OFSSET 1.0f; // the amount of Z getting reduced in evry draw
+#define TICK_Z_OFSSET 0.000001f // the amount of Z getting reduced in evry draw
+#define TICK_MAX_DRAWING TICK_TOP_Z/TICK_Z_OFSSET
+
 
 #define TICK_MAX_TEXTURE_SLOTS_SEPURTED 32
 typedef u32 textureSBitmap ;//slots bitmap
@@ -97,16 +99,16 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
 
 
 
-u32 LoadTexture(void* bitmap,float w, float h, u32 bpp);
-u32 LoadTextureFromeFile(const char * fileName);
+u32  LoadTexture(void* bitmap,float w, float h, u32 bpp);// load the texture to integer
+u32  LoadTextureFromeFile(const char * fileName);// load a texture from a file
 void DrawTexture(u32 index,float x , float y , float w,  float h );
 void RemoveTexture(u32 index);
 void ReloadTextureFromeFile(u32 index, const char* fileName);
 void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp );
 
 
-u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx);
-u32 LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx);
+u32  LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx);
+u32  LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx);
 void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx);
 void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx);
 void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx);
