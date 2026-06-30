@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -112,20 +113,34 @@ TickFont g_DefaultFont;
 
 void initDefautlFont(){
 	loge("INITING THE FONTS");
-	g_DefaultFont.cl=0xffffffff;
+	g_DefaultFont.cl=-1;
 	g_DefaultFont.dementions={8,13};
 	g_DefaultFont.fontTextureArray = (u32*)malloc(sizeof(u32)*95);
 	g_DefaultFont.maxChar=126;
 
-	for(int i = 0 ; i < g_DefaultFont.maxChar - 32 ; i++){
+	for(int i = 0 ; i < 95; i++){
 		u32 LetterBitmap[13][8];
+		memset(&LetterBitmap[0][0], 0, sizeof(LetterBitmap));
+		fflush(stdout);
+		
+		printf("\n\n");
 		for(int y = 0 ; y < 13 ; y++ ){
 			for(int x = 0 ; x < 8 ; x++){
-				LetterBitmap[y][x]=0;
 				if(defultFontBM[i][12-y]&(1<<(7-x))){
 					LetterBitmap[y][x]=g_DefaultFont.cl;	
+				}else {
+					LetterBitmap[y][x]=0;
 				}
-
+			}
+		}
+		for(int x = 0 ; x  < 8 ; x++){
+			printf("\n");
+			for(int y = 0 ; y < 13 ; y++){
+				if(LetterBitmap[y][x]){
+					printf("@");
+				}else {
+					printf(".");
+				}	
 			}
 		}
 		g_DefaultFont.fontTextureArray[i]=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
@@ -162,18 +177,18 @@ void DrawText(const char* text , float x, float y){
 void DrawText_WH(const char* text , float x, float y , float w , float h){
 	float xx = x;
 	for(int i = 0 ; text[i]; i++){
-		if(text[i]<32){continue;}
-		if(text[i]>g_DefaultFont.maxChar){
-			DrawTexture(g_DefaultFont.fontTextureArray['?'-32], x,y, w, h);
-
-		}else if(text[i]=='\n'){
+		/*if(text[i]== '\n'){
 			y+=h;
 			xx=x;
 			continue;
-		}
-		else {
+		}else if(text[i]>g_DefaultFont.maxChar){
+			DrawTexture(g_DefaultFont.fontTextureArray['?'-32], x,y, w, h);
+
+		}else if(text[i]<32){continue;}
+
+		else {*/
 			DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32], xx,y, w, h);
-		}
+		//}
 		xx+=w;
 	}
 	return;

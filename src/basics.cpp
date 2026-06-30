@@ -466,8 +466,8 @@ u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
 	SetTextureData((u8*)bitmap, w, h, bpp);
 
-	printf("\nTexture # %d @ slot %d is tooken ",samplerNumber,textureSlot);
-	fflush(stdout);
+	//printf("\nTexture # %d @ slot %d is tooken ",samplerNumber,textureSlot);
+	//fflush(stdout);
 	return samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
 }
 
@@ -549,14 +549,14 @@ void RemoveTexture_ctx(u32 index, TickContext* ctx){
 	CHECK_GL_ERORR(glDeleteTextures(1, &ctx->samplers[sampler].texture[slot]));
 	ctx->samplers[sampler].texture[slot]=0;
 
-	u32 empty = false;
+	u32 full = false;
 	for(int i = 0 ; i < sizeof(ctx->samplers[sampler].texture) / sizeof(u32);++i){
-		empty|=ctx->samplers[sampler].texture[i]; 
-		if(empty)break;
+		full|=ctx->samplers[sampler].texture[i]; 
+		if(full)break;
 	};
 	
 
-	if(empty){
+	if(!full){
 		DeletRendrer(&ctx->samplers[sampler].rendrer);
 	}
 	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 

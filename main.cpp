@@ -176,11 +176,13 @@ int main(){
 	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
 	u8 animation=0;
 	int adder=1;
+	u32 textures[512];
 	
-
+	
 	while(!glfwWindowShouldClose(window) ){
 		
 	//	system("clear");
+		
 		for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | 
@@ -189,6 +191,9 @@ int main(){
 					  (abs((i+animation)-255/2)*2)&0xff;
 				image[i*320+ii] = cl;
 			}
+		}
+		for( u32 l = 0 ; l < 255 ; l++){
+			textures[l] = LoadTexture(image, 320, 200, 4);
 		}
 		if(animation==255)adder=-1;
 		if(animation==0)adder=1;
@@ -235,9 +240,11 @@ int main(){
 				yp2-=5.0;
 			}
 		}
-	
-
-
+		
+		for(int ii = 0 ;ii < 256 ;ii++){
+			DrawTexture(textures[ii], x, y,  200, 200);
+		}
+		
 		glfwMakeContextCurrent(window);
 		//DrawTexture(ertheRise,x, y, 200, 200);
 		for(int i = 0 ; i < 512 ; i++){
@@ -250,11 +257,12 @@ int main(){
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
-		DrawTexture(animatedTextutr, 0,0, 200, 200);
+		DrawTexture(animatedTextutr, x,y, 200, 200);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,255});
-		DrawText("this is a text, or is it?\nis it ? butiful", 500, 100);
+		DrawText("this is a text, or is it? is it ? butiful", 500, 100);
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
-		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 300, 300);
+		DrawText("the fast quick fox jump over the lazy slow dog", 300, 300);
+		//DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 300, 300);
 		
 		TickRendre(window);
 		//GoodOldTesting();
@@ -264,7 +272,6 @@ int main(){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//usleep(1000000);
-	
 	}
 	ImGuiStop();
 	glfwTerminate();
