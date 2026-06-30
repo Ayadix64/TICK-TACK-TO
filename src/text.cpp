@@ -118,7 +118,7 @@ void initDefautlFont(){
 	g_DefaultFont.maxChar=126;
 
 	for(int i = 0 ; i < g_DefaultFont.maxChar - 32 ; i++){
-		u32 LetterBitmap[13][8]={{0}};
+		u32 LetterBitmap[13][8];
 		for(int y = 0 ; y < 13 ; y++ ){
 			for(int x = 0 ; x < 8 ; x++){
 				LetterBitmap[y][x]=0;
@@ -126,13 +126,10 @@ void initDefautlFont(){
 					LetterBitmap[y][x]=g_DefaultFont.cl;	
 				}
 
-					printf(LetterBitmap[y][x]?"@":" ");
 			}
-			printf("\n");
 		}
 		g_DefaultFont.fontTextureArray[i]=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
 	}
-	printf("*******************************************\n");
 }
 
 void DeleteFont(TickFont*font){
@@ -157,11 +154,6 @@ void SetDefaultFont(TickFont* font){
 }
 
 void DrawText(const char* text , float x, float y){
-	/*for(int i = 0 ; text[i]; i++){
-		if(text[i]<32){continue;}
-		DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32], x,y, g_DefaultFont.dementions.x, g_DefaultFont.dementions.y);
-		x+=g_DefaultFont.dementions.x;
-	}*/
 	DrawText_WH(text, x, y,g_DefaultFont.dementions.x,g_DefaultFont.dementions.y);
 	return;
 }

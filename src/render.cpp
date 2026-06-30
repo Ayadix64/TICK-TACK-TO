@@ -175,12 +175,17 @@ void RenderExtended(TickRendrerStruct* rendrer){
 
 
 void RenderTexture(TickTextureRendrerStruct*texture){
+	int skip = 0;
+	for(int i = 0 ; i < sizeof(texture->texture)/sizeof(u32) ; i++){
+		skip|=texture->texture[i];
+		if(skip)break;
+	}
+	if(!skip)return;
 	bool rndChanged = regenRendrerData(&texture->rendrer);
 	if(rndChanged){
 		RegenrateVetexArray(&texture->rendrer.VAO);
 		GenrateTextureAttribute(texture->rendrer.VAO, texture->rendrer.VertexBuffer, texture->rendrer.IndexBuffer);
-	}
-	
+	}	
 	for(int i = 0 ; i <  TICK_MAX_TEXTURE_SLOTS_SEPURTED; ++i){
 		if(texture->texture[i]){
 			glActiveTexture(GL_TEXTURE0+i);

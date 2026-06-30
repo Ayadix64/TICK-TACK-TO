@@ -225,7 +225,6 @@ int main(){
 				yp1+=5.0;
 			}
 		}
-		z-=0.01f;
 		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
 			if(yp2+50.0<=(float)ph){
 				yp2+=5.0;
@@ -236,10 +235,8 @@ int main(){
 				yp2-=5.0;
 			}
 		}
-		//DrawCircle(x, y,40.0, segments, {0,255,0,255});
 	
 
-		//ReloadTexture(animatedTextutr, image, 320, 255, 4);
 
 		glfwMakeContextCurrent(window);
 		//DrawTexture(ertheRise,x, y, 200, 200);
@@ -255,10 +252,10 @@ int main(){
 		
 		DrawTexture(animatedTextutr, 0,0, 200, 200);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,255});
-		DrawText_WH("this is a text, or is it?", 500, 500,20,20);
-
+		DrawText("this is a text, or is it?\nis it ? butiful", 500, 100);
+		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
+		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 300, 300);
 		
-		GoodOldTesting2(z);
 		TickRendre(window);
 		//GoodOldTesting();
 		//TickRendre_ctx(window,&window1TickContex);
@@ -266,7 +263,6 @@ int main(){
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		printf("z:%f\n",z);	
 		//usleep(1000000);
 	
 	}
