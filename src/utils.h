@@ -4,10 +4,8 @@
 #include <complex>
 #include <cstdlib>
 #include <deque>
-#include <glm/ext/vector_float4.hpp>
 #include <iostream>
 #include <fstream>
-
 //#ifndef GLAD_GL_IMPLEMENTATION 
 //	#define GLAD_GL_IMPLEMENTATION
 //	#include <glad/gl.h>
@@ -64,7 +62,7 @@ typedef struct {float x , y; u32 c;} VertexShape;
 	while(glGetError());\
 	(x);\
 	while(GLenum err = glGetError()){\
-		std::cout<<"[OpenGL ERROR]"<<" "<<#x <<" --> 0x"<<std::hex << err<< " :: " << std::dec<<__FILE__<<":" <<(int)__LINE__<<"\n";  \
+		fprintf(stderr,"[OpenGL ERORR] %s => %x @ \"%s\" ,line %d",#x,err,__FILE__,__LINE__);\
 	}
 #endif
 

@@ -1,8 +1,11 @@
 #include "core.h"
 
 #include "utils.h"
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <stdio.h>
+#include <string.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "externel/stb_image.h"
 
@@ -10,7 +13,7 @@
 
 unsigned int CompileShader(unsigned int type , const char* src){
 	unsigned int sh = glCreateShader(type);
-	glShaderSource(sh,1,&src,nullptr);
+	glShaderSource(sh,1,&src,NULL);
 	glCompileShader(sh);
 	//debuging
 	int err;
@@ -20,8 +23,13 @@ unsigned int CompileShader(unsigned int type , const char* src){
 		glGetShaderiv(sh,GL_INFO_LOG_LENGTH,&len);
 		char* errmsg = (char*)malloc(len);
 		glGetShaderInfoLog(sh,len,&len,errmsg);
-		loge("*** "+std::string(type==GL_VERTEX_SHADER?"VERTAX":type==GL_FRAGMENT_SHADER?"FRAGMENT":"UKNOWN")+" SHADER ERORR ***");
-		std::cout<<"===>>\n"<<errmsg<<"===>>END\n";
+		//loge("*** "+std::string(type==GL_VERTEX_SHADER?"VERTAX":type==GL_FRAGMENT_SHADER?"FRAGMENT":"UKNOWN")+" SHADER ERORR ***");
+		fprintf(stderr,"*** %s SHADER ERORR",type==GL_VERTEX_SHADER?"VERTAX":type==GL_FRAGMENT_SHADER?"FRAGMENT":"UKNOWN");
+		fprintf(stderr, "===========================\n"
+				"===========================\n%s\n"
+				"===========================\n"
+				"===========================",errmsg);
+		//std::cout<<"===>>\n"<<errmsg<<"===>>END\n";
 		return 0;
 	}
 	return sh;
@@ -49,7 +57,8 @@ unsigned int CreatShader(const char* vert, const char* frag){
 int GetUniform(const char* uniform, u32 shader){
 	int uniformLocation=glGetUniformLocation(shader,uniform);
 	if(uniformLocation==-1){
-		Wloge("uniform \""+std::string(uniform)+"\" never found");
+		//Wloge("uniform \""+std::string(uniform)+"\" never found");
+		fprintf(stderr,"[WARNING] unifor \"%s\" never found",uniform);
 	}
 	return uniformLocation;
 }
@@ -58,7 +67,7 @@ int GetUniform(const char* uniform, u32 shader){
 
 
 
-constexpr unsigned int SizeOfType(unsigned int type){
+const unsigned int SizeOfType(unsigned int type){
 	switch (type) {
 		case GL_FLOAT:
 			return sizeof(float);
@@ -124,7 +133,7 @@ void DeletVertexBuffer(u32* vbID){
 	if(*vbID){
 		CHECK_GL_ERORR(glDeleteBuffers(1,vbID));
 	}else {
-		Eloge("No vertex buffer to delete");
+		fprintf(stderr,"No vertex buffer to delete");
 	}
 	return;
 
@@ -152,7 +161,7 @@ void DeletIndexBuff(u32 * indexbuff){
 	if(*indexbuff){
 		CHECK_GL_ERORR(glDeleteBuffers(1,indexbuff));
 	}else {
-		Eloge("No index buffer to delete");
+		fprintf(stderr,"No index buffer to delete");
 	}
 }
 void FullIndexBuff(void* buff, u32 size){
@@ -195,7 +204,7 @@ void SetTextureData(u8 *data, u32 w, u32 h, u32 bpp){
 	}else if(bpp==1){
 		glTexImage2D(GL_TEXTURE_2D, 0,GL_R3_G3_B2, (int)w, (int)h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	}else {
-		Eloge("Texture formate not sepurted!");
+		fprintf(stderr,"Texture formate not sepurted!");
 	}
 	return;
 }
