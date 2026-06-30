@@ -60,6 +60,8 @@ typedef struct {
 
 
 TickContext TickInit();
+TickContext*GetDefaultContext();
+
 
 void SetScaleX(float scale);
 void SetScaleY(float scale);

@@ -11,10 +11,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <atomic>
-#include <glm/ext/matrix_float4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <strings.h>
 
@@ -38,9 +34,9 @@ typedef struct {
 
 
 TickContext g_defultContext;
-std::atomic<bool> g_defultContextIsAlreadySet;
-
-
+std::atomic<bool> g_defultContextIsAlreadySet=false;
+std::atomic<bool> g_defaultFontAlreadySet=false; 
+void initDefautlFont();
 
 
 TickContext TickInit(){
@@ -80,7 +76,10 @@ TickContext TickInit(){
 		g_defultContext=context;
 		g_defultContextIsAlreadySet=true;
 	}
-	
+	if(!g_defaultFontAlreadySet){
+		initDefautlFont();
+		g_defaultFontAlreadySet=true;
+	}
 	glUseProgram(context.Shader2D);
 	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
 		char textureN[50];
@@ -91,14 +90,14 @@ TickContext TickInit(){
 		}
 		//goood bruh in her
 	}
-	//glEnable(GL_DEPTH);
-	//glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 
 	return context;
 }
 
-
+TickContext* GetDefaultContext(){return &g_defultContext;}
 
 void SetScaleX(float scale){
 	SetScaleX_ctx(&g_defultContext, scale);
@@ -215,7 +214,7 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 	//g_2DShapesBatchRen	derer->Push(verteces,9,indece,3);
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indece, 3,8, &ctx->Shape2D);
 	
-	debugy(ctx->Z);
+	
 }
 
 
@@ -259,7 +258,7 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 
 	//g_2DShapesBatchRenderer->Push(verteces,sizeof(verteces)/sizeof(float),indeces,sizeof(indeces)/sizeof(u32));
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),8, &ctx->Shape2D);
-	debugy(ctx->Z);
+	
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
@@ -304,7 +303,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 	}
 	//g_2DShapesBatchRenderer->Push(Vertex,Vertecount*3,indeces,Vertecount*3);
 	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Vertecount*3,8, &ctx->Shape2D);
-	debugy(ctx->Z);
+	
 	free(Vertex);
 	free(indeces);
 	return;
@@ -335,7 +334,7 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 	BatcheRendrerAdd2DShape(Vertex, Vertecount*8, indeces, Indexcont, 8,&ctx->Shape2D);
 	free(Vertex);
 
-	debugy(ctx->Z);
+	
 	return;
 }
 
@@ -367,7 +366,7 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 		indeces[2]=0;
 		BatcheRendrerAdd2DShape(verteces, 8, indeces, 3,8,&ctx->Shape2D);
 	}
-	debugy(ctx->Z);
+	
 	// now this is kinde good
 	return;
 
@@ -432,8 +431,6 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,1.0f 
 	};
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
-	
-	debugy(ctx->Z);
 	
 }
 

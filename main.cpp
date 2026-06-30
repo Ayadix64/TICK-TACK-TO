@@ -7,16 +7,12 @@
 
 #include <cmath>
 #include <cstdlib>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_float4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include "include/tick-tack-to.h"
 #include "externel/imgui/imgui.h"
 #include "externel/imgui/imgui_impl_glfw.h"
 #include "externel/imgui/imgui_impl_opengl3.h"
 #include "include/tick-tack-to/basics.h"
+#include "include/tick-tack-to/text.h"
 #include "utils.hpp"
 #include "src/utils.h"
 #include <unistd.h>
@@ -124,8 +120,8 @@ int main(){
 		//Eloge("GLFW not init");
 		return 1;
 	}
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glEnable(GL_DEPTH_TEST);
+	//glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	//glEnable(GL_DEPTH_TEST);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -147,9 +143,7 @@ int main(){
 	
 	TickInit();
 	
-	glEnable(GL_DEPTH_TEST);
 	//glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LESS);
 
 
 
@@ -186,7 +180,7 @@ int main(){
 
 	while(!glfwWindowShouldClose(window) ){
 		
-		//system("clear");
+	//	system("clear");
 		for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | 
@@ -249,19 +243,19 @@ int main(){
 
 		glfwMakeContextCurrent(window);
 		//DrawTexture(ertheRise,x, y, 200, 200);
-		/*for(int i = 0 ; i < 512 ; i++){
+		for(int i = 0 ; i < 512 ; i++){
 			DrawTexture(animatedTextutr, 0,0, 200, 200);
 		}
 		for(int i = 0 ; i < 512 ; i++){
 			DrawTexture(animatedTextutr, 200,200, 200, 200);
-		}*/
+		}
 		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
 		DrawTexture(animatedTextutr, 0,0, 200, 200);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,255});
-		
+		DrawText_WH("this is a text, or is it?", 500, 500,20,20);
 
 		
 		GoodOldTesting2(z);
