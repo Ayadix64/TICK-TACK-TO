@@ -440,16 +440,14 @@ u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 	u32 samplerNumber = -1;
 	u32 textureSlot=0;
 	for(int i = 0 ; i < ctx->samplerPtr ; i++){
-
-		printf("\nYep ther is a evliable slot");
 		for(int ii = 0 ; ii < ctx->maxTexturesSlotsSepurted ; ii++){
-			if(!ctx->samplers[i].texture[ii] ){
+			if(!ctx->samplers[i].texture[ii]){
 				textureSlot=ii;
 				samplerNumber=i;
 				break;
 			}
 		}
-		break;
+		if(samplerNumber!=-1){break;}
 	}
 	if(samplerNumber==-1){
 		if(ctx->samplerCount<=ctx->samplerPtr+1){
