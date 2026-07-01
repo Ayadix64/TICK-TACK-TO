@@ -123,7 +123,6 @@ void initDefautlFont(){
 		memset(&LetterBitmap[0][0], 0, sizeof(LetterBitmap));
 		fflush(stdout);
 		
-		printf("\n\n");
 		for(int y = 0 ; y < 13 ; y++ ){
 			for(int x = 0 ; x < 8 ; x++){
 				if(defultFontBM[i][12-y]&(1<<(7-x))){
@@ -133,16 +132,7 @@ void initDefautlFont(){
 				}
 			}
 		}
-		for(int x = 0 ; x  < 8 ; x++){
-			printf("\n");
-			for(int y = 0 ; y < 13 ; y++){
-				if(LetterBitmap[y][x]){
-					printf("@");
-				}else {
-					printf(".");
-				}	
-			}
-		}
+		
 		g_DefaultFont.fontTextureArray[i]=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
 	}
 }
@@ -177,7 +167,7 @@ void DrawText(const char* text , float x, float y){
 void DrawText_WH(const char* text , float x, float y , float w , float h){
 	float xx = x;
 	for(int i = 0 ; text[i]; i++){
-		/*if(text[i]== '\n'){
+		if(text[i]== '\n'){
 			y+=h;
 			xx=x;
 			continue;
@@ -186,9 +176,9 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 
 		}else if(text[i]<32){continue;}
 
-		else {*/
+		else {
 			DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32], xx,y, w, h);
-		//}
+		}
 		xx+=w;
 	}
 	return;

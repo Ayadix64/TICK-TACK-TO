@@ -2,6 +2,7 @@
 #include "core.h"
 #include "externel/stb_image.h"
 #include "../include/tick-tack-to/basics.h"
+#include <cstdio>
 
 
 
@@ -70,7 +71,9 @@ void DeletRendrer(TickRendrerStruct* rendrer){
 	DeletVertexArray(&rendrer->VAO);
 	DeletVertexBuffer(&rendrer->VertexBuffer);
 	DeletIndexBuff(&rendrer->IndexBuffer);
-	
+	rendrer->VAO=0;
+	rendrer->VertexBuffer=0;
+	rendrer->IndexBuffer=0;
 	
 	CHECK_GL_ERORR(glBindVertexArray(0));
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,0));
@@ -180,7 +183,7 @@ void RenderTexture(TickTextureRendrerStruct*texture){
 		skip|=texture->texture[i];
 		if(skip)break;
 	}
-	if(!skip)return;
+	if(!skip){return;}
 	bool rndChanged = regenRendrerData(&texture->rendrer);
 	if(rndChanged){
 		RegenrateVetexArray(&texture->rendrer.VAO);
