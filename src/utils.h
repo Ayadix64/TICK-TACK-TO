@@ -62,7 +62,7 @@ typedef struct {float x , y; u32 c;} VertexShape;
 	while(glGetError());\
 	(x);\
 	while(GLenum err = glGetError()){\
-		fprintf(stderr,"[OpenGL ERORR] %s => %x @ \"%s\" ,line %d",#x,err,__FILE__,__LINE__);\
+		fprintf(stderr,"[OpenGL ERORR] %s => %x @ \"%s\" ,line %d\n",#x,err,__FILE__,__LINE__);\
 	}
 #endif
 

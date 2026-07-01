@@ -183,7 +183,7 @@ int main(){
 		
 	//	system("clear");
 		
-		for(int i = 0 ; i < 255 ; i++ ){
+		/*for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | 
 					 ((abs((i+animation)-255/2)*2)&0xff) << 16 |
@@ -191,8 +191,8 @@ int main(){
 					  (abs((i+animation)-255/2)*2)&0xff;
 				image[i*320+ii] = cl;
 			}
-		}
-		for( u32 l = 0 ; l < 255 ; l++){
+		}*/
+		for( u32 l = 0 ; l < 255 ; l++){// i will not recomand this, you are killing your gpu
 			textures[l] = LoadTexture(image, 320, 200, 4);
 		}
 		if(animation==255)adder=-1;
@@ -263,8 +263,8 @@ int main(){
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 300);
 		//DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 300, 300);
-		
 		TickRendre(window);
+		
 		//GoodOldTesting();
 		//TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -272,6 +272,9 @@ int main(){
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//usleep(1000000);
+		for(int i = 0 ; i < 255 ; i++  ){
+			RemoveTexture(textures[i]);
+		}
 	}
 	ImGuiStop();
 	glfwTerminate();

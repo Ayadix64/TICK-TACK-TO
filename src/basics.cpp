@@ -438,36 +438,46 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 
 u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 	u32 samplerNumber = -1;
-	u32 textureSlot=0;
+	u32 textureSlot=-1;
+	u32 notempty = false;
+
 	for(int i = 0 ; i < ctx->samplerPtr ; i++){
+		notempty=false;
 		for(int ii = 0 ; ii < ctx->maxTexturesSlotsSepurted ; ii++){
-			if(!ctx->samplers[i].texture[ii]){
+			notempty|=ctx->samplers[i].texture[ii];
+			if(!ctx->samplers[i].texture[ii] && samplerNumber==-1 && textureSlot==-1){
 				textureSlot=ii;
 				samplerNumber=i;
-				break;
+				
 			}
+
 		}
 		if(samplerNumber!=-1){break;}
 	}
+		
+
 	if(samplerNumber==-1){
 		if(ctx->samplerCount<=ctx->samplerPtr+1){
 			ctx->samplerCount+=50;
 			ctx->samplers=(TickTextureRendrerStruct*)realloc(ctx->samplers, ctx->samplerCount*sizeof(TickTextureRendrerStruct));
 			
 		}
-		
 		samplerNumber=ctx->samplerPtr;
+		textureSlot=0;
 		memset(ctx->samplers[samplerNumber].texture,0,sizeof(ctx->samplers[samplerNumber].texture));
 		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
 		ctx->samplerPtr++;
+		notempty=true;
 	}
-	
+
 	ctx->samplers[samplerNumber].texture[textureSlot] = GenTexture();
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
 	SetTextureData((u8*)bitmap, w, h, bpp);
 
-	//printf("\nTexture # %d @ slot %d is tooken ",samplerNumber,textureSlot);
-	//fflush(stdout);
+	if(!notempty){
+		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
+	}
+	
 	return samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
 }
 
@@ -549,14 +559,14 @@ void RemoveTexture_ctx(u32 index, TickContext* ctx){
 	CHECK_GL_ERORR(glDeleteTextures(1, &ctx->samplers[sampler].texture[slot]));
 	ctx->samplers[sampler].texture[slot]=0;
 
-	u32 full = false;
+	u32 notempty = false;
 	for(int i = 0 ; i < sizeof(ctx->samplers[sampler].texture) / sizeof(u32);++i){
-		full|=ctx->samplers[sampler].texture[i]; 
-		if(full)break;
+		notempty|=ctx->samplers[sampler].texture[i]; 
+		if(notempty)break;
 	};
 	
 
-	if(!full){
+	if(!notempty){
 		DeletRendrer(&ctx->samplers[sampler].rendrer);
 	}
 	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 
@@ -641,6 +651,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	
 	Render(&context.Shape2D);
 	for(int i = 0 ; i < context.samplerPtr ; i++){
+		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&context.samplers[i]);
 	}
 	
