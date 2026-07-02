@@ -33,6 +33,7 @@ typedef struct{
 	char isIndexChanged;
 }TickRendrerStruct;
 
+
 typedef struct {
 	u32 texture[TICK_MAX_TEXTURE_SLOTS_SEPURTED];
 		
@@ -57,6 +58,10 @@ typedef struct {
 	float Z; // the zed of elements; for evry element been drawn, this will enable drawing batching with drawing ordring for textures
 
 }TickContext;
+
+typedef struct {
+	u32 index , w , h , bpp;
+}TickTexture2D;
 
 
 TickContext TickInit();
