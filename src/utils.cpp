@@ -28,3 +28,45 @@ void readFile(std::string path, std::string& data){
 		
 	return;
 }
+
+
+unsigned long GetFileSize(FILE* fl){
+	if(fl==NULL){
+		printf("err in file\n");
+		return -1;
+	}
+	long prev=ftell(fl);
+	if(fseek(fl, 0L, SEEK_END)==-1){
+		printf("files to fseek");
+		return -1;
+	}
+	unsigned long fileSize = ftell(fl);
+	fseek(fl, prev, SEEK_SET);
+	return fileSize;
+
+}
+
+void* readFile(const char* fileName , unsigned long * sizeOUT){
+	FILE* file = fopen(fileName, "r");
+	if(file==NULL){
+		printf("err in opening file\n");
+		return NULL;
+	}
+	unsigned long fileSz = GetFileSize(file);
+	*sizeOUT=fileSz;
+	
+	if(fileSz!=-1){
+		char* data = (char*)malloc(fileSz);
+		fread(data, fileSz, 1, file);
+		
+		
+		fclose(file);
+		return data;
+	}
+
+	fclose(file);
+	return NULL;
+}
+
+
+

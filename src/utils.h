@@ -75,7 +75,7 @@ void loge(std::string lg , std::string ms = "");
 void Eloge(std::string ms);
 void Wloge(std::string ms);
 void readFile(std::string path, std::string& data);
-	
+void* readFile(const char* fileName , unsigned long * sizeOUT);
 
 
 #endif 

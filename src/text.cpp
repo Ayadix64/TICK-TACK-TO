@@ -1,16 +1,15 @@
 #include "utils.h"
 #include "../include/tick-tack-to.h"
 #include "render.h"
+#define STB_TRUETYPE_IMPLEMENTATION  
+#include "externel/stb_truetype.h"
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 
 extern "C" TickContext g_defultContext;
-
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
 	{0x00, 0x00, 0x18, 0x18, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18},// ! :33
@@ -111,11 +110,19 @@ unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 
 TickFont g_DefaultFont;
 
+void initDefautlFont();
+void FontsInit(){
+	initDefautlFont();
+}
+
+//TODO:
+//you can improvee profoumanse by saving all of theam to a one texture.
+//this will reaquare returning a TickTexture2D , but i assume that is fine
 void initDefautlFont(){
 	loge("INITING THE FONTS");
 	g_DefaultFont.cl=-1;
 	g_DefaultFont.dementions={8,13};
-	g_DefaultFont.fontTextureArray = (u32*)malloc(sizeof(u32)*95);
+	g_DefaultFont.fontTextureArray = (typeof(g_DefaultFont.fontTextureArray))malloc(sizeof(typeof (g_DefaultFont.fontTextureArray[0]))*95);
 	g_DefaultFont.maxChar=126;
 
 	for(int i = 0 ; i < 95; i++){
@@ -133,7 +140,9 @@ void initDefautlFont(){
 			}
 		}
 		
-		g_DefaultFont.fontTextureArray[i]=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
+		g_DefaultFont.fontTextureArray[i].texture=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
+		g_DefaultFont.fontTextureArray[i].w=8;
+		g_DefaultFont.fontTextureArray[i].h=13;
 	}
 }
 
@@ -146,17 +155,115 @@ void DeleteFont_ctx(TickFont*font,TickContext*ctx){
 		Eloge("Invaliad Font");
 		return;
 	}
-	for(int i = 0 ; i < font->maxChar ; i++){
-		RemoveTexture_ctx(font->fontTextureArray[i],ctx);
+	for(int i = 0 ; i < font->maxChar-32 ; i++){
+		RemoveTexture_ctx(font->fontTextureArray[i].texture,ctx);
 	}
 	
 	free(font->fontTextureArray);
 	font->fontTextureArray=NULL;
 	return;
 }
+
 void SetDefaultFont(TickFont* font){
-	DeleteFont(&g_DefaultFont);	
+	DeleteFont(&g_DefaultFont);
+	g_DefaultFont=*font;
 }
+
+TickFont LoadFont(const char* filen,u32 scale, Vec4c cl){
+	return LoadFont_ctx(filen, scale,cl,&g_defultContext);
+}
+TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
+	/*TODO*/
+	TickFont ret;
+	stbtt_fontinfo font;
+	ret.fontTextureArray = (typeof ret.fontTextureArray)malloc(255*sizeof(typeof(ret.fontTextureArray[0])));
+	ret.maxChar=255;
+	ret.dementions={.x=scale,.y=scale};
+	u32 c = (cl.a&0xff) << 24 | (cl.b&0xff)<<16 | (cl.g&0xff) <<8 | cl.r;
+	ret.cl=c;
+	
+	u64 lng;
+	u8* data = (u8*)readFile(filen,&lng);
+	stbtt_InitFont(&font, data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	
+	for(int i = 0 ; i < 255-32 ; i++){
+		int w , h;
+		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
+		if(bitmap && ~(size_t)bitmap){
+			u32 *texture = (u32*)malloc(w*h*sizeof(u32));
+			printf("\n");
+			for(int ii  = 0; ii < w*h ; ii++){
+				if(bitmap[ii]){
+					c&=~(0xff<<24);
+					c|=((cl.a*bitmap[ii]/255)&0xff)<<24;
+					texture[ii] = c ;
+				}else {
+					texture[ii]=0;
+				}
+			}
+			for(int y = 0 ; y < h ; y++){
+				printf("\n");
+				for(int x = 0 ; x < w ; x++){
+					if(texture[y*w+x])printf("#");
+					else printf(" ");
+				}
+			}
+			ret.fontTextureArray[i].texture = LoadTexture(texture, (float)w,(float)h, 4);
+			ret.fontTextureArray[i].w=w;
+			ret.fontTextureArray[i].h=h;
+			
+
+			free(bitmap);
+			free(texture);
+		}else {
+			fprintf(stderr,"[ERORR] cant finde chartcture codepoint %d\n",i);
+		}
+	}
+
+	free(data);
+	return ret;
+}
+
+TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
+	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defultContext);
+}
+TickFont LoadMemFont_ctx(void* fontData,u32 size, u32 scale , Vec4c cl,TickContext* ctx){
+	/*TODO*/
+	TickFont ret;
+	stbtt_fontinfo font;
+	ret.fontTextureArray = (typeof ret.fontTextureArray)malloc(255*sizeof(typeof(ret.fontTextureArray[0])));
+	u32 c = (cl.r&0xff) << 24 | (cl.g&0xff)<<16 | (cl.b&0xff) <<8 | cl.a;
+	ret.cl=c;
+	
+	u64 lng=size;
+	u8* data = (u8*)fontData;
+	stbtt_InitFont(&font, data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	
+	for(int i = 32 ; i < 255 ; i++){
+		int w , h;
+		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i, &w, &h, 0,0);
+		if(bitmap && ~(size_t)bitmap){
+			u32 *texture = (u32*)malloc(w*h*sizeof(u32));
+
+			for(int ii  = 0; ii < w*h ; ii++){
+				if(bitmap[ii]){
+					texture[ii] = c | bitmap[ii];
+				}
+			}
+			ret.fontTextureArray[i].texture = LoadTexture(texture, w,h, 4);
+			ret.fontTextureArray[i].w=w;
+			ret.fontTextureArray[i].h=h;
+
+			free(bitmap);
+			free(texture);
+		}else {
+			fprintf(stderr,"[ERORR] cant finde chartcture codepoint %d\n",i);
+		}
+	}
+
+	return ret;	
+}
+
 
 void DrawText(const char* text , float x, float y){
 	DrawText_WH(text, x, y,g_DefaultFont.dementions.x,g_DefaultFont.dementions.y);
@@ -167,19 +274,27 @@ void DrawText(const char* text , float x, float y){
 void DrawText_WH(const char* text , float x, float y , float w , float h){
 	float xx = x;
 	for(int i = 0 ; text[i]; i++){
+		int ww = g_DefaultFont.fontTextureArray[text[i]-32].w;
+		int hh = g_DefaultFont.fontTextureArray[text[i]-32].h;
 		if(text[i]== '\n'){
 			y+=h;
 			xx=x;
 			continue;
-		}else if(text[i]>g_DefaultFont.maxChar){
-			DrawTexture(g_DefaultFont.fontTextureArray['?'-32], x,y, w, h);
+		}
+		else if(text[i]== ' '){
+			xx+=w;
+			continue;
+		}
+		else if(text[i]>g_DefaultFont.maxChar){
+			DrawTexture(g_DefaultFont.fontTextureArray['?'-32].texture, x,y, ww, hh);
 
 		}else if(text[i]<32){continue;}
 
 		else {
-			DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32], xx,y, w, h);
+			DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32].texture, xx,y, ww, hh);
 		}
-		xx+=w;
+		xx+=ww;
 	}
 	return;
 }
+

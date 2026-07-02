@@ -176,28 +176,25 @@ int main(){
 	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
 	u8 animation=0;
 	int adder=1;
-	u32 textures[512];
-	
+	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
+	SetDefaultFont(&fira);	
 	
 	while(!glfwWindowShouldClose(window) ){
 		
-	//	system("clear");
-		
-		/*for(int i = 0 ; i < 255 ; i++ ){
+		for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((abs((i+animation)-255/2)*2)&0xff) << 24 | 
 					 ((abs((i+animation)-255/2)*2)&0xff) << 16 |
 					 ((abs((i+animation)-255/2)*2)&0xff) << 8  |
 					  (abs((i+animation)-255/2)*2)&0xff;
 				image[i*320+ii] = cl;
-			}
-		}*/
-		for( u32 l = 0 ; l < 255 ; l++){// i will not recomand this, you are killing your gpu
-			textures[l] = LoadTexture(image, 320, 200, 4);
+		 	}
 		}
-		if(animation==255)adder=-1;
+				if(animation==255)adder=-1;
 		if(animation==0)adder=1;
 		animation+=adder;
+		
+
 		ImGuiNewFrame();
 		TickNewFrame();
 
@@ -241,9 +238,6 @@ int main(){
 			}
 		}
 		
-		for(int ii = 0 ;ii < 256 ;ii++){
-			DrawTexture(textures[ii], x, y,  200, 200);
-		}
 		
 		glfwMakeContextCurrent(window);
 		//DrawTexture(ertheRise,x, y, 200, 200);
@@ -258,23 +252,21 @@ int main(){
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
 		DrawTexture(animatedTextutr, x,y, 200, 200);
-		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,255});
-		DrawText("this is a text, or is it? is it ? butiful", 500, 100);
+
+		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
+		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,155});
+
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
-		DrawText("the fast quick fox jump over the lazy slow dog", 300, 300);
-		//DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 300, 300);
+		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 400, 300);
+		
 		TickRendre(window);
 		
-		//GoodOldTesting();
-		//TickRendre_ctx(window,&window1TickContex);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//usleep(1000000);
-		for(int i = 0 ; i < 255 ; i++  ){
-			RemoveTexture(textures[i]);
-		}
+		
 	}
 	ImGuiStop();
 	glfwTerminate();
