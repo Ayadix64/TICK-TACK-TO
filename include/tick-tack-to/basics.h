@@ -115,7 +115,7 @@ TickTexture2D LoadTextureFromeFile  (const char * fileName);// load a texture fr
 
 void DrawTexture(TickTexture2D index,float x , float y , float w,  float h );
 void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh );
-void DrawTextureSegmentExtended(TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 );
+void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 );
 
 void RemoveTexture(TickTexture2D* index);
 void ReloadTextureFromeFile(TickTexture2D *index, const char* fileName);
@@ -128,8 +128,8 @@ TickTexture2D LoadTextureFromeFile_ctx  (const char * fileName, TickContext *ctx
 
 void DrawTexture_ctx           (TickTexture2D index,float x , float y , float w,  float h , TickContext* ctx);
 void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx);
-void DrawTextureSegmentExtended_ctx     (TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 
-		                        , Vec2f v3 , Vec2f v4 , TickContext* ctx);
+void DrawTextureSegmentExtended_ctx     (TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 ,
+					 Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4, TickContext* ctx);
 
 void ReloadTexture_ctx         (TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx);
 void ReloadTextureFromeFile_ctx(TickTexture2D* index, const char* fileName, TickContext* ctx);
