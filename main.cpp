@@ -165,15 +165,15 @@ int main(){
 	float scale = 1.0f;
 	u32 image[320*255]{0xffffffff};
 	
-	u32 ertheRise = LoadTextureFromeFile("NASA-Apollo8-Dec24-Earthrise.jpg");
-	u32 otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
+	TickTexture2D ertheRise = LoadTextureFromeFile("NASA-Apollo8-Dec24-Earthrise.jpg");
+	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((i)&0xff) << 24 | ((i)&0xff) << 16 | ((i)&0xff) << 8 | (i)&0xff;
 				image[i*320+ii] = cl;
 			}
 		}
-	u32 animatedTextutr=LoadTexture(image, 320, 200, 4);
+	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
 	u8 animation=0;
 	int adder=1;
 	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});

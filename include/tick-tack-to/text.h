@@ -5,7 +5,10 @@
 typedef struct {
 	Vec2i dementions;
 	u32 maxChar;
-	struct {u32 w, h , texture;} *fontTextureArray;
+	struct {
+		TickTexture2D texture;
+		u32 w, h;
+	} *fontTextureArray;
 	u32 cl;	
 }TickFont;
 

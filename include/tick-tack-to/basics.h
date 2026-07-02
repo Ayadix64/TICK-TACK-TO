@@ -7,7 +7,7 @@
 
 #define TICK_TOP_Z 1.0f  //the top z level
 #define TICK_BUTTOM_Z 0.0f //the buttom z level
-#define TICK_Z_OFSSET 0.000001f // the amount of Z getting reduced in evry draw
+#define TICK_Z_OFSSET 0.0000001f // the amount of Z getting reduced in evry draw
 #define TICK_MAX_DRAWING TICK_TOP_Z/TICK_Z_OFSSET
 
 
@@ -67,6 +67,13 @@ typedef struct {
 TickContext TickInit();
 TickContext*GetDefaultContext();
 
+void TickNewFrame();
+void TickRendre(GLFWwindow* window);
+
+void TickNewFrame_ctx(TickContext* context);
+void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
+
+
 
 void SetScaleX(float scale);
 void SetScaleY(float scale);
@@ -80,6 +87,7 @@ void SetScale_ctx(TickContext* ctx, float scale);//...
 
 
 
+
 void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1___v2
 									  //  |   |
 									  //  |   |
@@ -90,9 +98,6 @@ void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
 void DrawCircle(float x , float y , float r, float steps , Vec4c cl);
-void TickNewFrame();
-void TickRendre(GLFWwindow* window);
-
 
 void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl,TickContext* ctx);
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx);
@@ -101,24 +106,33 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,Tic
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
 void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
-void TickNewFrame_ctx(TickContext* context);
-void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
 
 
 
-u32  LoadTexture(void* bitmap,float w, float h, u32 bpp);// load the texture to integer
-u32  LoadTextureFromeFile(const char * fileName);// load a texture from a file
-void DrawTexture(u32 index,float x , float y , float w,  float h );
-void RemoveTexture(u32 index);
-void ReloadTextureFromeFile(u32 index, const char* fileName);
-void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp );
+
+TickTexture2D LoadTexture           (void* bitmap,float w, float h, u32 bpp);// load the texture to integer
+TickTexture2D LoadTextureFromeFile  (const char * fileName);// load a texture from a file
+
+void DrawTexture(TickTexture2D index,float x , float y , float w,  float h );
+void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh );
+void DrawTextureSegmentExtended(TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 );
+
+void RemoveTexture(TickTexture2D* index);
+void ReloadTextureFromeFile(TickTexture2D *index, const char* fileName);
+void ReloadTexture(TickTexture2D *index, void* data,u32 w , u32 h , u32 bpp );
 
 
-u32  LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx);
-u32  LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx);
-void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx);
-void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx);
-void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx);
-void RemoveTexture_ctx(u32 index, TickContext* ctx);
+
+TickTexture2D LoadTexture_ctx           (void* bitmap,float w, float h, u32 bpp, TickContext* ctx);
+TickTexture2D LoadTextureFromeFile_ctx  (const char * fileName, TickContext *ctx);
+
+void DrawTexture_ctx           (TickTexture2D index,float x , float y , float w,  float h , TickContext* ctx);
+void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx);
+void DrawTextureSegmentExtended_ctx     (TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 
+		                        , Vec2f v3 , Vec2f v4 , TickContext* ctx);
+
+void ReloadTexture_ctx         (TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx);
+void ReloadTextureFromeFile_ctx(TickTexture2D* index, const char* fileName, TickContext* ctx);
+void RemoveTexture_ctx         (TickTexture2D* index, TickContext* ctx);
 
 #endif

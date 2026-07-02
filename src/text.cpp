@@ -156,7 +156,7 @@ void DeleteFont_ctx(TickFont*font,TickContext*ctx){
 		return;
 	}
 	for(int i = 0 ; i < font->maxChar-32 ; i++){
-		RemoveTexture_ctx(font->fontTextureArray[i].texture,ctx);
+		RemoveTexture_ctx(&font->fontTextureArray[i].texture,ctx);
 	}
 	
 	free(font->fontTextureArray);
@@ -176,15 +176,33 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 	/*TODO*/
 	TickFont ret;
 	stbtt_fontinfo font;
+	
+	u64 lng;
+	u8* data = (u8*)readFile(filen,&lng);
+	if(!data){
+		fprintf(stderr, "[ERORR] cant load font \"%s\", file curepted or not exiset or not allawed to use it.\n",filen);
+		return g_DefaultFont;
+	}
+	ret = LoadMemFont(data, lng, scale, cl);
+	free(data);
+	return ret;
+}
+
+TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
+	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defultContext);
+}
+TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* ctx){
+	/*TODO*/
+	TickFont ret;
+	stbtt_fontinfo font;
 	ret.fontTextureArray = (typeof ret.fontTextureArray)malloc(255*sizeof(typeof(ret.fontTextureArray[0])));
 	ret.maxChar=255;
 	ret.dementions={.x=scale,.y=scale};
 	u32 c = (cl.a&0xff) << 24 | (cl.b&0xff)<<16 | (cl.g&0xff) <<8 | cl.r;
 	ret.cl=c;
 	
-	u64 lng;
-	u8* data = (u8*)readFile(filen,&lng);
-	stbtt_InitFont(&font, data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	
+	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
 	
 	for(int i = 0 ; i < 255-32 ; i++){
 		int w , h;
@@ -212,47 +230,6 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 			ret.fontTextureArray[i].w=w;
 			ret.fontTextureArray[i].h=h;
 			
-
-			free(bitmap);
-			free(texture);
-		}else {
-			fprintf(stderr,"[ERORR] cant finde chartcture codepoint %d\n",i);
-		}
-	}
-
-	free(data);
-	return ret;
-}
-
-TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
-	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defultContext);
-}
-TickFont LoadMemFont_ctx(void* fontData,u32 size, u32 scale , Vec4c cl,TickContext* ctx){
-	/*TODO*/
-	TickFont ret;
-	stbtt_fontinfo font;
-	ret.fontTextureArray = (typeof ret.fontTextureArray)malloc(255*sizeof(typeof(ret.fontTextureArray[0])));
-	u32 c = (cl.r&0xff) << 24 | (cl.g&0xff)<<16 | (cl.b&0xff) <<8 | cl.a;
-	ret.cl=c;
-	
-	u64 lng=size;
-	u8* data = (u8*)fontData;
-	stbtt_InitFont(&font, data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
-	
-	for(int i = 32 ; i < 255 ; i++){
-		int w , h;
-		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i, &w, &h, 0,0);
-		if(bitmap && ~(size_t)bitmap){
-			u32 *texture = (u32*)malloc(w*h*sizeof(u32));
-
-			for(int ii  = 0; ii < w*h ; ii++){
-				if(bitmap[ii]){
-					texture[ii] = c | bitmap[ii];
-				}
-			}
-			ret.fontTextureArray[i].texture = LoadTexture(texture, w,h, 4);
-			ret.fontTextureArray[i].w=w;
-			ret.fontTextureArray[i].h=h;
 
 			free(bitmap);
 			free(texture);
