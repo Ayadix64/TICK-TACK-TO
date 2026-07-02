@@ -394,8 +394,8 @@ void DrawTexture(TickTexture2D index,float x , float y , float w,  float h ){
 void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh ){
 	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defultContext);//heh, did you know that you can do that?
 }
-void DrawTextureSegmentExtended(TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 ){
-	return DrawTextureSegmentExtended_ctx(texture, x, y, w, h, v1, v2, v3, v4, &g_defultContext);
+void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4, Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 ){
+	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4, &g_defultContext);
 }
 
 
@@ -448,11 +448,11 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 
 
 void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx){
-	DrawTextureSegmentExtended_ctx(texture, x, y, w, h, {xx,yy}, {xx+ww,yy}, {xx,yy+hh}, {xx+ww,yy+hh}, ctx);		
+	DrawTextureSegmentExtended_ctx(texture, {x,y}, {x+w,y},{x,y+h}, {x+w,y+h}, {xx,yy}, {xx+ww,yy}, {xx,yy+hh}, {xx+ww,yy+hh}, ctx);		
 }
 
-void DrawTextureSegmentExtended_ctx(TickTexture2D texture,float x , float y  , float w, float h , 
-		                    Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 , TickContext* ctx)
+void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , 
+		                    Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 , TickContext* ctx)
 
 {
 	ctx->Z-=TICK_Z_OFSSET;
@@ -469,15 +469,15 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,float x , float y  , f
 		0,1,2,
 		2,3,1
 	};
-	Vec2f segmentveteces[4]= {{v1.x/(float)texture.w,v1.y/(float)texture.h},
-				  {v2.x/(float)texture.w,v2.y/(float)texture.h},
-				  {v3.x/(float)texture.w,v3.y/(float)texture.h},
-				  {v4.x/(float)texture.w,v4.y/(float)texture.h}};
+	Vec2f segmentveteces[4]= {{tc1.x/(float)texture.w,tc1.y/(float)texture.h},
+				  {tc2.x/(float)texture.w,tc2.y/(float)texture.h},
+				  {tc3.x/(float)texture.w,tc3.y/(float)texture.h},
+				  {tc4.x/(float)texture.w,tc4.y/(float)texture.h}};
 	float verteces[]{ 
-		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
-		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y, 
-		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y,
-		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
+		v1.x,v1.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
+		v2.x,v2.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
+		v3.x,v3.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
+		v4.x,v4.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
 	};//textures are weard, they are truely are
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float),indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
 	

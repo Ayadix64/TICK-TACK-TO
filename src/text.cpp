@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
+#define ENDPOINTS_SEPURTED 255 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 
 extern "C" TickContext g_defultContext;
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
@@ -122,28 +122,25 @@ void initDefautlFont(){
 	loge("INITING THE FONTS");
 	g_DefaultFont.cl=-1;
 	g_DefaultFont.dementions={8,13};
-	g_DefaultFont.fontTextureArray = (typeof(g_DefaultFont.fontTextureArray))malloc(sizeof(typeof (g_DefaultFont.fontTextureArray[0]))*95);
+	g_DefaultFont.CharcturesArray = (typeof(g_DefaultFont.CharcturesArray))malloc(sizeof(typeof (g_DefaultFont.CharcturesArray[0]))*95);
 	g_DefaultFont.maxChar=126;
-
+	u32* texture = (u32*)malloc(8*13*95*sizeof(u32));
 	for(int i = 0 ; i < 95; i++){
-		u32 LetterBitmap[13][8];
-		memset(&LetterBitmap[0][0], 0, sizeof(LetterBitmap));
-		fflush(stdout);
-		
 		for(int y = 0 ; y < 13 ; y++ ){
 			for(int x = 0 ; x < 8 ; x++){
 				if(defultFontBM[i][12-y]&(1<<(7-x))){
-					LetterBitmap[y][x]=g_DefaultFont.cl;	
+					texture[y*95*8+x+i*8]=g_DefaultFont.cl;	
 				}else {
-					LetterBitmap[y][x]=0;
+					texture[y*95*8+x+i*8]=0;
 				}
 			}
 		}
 		
-		g_DefaultFont.fontTextureArray[i].texture=LoadTexture(&LetterBitmap[0][0], 8, 13, 4);
-		g_DefaultFont.fontTextureArray[i].w=8;
-		g_DefaultFont.fontTextureArray[i].h=13;
+		g_DefaultFont.CharcturesArray[i].w=8;
+		g_DefaultFont.CharcturesArray[i].h=13;
+		g_DefaultFont.CharcturesArray[i].tcx=i*8;
 	}
+	g_DefaultFont.texture=LoadTexture(texture, 95*8, 13, 4);
 }
 
 void DeleteFont(TickFont*font){
@@ -151,21 +148,21 @@ void DeleteFont(TickFont*font){
 }
 
 void DeleteFont_ctx(TickFont*font,TickContext*ctx){
-	if(!font->fontTextureArray){
+	if(!font->CharcturesArray){
 		Eloge("Invaliad Font");
 		return;
 	}
-	for(int i = 0 ; i < font->maxChar-32 ; i++){
-		RemoveTexture_ctx(&font->fontTextureArray[i].texture,ctx);
-	}
+	RemoveTexture_ctx(&g_DefaultFont.texture,ctx);
 	
-	free(font->fontTextureArray);
-	font->fontTextureArray=NULL;
+	free(font->CharcturesArray);
+	font->CharcturesArray=NULL;
 	return;
 }
 
 void SetDefaultFont(TickFont* font){
-	DeleteFont(&g_DefaultFont);
+	if(memcmp(font,&g_DefaultFont,sizeof(TickFont))){
+		DeleteFont(&g_DefaultFont);
+	}
 	g_DefaultFont=*font;
 }
 
@@ -175,8 +172,6 @@ TickFont LoadFont(const char* filen,u32 scale, Vec4c cl){
 TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 	/*TODO*/
 	TickFont ret;
-	stbtt_fontinfo font;
-	
 	u64 lng;
 	u8* data = (u8*)readFile(filen,&lng);
 	if(!data){
@@ -195,49 +190,58 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	/*TODO*/
 	TickFont ret;
 	stbtt_fontinfo font;
-	ret.fontTextureArray = (typeof ret.fontTextureArray)malloc(255*sizeof(typeof(ret.fontTextureArray[0])));
-	ret.maxChar=255;
+	ret.CharcturesArray = (typeof ret.CharcturesArray)malloc(((ENDPOINTS_SEPURTED-32))*sizeof(typeof(ret.CharcturesArray[0])));
+	
 	ret.dementions={.x=scale,.y=scale};
 	u32 c = (cl.a&0xff) << 24 | (cl.b&0xff)<<16 | (cl.g&0xff) <<8 | cl.r;
 	ret.cl=c;
 	
 	
 	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	u32 texturewidth=0, textureheigth=0;
+	u32 xoffset=0;
+	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 ; i++){
+		int w =0, h=0;
+		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
+		if(bitmap){
+			texturewidth+=w;
+			if(h>textureheigth){
+				textureheigth=h;
+			}			
+		}
+		ret.CharcturesArray[i].tcx=xoffset;//if some how the encoding errorr out (i dont know how ttf works btw) w & h will be zero, so just ignord
+		ret.CharcturesArray[i].w=w;
+		ret.CharcturesArray[i].h=h;
+		xoffset+=w;
+		free(bitmap);
+
+	}
+	xoffset=0;
+	u32 * texture = (u32*)malloc(texturewidth*textureheigth*sizeof(u32));
 	
-	for(int i = 0 ; i < 255-32 ; i++){
+	for(int i = 0 ; i < ENDPOINTS_SEPURTED-32 ; i++){
 		int w , h;
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
 		if(bitmap && ~(size_t)bitmap){
-			u32 *texture = (u32*)malloc(w*h*sizeof(u32));
-			printf("\n");
-			for(int ii  = 0; ii < w*h ; ii++){
-				if(bitmap[ii]){
-					c&=~(0xff<<24);
-					c|=((cl.a*bitmap[ii]/255)&0xff)<<24;
-					texture[ii] = c ;
-				}else {
-					texture[ii]=0;
-				}
-			}
 			for(int y = 0 ; y < h ; y++){
-				printf("\n");
 				for(int x = 0 ; x < w ; x++){
-					if(texture[y*w+x])printf("#");
-					else printf(" ");
+					if(bitmap[y*w+x]){
+						c&=~(0xff<<24);
+						c|=(((bitmap[y*w+x]*cl.a)/255)&0xff)<<24;
+						texture[y*texturewidth+x+xoffset]=c;
+					}else{
+						texture[y*texturewidth+x+xoffset]=0;
+					}
 				}
 			}
-			ret.fontTextureArray[i].texture = LoadTexture(texture, (float)w,(float)h, 4);
-			ret.fontTextureArray[i].w=w;
-			ret.fontTextureArray[i].h=h;
-			
-
+			xoffset+=w;
 			free(bitmap);
-			free(texture);
 		}else {
 			fprintf(stderr,"[ERORR] cant finde chartcture codepoint %d\n",i);
 		}
 	}
-
+	ret.texture = LoadTexture(texture, texturewidth, textureheigth, 4);
+	free(texture);
 	return ret;	
 }
 
@@ -251,8 +255,9 @@ void DrawText(const char* text , float x, float y){
 void DrawText_WH(const char* text , float x, float y , float w , float h){
 	float xx = x;
 	for(int i = 0 ; text[i]; i++){
-		int ww = g_DefaultFont.fontTextureArray[text[i]-32].w;
-		int hh = g_DefaultFont.fontTextureArray[text[i]-32].h;
+		u32 ww = g_DefaultFont.CharcturesArray[text[i]-32].w;
+		u32 hh = g_DefaultFont.CharcturesArray[text[i]-32].h;
+		u32 tcx = g_DefaultFont.CharcturesArray[text[i]-32].tcx;
 		if(text[i]== '\n'){
 			y+=h;
 			xx=x;
@@ -263,12 +268,15 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 			continue;
 		}
 		else if(text[i]>g_DefaultFont.maxChar){
-			DrawTexture(g_DefaultFont.fontTextureArray['?'-32].texture, x,y, ww, hh);
+			//DrawTexture(g_DefaultFont.fontTextureArray['?'-32].texture, x,y, ww, hh);
+			ww = g_DefaultFont.CharcturesArray['?'-32].w;
+			hh = g_DefaultFont.CharcturesArray['?'-32].h;
+			tcx= g_DefaultFont.CharcturesArray['?'-32].tcx;
 
+			DrawTextureSegment(g_DefaultFont.texture, xx, y, ww, hh, tcx, 0, ww, hh);
 		}else if(text[i]<32){continue;}
-
 		else {
-			DrawTexture(g_DefaultFont.fontTextureArray[text[i]-32].texture, xx,y, ww, hh);
+			DrawTextureSegment(g_DefaultFont.texture, xx, y, ww, hh, tcx, 0, ww, hh);
 		}
 		xx+=ww;
 	}
