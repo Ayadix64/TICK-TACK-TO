@@ -381,39 +381,50 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 
 
 
-u32 LoadTexture(void* bitmap,float w, float h, u32 bpp){
+TickTexture2D LoadTexture(void* bitmap,float w, float h, u32 bpp){
 	return LoadTexture_ctx(bitmap,w, h, bpp, &g_defultContext);
 }
-u32 LoadTextureFromeFile(const char * fileName){
+TickTexture2D LoadTextureFromeFile(const char * fileName){
 	return LoadTextureFromeFile_ctx(fileName, &g_defultContext);
 }
-void DrawTexture(u32 index,float x , float y , float w,  float h ){
+void DrawTexture(TickTexture2D index,float x , float y , float w,  float h ){
 	DrawTexture_ctx(index, x, y, w,  h, &g_defultContext);
 	return;
 }
-void RemoveTexture(u32 index){
+void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh ){
+	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defultContext);//heh, did you know that you can do that?
+}
+void DrawTextureSegmentExtended(TickTexture2D texture,float x , float y  , float w, float h , Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 ){
+	return DrawTextureSegmentExtended_ctx(texture, x, y, w, h, v1, v2, v3, v4, &g_defultContext);
+}
+
+
+
+void RemoveTexture(TickTexture2D* index){
 	RemoveTexture_ctx(index, &g_defultContext);
 	return;
 }
 
-void ReloadTextureFromeFile(u32 index, const char* fileName){
+void ReloadTextureFromeFile(TickTexture2D* index, const char* fileName){
 	ReloadTextureFromeFile_ctx(index, fileName, &g_defultContext);
 	return;
 }
 
-void ReloadTexture(u32 index, void* data,u32 w , u32 h , u32 bpp ){
+void ReloadTexture(TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp ){
 	ReloadTexture_ctx(index, data, w, h, bpp, &g_defultContext);
 	return;
 }
 
 
 
-void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickContext* ctx){
+
+
+void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h , TickContext* ctx){
 	
 	ctx->Z-=TICK_Z_OFSSET;
-	int sampler = index/ctx->maxTexturesSlotsSepurted;
-	int slot = index%ctx->maxTexturesSlotsSepurted;
-	if(index==-1 || 
+	int sampler = texture.index/ctx->maxTexturesSlotsSepurted;
+	int slot = texture.index%ctx->maxTexturesSlotsSepurted;
+	if(texture.index==-1 || 
 	  sampler >= ctx->samplerPtr ||
 	  !(ctx->samplers[sampler].texture[slot])){
 		Eloge("Unvaliad Texture");
@@ -436,7 +447,49 @@ void DrawTexture_ctx(u32 index,float x , float y , float w,  float h , TickConte
 
 
 
-u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
+void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx){
+	DrawTextureSegmentExtended_ctx(texture, x, y, w, h, {xx,yy}, {xx+ww,yy}, {xx,yy+hh}, {xx+ww,yy+hh}, ctx);		
+}
+
+void DrawTextureSegmentExtended_ctx(TickTexture2D texture,float x , float y  , float w, float h , 
+		                    Vec2f v1 , Vec2f v2 , Vec2f v3 , Vec2f v4 , TickContext* ctx)
+
+{
+	ctx->Z-=TICK_Z_OFSSET;
+	int sampler = texture.index/ctx->maxTexturesSlotsSepurted;
+	int slot = texture.index%ctx->maxTexturesSlotsSepurted;
+	if(texture.index==-1 || 
+	  sampler >= ctx->samplerPtr ||
+	  !(ctx->samplers[sampler].texture[slot])){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	u32 indeces[6]{
+		0,1,2,
+		2,3,1
+	};
+	Vec2f segmentveteces[4]= {{v1.x/(float)texture.w,v1.y/(float)texture.h},
+				  {v2.x/(float)texture.w,v2.y/(float)texture.h},
+				  {v3.x/(float)texture.w,v3.y/(float)texture.h},
+				  {v4.x/(float)texture.w,v4.y/(float)texture.h}};
+	float verteces[]{ 
+		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
+		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
+		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
+		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
+	};
+	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float),indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
+	
+	
+}
+
+
+
+
+
+TickTexture2D LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
+	TickTexture2D ret;
 	u32 samplerNumber = -1;
 	u32 textureSlot=-1;
 	u32 notempty = false;
@@ -477,35 +530,36 @@ u32 LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContext* ctx){
 	if(!notempty){
 		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
 	}
-	
-	return samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
+	ret.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
+	ret={.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot,
+	     .w=(u32)w,.h=(u32)h,.bpp=bpp};
+	return ret;//samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
 }
 
 
 
 
-
-u32 LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
+TickTexture2D LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
 	int w,h,bpp;
-
+	TickTexture2D ret{.index=(u32)-1};
 	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
 	if(!pb){
 		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
-		return -1;
+		return ret;
 	}	
 
-	int index = LoadTexture_ctx(pb, w,h,  4, ctx);	
+	ret = LoadTexture_ctx(pb, w,h,  4, ctx);	
 	stbi_image_free(pb);
 	
-	return index;
+	return ret;
 }
 
 
 
-void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx){
-	int sampler = index/ctx->maxTexturesSlotsSepurted;
-	int slot = index%ctx->maxTexturesSlotsSepurted;
-	if(index==-1 || 
+void ReloadTexture_ctx(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx){
+	int sampler = texture->index/ctx->maxTexturesSlotsSepurted;
+	int slot = texture->index%ctx->maxTexturesSlotsSepurted;
+	if(texture->index==-1 || 
 	   sampler >= ctx->samplerPtr ||
 	  !(ctx->samplers[sampler].texture[slot])){
 		Eloge("Unvaliad Texture");
@@ -514,15 +568,16 @@ void ReloadTexture_ctx(u32 index, void* data,u32 w , u32 h , u32 bpp , TickConte
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[slot]));
 	SetTextureData((u8*)data, w, h, bpp);
+	*texture={.w=w,.h=h,.bpp=bpp};
 	return;
 }
 
 
-void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ctx){
-	int sampler = index/ctx->maxTexturesSlotsSepurted;
+void ReloadTextureFromeFile_ctx(TickTexture2D* texture, const char* fileName, TickContext* ctx){
+	int sampler = texture->index/ctx->maxTexturesSlotsSepurted;
 	
-	u32 textureSlot = index%ctx->maxTexturesSlotsSepurted;
-	if(index==-1 || 
+	u32 textureSlot = texture->index%ctx->maxTexturesSlotsSepurted;
+	if(texture->index==-1 || 
 	  sampler >= ctx->samplerPtr ||
 	  !ctx->samplers[sampler].texture[textureSlot]){
 		Eloge("Unvaliad Texture");
@@ -535,20 +590,17 @@ void ReloadTextureFromeFile_ctx(u32 index, const char* fileName, TickContext* ct
 		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
 		return;
 	}
-	
-	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[textureSlot]));
-	SetTextureData((u8*)pb, w, h, 4);
-	stbi_image_free(pb);
+	ReloadTexture_ctx(texture, pb,  w, h, 4, ctx);
 	return;
 }
 
 
 
-void RemoveTexture_ctx(u32 index, TickContext* ctx){
-	int sampler = index/ctx->maxTexturesSlotsSepurted;
+void RemoveTexture_ctx(TickTexture2D* texture, TickContext* ctx){
+	int sampler = texture->index/ctx->maxTexturesSlotsSepurted;
 	
-	u32 slot = index%ctx->maxTexturesSlotsSepurted;
-	if(index==-1 || 
+	u32 slot = texture->index%ctx->maxTexturesSlotsSepurted;
+	if(texture->index==-1 || 
 	  sampler >= ctx->samplerPtr ||
 	  !ctx->samplers[sampler].texture[slot]){
 		Eloge("Unvaliad Texture");
@@ -569,6 +621,7 @@ void RemoveTexture_ctx(u32 index, TickContext* ctx){
 	if(!notempty){
 		DeletRendrer(&ctx->samplers[sampler].rendrer);
 	}
+	*texture={(u32)-1,(u32)-1,(u32)-1,(u32)-1};
 	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 
 	//return a texture object becuse we want to use all the avliable slots for max profourmence
 	//it is a traide of betwen gpu profourmence and tiny system memory
