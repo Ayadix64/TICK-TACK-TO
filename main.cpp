@@ -245,13 +245,14 @@ int main(){
 			DrawTexture(animatedTextutr, 0,0, 200, 200);
 		}
 		for(int i = 0 ; i < 512 ; i++){
-			DrawTexture(animatedTextutr, 200,200, 200, 200);
+			//DrawTexture(animatedTextutr, 200,200, 200, 200);
 		}
 		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
 		DrawTexture(animatedTextutr, x,y, 200, 200);
+		DrawTextureSegmentExtended(animatedTextutr, 300, 300, 200, 200, {000, 000},{100, 0},{0,100},{200,200});
 
 		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,155});
