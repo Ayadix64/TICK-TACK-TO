@@ -475,10 +475,10 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,float x , float y  , f
 				  {v4.x/(float)texture.w,v4.y/(float)texture.h}};
 	float verteces[]{ 
 		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
-		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
-		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
+		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y, 
+		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y,
 		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
-	};
+	};//textures are weard, they are truely are
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float),indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
 	
 	
