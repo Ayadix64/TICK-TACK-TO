@@ -3,13 +3,12 @@
 #include "utils.h"
 #include "basics.h"
 typedef struct {
-	Vec2i dementions;
 	u32 maxChar;
-
+	u32 scale;
 	TickTexture2D texture;
 	
 	struct {
-		u32 w, h;
+		u32 w, h,yoffset;
 		u32 tcx;
 
 	} *CharcturesArray;

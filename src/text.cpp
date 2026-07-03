@@ -121,7 +121,7 @@ void FontsInit(){
 void initDefautlFont(){
 	loge("INITING THE FONTS");
 	g_DefaultFont.cl=-1;
-	g_DefaultFont.dementions={8,13};
+	g_DefaultFont.scale=13;
 	g_DefaultFont.CharcturesArray = (typeof(g_DefaultFont.CharcturesArray))malloc(sizeof(typeof (g_DefaultFont.CharcturesArray[0]))*95);
 	g_DefaultFont.maxChar=126;
 	u32* texture = (u32*)malloc(8*13*95*sizeof(u32));
@@ -192,17 +192,25 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	stbtt_fontinfo font;
 	ret.CharcturesArray = (typeof ret.CharcturesArray)malloc(((ENDPOINTS_SEPURTED-32))*sizeof(typeof(ret.CharcturesArray[0])));
 	
-	ret.dementions={.x=scale,.y=scale};
+	ret.scale=scale;
 	u32 c = (cl.a&0xff) << 24 | (cl.b&0xff)<<16 | (cl.g&0xff) <<8 | cl.r;
 	ret.cl=c;
 	
 	
 	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0;
+
+   	//scale = stbtt_ScaleForPixelHeight(&font, scale);
 	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 ; i++){
-		int w =0, h=0;
-		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
+		int w =0, h=0 , y0=0,x0=0;
+		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h,&x0 ,&y0);
+      		int advance,lsb;
+		stbtt_GetCodepointHMetrics(&font, i+32, &advance, &lsb);
+		//w=advance*scale;
+		printf("\"%c\": %d\n",i+32,w);
+		ret.CharcturesArray[i].yoffset=y0;
 		if(bitmap){
 			texturewidth+=w;
 			if(h>textureheigth){
@@ -247,7 +255,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 
 
 void DrawText(const char* text , float x, float y){
-	DrawText_WH(text, x, y,g_DefaultFont.dementions.x,g_DefaultFont.dementions.y);
+	DrawText_WH(text, x, y,g_DefaultFont.scale,g_DefaultFont.scale);
 	return;
 }
 
@@ -258,13 +266,14 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 		u32 ww = g_DefaultFont.CharcturesArray[text[i]-32].w;
 		u32 hh = g_DefaultFont.CharcturesArray[text[i]-32].h;
 		u32 tcx = g_DefaultFont.CharcturesArray[text[i]-32].tcx;
+		int yoff = g_DefaultFont.CharcturesArray[text[i]-32].yoffset;
 		if(text[i]== '\n'){
 			y+=h;
 			xx=x;
 			continue;
 		}
 		else if(text[i]== ' '){
-			xx+=w;
+			xx+=w/4;
 			continue;
 		}
 		else if(text[i]>g_DefaultFont.maxChar){
@@ -276,7 +285,7 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 			DrawTextureSegment(g_DefaultFont.texture, xx, y, ww, hh, tcx, 0, ww, hh);
 		}else if(text[i]<32){continue;}
 		else {
-			DrawTextureSegment(g_DefaultFont.texture, xx, y, ww, hh, tcx, 0, ww, hh);
+			DrawTextureSegment(g_DefaultFont.texture, xx, y+yoff, ww, hh, tcx, 0, ww, hh);
 		}
 		xx+=ww;
 	}
