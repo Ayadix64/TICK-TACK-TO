@@ -97,6 +97,19 @@ void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
 void DrawCircle(float x , float y , float r, float steps , Vec4c cl);
+void DrawCircleSegment(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl);
+/*	startDegree (0° on this case)
+ *      __
+ *      | ^,   the segmentDgree(90° in this case)
+ *     r|   \
+ *     y|___|
+ * 	x
+ * hope that this is straid forwared*/
+void DrawRoundedRectangel(float x, float y , float w , float h,float r , float segments ,Vec4c cl);
+
+
+
+
 
 void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl,TickContext* ctx);
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx);
@@ -105,6 +118,15 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,Tic
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
 void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl,TickContext* ctx);
+void DrawCircleSegment_ctx(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl, TickContext* ctx);
+/*	startDegree (0° on this case)
+ *      __
+ *      | ^,   the segmentDgree(90° in this case)
+ *     r|   \
+ *     y|___|
+ * 	x
+ * hope that this is straid forwared*/
+void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , float segments ,Vec4c cl,TickContext* ctx);
 
 
 
