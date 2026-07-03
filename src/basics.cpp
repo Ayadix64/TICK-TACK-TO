@@ -568,7 +568,9 @@ void ReloadTexture_ctx(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bp
 	
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[sampler].texture[slot]));
 	SetTextureData((u8*)data, w, h, bpp);
-	*texture={.w=w,.h=h,.bpp=bpp};
+	texture->w=w;
+	texture->h=h;
+	texture->bpp=bpp;
 	return;
 }
 

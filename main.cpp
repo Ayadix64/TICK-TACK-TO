@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstdio>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -114,6 +115,33 @@ MessageCallback( GLenum source,
 }
 
 
+bool DrawButton(const char* str , float x , float y,GLFWwindow* window){
+	u32 w , h;
+	GetTextDemensions(str, &w, &h);
+	//w+=10;
+	//h+=10;
+	double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+	bool clicked = false;
+
+	if(glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+		clicked=true;
+		printf("CLCD\n");
+	}
+	if(xpos >= x && xpos<=x+w && 
+	   ypos>= y && ypos <= y+h&& !clicked){
+		DrawRectangel(x, y, w, h, {100,100,200,255});
+	}else if(xpos >= x && xpos<=x+w && 
+	   ypos>= y && ypos <= y+h&& clicked){
+		DrawRectangel(x, y, w, h, {150,150,250,255});
+	}else {
+		DrawRectangel(x, y, w, h, {75,75,100,255});
+	}
+	DrawText(str, x, y);
+	return clicked;
+}
+
+
 int main(){
 	/****************************Init*************************/
 	if(!glfwInit()){
@@ -125,7 +153,8 @@ int main(){
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	GlewInit();
@@ -165,7 +194,7 @@ int main(){
 	float scale = 1.0f;
 	u32 image[320*255]{0xffffffff};
 	
-	TickTexture2D ertheRise = LoadTextureFromeFile("NASA-Apollo8-Dec24-Earthrise.jpg");
+	TickTexture2D ertheRise = LoadTextureFromeFile(/*"NASA-Apollo8-Dec24-Earthrise.jpg"*/"github2.png");
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
@@ -177,7 +206,7 @@ int main(){
 	u8 animation=0;
 	int adder=1;
 	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
-	SetDefaultFont(&fira);	
+	//SetDefaultFont(&fira);	
 	
 	while(!glfwWindowShouldClose(window) ){
 		
@@ -194,7 +223,6 @@ int main(){
 		if(animation==0)adder=1;
 		animation+=adder;
 		
-
 		ImGuiNewFrame();
 		TickNewFrame();
 
@@ -237,29 +265,32 @@ int main(){
 				yp2-=5.0;
 			}
 		}
+		if(glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+			printf("CLCD\n");
+		}
+
 		
 		
 		glfwMakeContextCurrent(window);
 		//DrawTexture(ertheRise,x, y, 200, 200);
-		for(int i = 0 ; i < 512 ; i++){
-			DrawTexture(animatedTextutr, 0,0, 200, 200);
-		}
-		for(int i = 0 ; i < 512 ; i++){
-			//DrawTexture(animatedTextutr, 200,200, 200, 200);
-		}
+		DrawTexture(animatedTextutr, 0,0, 200, 200);
 		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
-		DrawTexture(animatedTextutr, x,y, 200, 200);
-		DrawTextureSegment(animatedTextutr, 300, 300, 200, 200, 0, 0, 200, 200);
-		DrawTextureSegmentExtended(animatedTextutr, {0,0},{100,0},{0,100},{x,y},{0,0},{200,0},{0,200},{200,200});
 		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,155});
 
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 400, 300);
-		
+		DrawTexture(ertheRise, x, y, 200, 200);
+		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
+
+		if(DrawButton("Hello", 100, 100, window)){
+			printf("CLICKED!\n");
+			fflush(stdout);
+		}
+
 		TickRendre(window);
 		
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

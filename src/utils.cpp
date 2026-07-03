@@ -46,6 +46,7 @@ unsigned long GetFileSize(FILE* fl){
 
 }
 
+
 void* readFile(const char* fileName , unsigned long * sizeOUT){
 	FILE* file = fopen(fileName, "r");
 	if(file==NULL){
@@ -67,6 +68,3 @@ void* readFile(const char* fileName , unsigned long * sizeOUT){
 	fclose(file);
 	return NULL;
 }
-
-
-
