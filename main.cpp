@@ -280,7 +280,7 @@ int main(){
 		
 		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,155});
-
+		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 400, 300);
 		DrawTexture(ertheRise, x, y, 200, 200);
@@ -290,7 +290,9 @@ int main(){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}
-
+		DrawRoundedRectangel(300, 300, 100, 100, 20, 90, {0,0,255,255});
+		//
+		//DrawCircleSegment(300, 300, 100, 70.0, 90.0, segments, {0,0,255,255});
 		TickRendre(window);
 		
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

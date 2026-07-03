@@ -184,6 +184,25 @@ void DrawCircle(float x , float y , float r, float steps , Vec4c cl){
 	return;
 
 }
+void DrawCircleSegment(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl)
+/*	startDegree (0° on this case)
+ *      __
+ *      | ^,   the segmentDgree(90° in this case)
+ *     r|   \
+ *     y|___|
+ * 	x
+ * hope that this is straid forwared*/
+{
+
+	DrawCircleSegment_ctx(x, y, r, segmetDegree, segmentsDegreeStart, segments, cl, &g_defultContext);
+}
+void DrawRoundedRectangel(float x, float y , float w , float h,float r , float segments ,Vec4c cl){
+	DrawRoundedRectangel_ctx(x, y, w, h, r, segments, cl, &g_defultContext);
+
+}
+
+
+
 
 
 
@@ -264,6 +283,7 @@ void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext
 	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
 	return;
 }
+
 
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx){
@@ -370,6 +390,67 @@ void DrawCircle_ctx(float x , float y , float r, float steps , Vec4c cl, TickCon
 	// now this is kinde good
 	return;
 
+}
+
+
+
+
+
+
+void DrawCircleSegment_ctx(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl, TickContext* ctx){
+/*	startDegree (0° on this case)
+ *      __
+ *      | ^,   the segmentDgree(90° in this case)
+ *     r|   \
+ *     y|___|
+ * 	x
+ * hope that this is straid forwared*/
+
+	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
+	
+	ctx->Z-=TICK_Z_OFSSET;
+	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
+	
+	float verteces[24]{x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+		 	   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmentsDegreeStart,
+			   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmetDegree/segments+segmentsDegreeStart};
+	u32 indeces[3]{0,1,2};
+	BatcheRendrerAdd2DShape(verteces, 24, indeces, 3,8, &ctx->Shape2D);
+	
+	for(int i = 1; i < segments ; i++){
+		verteces[0] = x;
+		verteces[1] = y-r;
+		verteces[2] = ctx->Z;
+		verteces[3] = *(float*)&c;
+		verteces[4] = *(float*)&flage;
+		verteces[5] = x;
+		verteces[6] = y;
+		float offset = ((float)(i+1))*(segmetDegree/(segments));
+		verteces[7] =  (offset>segmetDegree?segmetDegree:offset)+segmentsDegreeStart;
+		indeces[0]=-i-2;
+		indeces[1]=-1;
+		indeces[2]=0;
+		BatcheRendrerAdd2DShape(verteces, 8, indeces, 3,8,&ctx->Shape2D);
+	}
+	
+	// now this is kinde good
+	return;
+
+}
+
+void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , float segments ,Vec4c cl,TickContext* ctx){
+	if(!r){
+		DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
+		return;
+	}
+	DrawRectangel_ctx(x, y+r, w, h-r*2, cl,ctx);
+	DrawRectangel_ctx(x+r, y, w-r*2, h, cl,ctx);
+	
+	DrawCircleSegment_ctx(x+r  , y+r  , r, 90.0f, 270.0f, segments, cl, ctx);
+	DrawCircleSegment_ctx(x+w-r, y+r  , r, 90.0f, 0.0f  , segments, cl, ctx);
+	DrawCircleSegment_ctx(x+r  , y+h-r, r, 90.0f, 180.0f, segments, cl, ctx);
+	DrawCircleSegment_ctx(x+w-r, y+h-r, r, 90.0f, 90.0f , segments, cl, ctx);
+	return;
 }
 
 
