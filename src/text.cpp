@@ -119,7 +119,6 @@ void FontsInit(){
 //you can improvee profoumanse by saving all of theam to a one texture.
 //this will reaquare returning a TickTexture2D , but i assume that is fine
 void initDefautlFont(){
-	loge("INITING THE FONTS");
 	g_DefaultFont.cl=-1;
 	g_DefaultFont.scale=13;
 	g_DefaultFont.CharcturesArray = (typeof(g_DefaultFont.CharcturesArray))malloc(sizeof(typeof (g_DefaultFont.CharcturesArray[0]))*95);
@@ -139,10 +138,10 @@ void initDefautlFont(){
 		g_DefaultFont.CharcturesArray[i].w=8;
 		g_DefaultFont.CharcturesArray[i].h=13;
 		g_DefaultFont.CharcturesArray[i].tcx=i*8;
+		g_DefaultFont.CharcturesArray[i].yoffset=0;
 	}
 	g_DefaultFont.texture=LoadTexture(texture, 95*8, 13, 4);
 }
-
 void DeleteFont(TickFont*font){
 	DeleteFont_ctx(font, &g_defultContext);
 }
@@ -187,7 +186,6 @@ TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
 	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defultContext);
 }
 TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* ctx){
-	/*TODO*/
 	TickFont ret;
 	stbtt_fontinfo font;
 	ret.CharcturesArray = (typeof ret.CharcturesArray)malloc(((ENDPOINTS_SEPURTED-32))*sizeof(typeof(ret.CharcturesArray[0])));
@@ -201,15 +199,20 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0;
+	float fntscale = stbtt_ScaleForPixelHeight(&font, (float)scale);
 
-   	//scale = stbtt_ScaleForPixelHeight(&font, scale);
 	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 ; i++){
 		int w =0, h=0 , y0=0,x0=0;
+		if(!i){
+			u32 advance,lsb;
+			stbtt_GetCodepointHMetrics(&font,i+32,(int*)&advance,(int*)&lsb);
+			ret.CharcturesArray[i].w=advance*fntscale;
+			ret.CharcturesArray[i].h=0;
+			ret.CharcturesArray[i].tcx=0;
+			ret.CharcturesArray[i].yoffset=0;
+			continue;
+		}
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h,&x0 ,&y0);
-      		int advance,lsb;
-		stbtt_GetCodepointHMetrics(&font, i+32, &advance, &lsb);
-		//w=advance*scale;
-		printf("\"%c\": %d\n",i+32,w);
 		ret.CharcturesArray[i].yoffset=y0;
 		if(bitmap){
 			texturewidth+=w;
@@ -227,9 +230,10 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	xoffset=0;
 	u32 * texture = (u32*)malloc(texturewidth*textureheigth*sizeof(u32));
 	
-	for(int i = 0 ; i < ENDPOINTS_SEPURTED-32 ; i++){
+	for(int i = 1 ; i < ENDPOINTS_SEPURTED-32 ; i++){
 		int w , h;
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
+
 		if(bitmap && ~(size_t)bitmap){
 			for(int y = 0 ; y < h ; y++){
 				for(int x = 0 ; x < w ; x++){
@@ -255,12 +259,6 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 
 
 void DrawText(const char* text , float x, float y){
-	DrawText_WH(text, x, y,g_DefaultFont.scale,g_DefaultFont.scale);
-	return;
-}
-
-
-void DrawText_WH(const char* text , float x, float y , float w , float h){
 	float xx = x;
 	for(int i = 0 ; text[i]; i++){
 		u32 ww = g_DefaultFont.CharcturesArray[text[i]-32].w;
@@ -268,12 +266,12 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 		u32 tcx = g_DefaultFont.CharcturesArray[text[i]-32].tcx;
 		int yoff = g_DefaultFont.CharcturesArray[text[i]-32].yoffset;
 		if(text[i]== '\n'){
-			y+=h;
+			y+=g_DefaultFont.scale;
 			xx=x;
 			continue;
 		}
 		else if(text[i]== ' '){
-			xx+=w/4;
+			xx+=ww;
 			continue;
 		}
 		else if(text[i]>g_DefaultFont.maxChar){
@@ -290,5 +288,10 @@ void DrawText_WH(const char* text , float x, float y , float w , float h){
 		xx+=ww;
 	}
 	return;
+	return;
+}
+
+
+void DrawText_WH(const char* text , float x, float y , float w , float h){
 }
 

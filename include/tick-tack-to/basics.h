@@ -2,7 +2,6 @@
 #define TICK_BASICS
 #include "utils.h"
 #include <cstddef>
-#include <glm/ext/matrix_float4x4.hpp>
 #include <GLFW/glfw3.h>
 
 #define TICK_TOP_Z 1.0f  //the top z level
