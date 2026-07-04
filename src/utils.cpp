@@ -68,3 +68,17 @@ void* readFile(const char* fileName , unsigned long * sizeOUT){
 	fclose(file);
 	return NULL;
 }
+
+
+
+
+
+
+void tRotate(float* x,float* y,float xx,float yy,float theta){
+	float raduis=(theta*3.14159)/(180.0);
+	float X = *x-xx;
+	float Y = *y-yy;
+	*x=xx+X*cos(raduis)-Y*sin(raduis);
+	*y=yy+X*sin(raduis)+Y*cos(raduis);
+	return ;
+}

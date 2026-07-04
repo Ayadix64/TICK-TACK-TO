@@ -76,6 +76,6 @@ void Eloge(std::string ms);
 void Wloge(std::string ms);
 void readFile(std::string path, std::string& data);
 void* readFile(const char* fileName , unsigned long * sizeOUT);
-
+void tRotate(float* x,float* y,float xx,float yy,float theta);
 
 #endif 

@@ -500,6 +500,8 @@ void ReloadTexture(TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp ){
 
 
 
+
+
 void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h , TickContext* ctx){
 	
 	ctx->Z-=TICK_Z_OFSSET;
@@ -528,9 +530,13 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 
 
 
+
+
 void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx){
 	DrawTextureSegmentExtended_ctx(texture, {x,y}, {x+w,y},{x,y+h}, {x+w,y+h}, {xx,yy}, {xx+ww,yy}, {xx,yy+hh}, {xx+ww,yy+hh}, ctx);		
 }
+
+
 
 void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , 
 		                    Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 , TickContext* ctx)
@@ -564,6 +570,8 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  ,
 	
 	
 }
+
+
 
 
 
@@ -637,6 +645,11 @@ TickTexture2D LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
 
 
 
+
+
+
+
+
 void ReloadTexture_ctx(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bpp , TickContext* ctx){
 	int sampler = texture->index/ctx->maxTexturesSlotsSepurted;
 	int slot = texture->index%ctx->maxTexturesSlotsSepurted;
@@ -654,6 +667,7 @@ void ReloadTexture_ctx(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bp
 	texture->bpp=bpp;
 	return;
 }
+
 
 
 void ReloadTextureFromeFile_ctx(TickTexture2D* texture, const char* fileName, TickContext* ctx){
@@ -718,7 +732,6 @@ void RemoveTexture_ctx(TickTexture2D* texture, TickContext* ctx){
 
 
 
-
 /************************************** Rendrer  ****************************************/
 
 
@@ -740,7 +753,6 @@ void TickNewFrame(){
 
 }
 
-	int lol = 0;
 
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	TickContext& context = *ctx;

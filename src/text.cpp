@@ -287,19 +287,17 @@ void DrawText(const char* text , float x, float y){
 }
 
 
-void DrawTextFont(const char* text , float x, float y,TickFont font){
-	DrawTextFont_ctx(text, x, y, font, &g_defultContext);
-	return;
-}
-
-
-
 void DrawText_ctx(const char* text , float x, float y,TickContext* ctx){
 	DrawTextFont_ctx(text, x, y, g_DefaultFont, ctx);	
 	return;
 }
 
 
+
+void DrawTextFont(const char* text , float x, float y,TickFont font){
+	DrawTextFont_ctx(text, x, y, font, &g_defultContext);
+	return;
+}
 void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickContext* ctx){
 	float xx = x;
 	u32 mxh = 0;
@@ -337,6 +335,62 @@ void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickCont
 }
 
 
+void DrawTextExtended(const char* text , float x, float y,float xpaading ,float ypadding ){
+	DrawTextExtended_ctx(text,  x, y, xpaading, ypadding, &g_defultContext);
+}
+
+
+void DrawTextExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickContext* ctx){
+	 DrawTextFontExtended_ctx(text , x, y,xpaading ,ypadding ,g_DefaultFont, ctx);
+}
+
+
+
+
+void DrawTextFontExtended(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font){
+	DrawTextFontExtended_ctx(text, x, y, xpaading, ypadding, font, &g_defultContext);
+}
+
+void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font,TickContext* ctx){
+	float xx = x;
+	u32 mxh = 0;
+	for(int i = 0 ; text[i]; i++){
+		u32 ww = font.CharcturesArray[text[i]-32].w;
+		u32 hh = font.CharcturesArray[text[i]-32].h;
+		if(hh>mxh){
+			mxh=hh;
+		}
+		u32 tcx = font.CharcturesArray[text[i]-32].tcx;
+		int yoff = font.CharcturesArray[text[i]-32].yoffset;
+		if(text[i]== '\n'){
+			y+=font.linegap+ypadding;
+			xx=x;
+			continue;
+		}
+		else if(text[i]== ' '){
+			xx+=ww;
+			continue;
+		}
+		else if(text[i]>font.maxChar){
+			ww = font.CharcturesArray['?'-32].w;
+			hh = font.CharcturesArray['?'-32].h;
+			tcx= font.CharcturesArray['?'-32].tcx;
+
+			DrawTextureSegment_ctx(font.texture, xx, y, ww, hh, tcx, 0, ww, hh,ctx);
+		}else if(text[i]<32){continue;}
+		else {
+			DrawTextureSegment_ctx(font.texture, xx, y+yoff, ww, hh, tcx, 0, ww, hh,ctx);
+		}
+		xx+=ww+xpaading;
+	}
+	
+	return;
+}
+
+
+
+
+
 
 /**************************************** Text magerment functions **********************************/
 
@@ -344,6 +398,13 @@ void GetTextDemensions(const char* text, u32* w, u32* h){
 	GetFontTextDemensions(text, g_DefaultFont, w, h);
 }
 void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
+	GetFontTextDemensionsExtended(text, font, 0, 3, w, h);
+}
+
+void GetTextDemensionsExtended(const char* text, u32* w, u32* h){
+	GetFontTextDemensions(text, g_DefaultFont, w, h);
+}
+void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h){
 	*w=0;
 	*h=0;
 	u32 xx = 0;
@@ -353,7 +414,7 @@ void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
 		u32 hh = font.CharcturesArray[text[i]-32].h;
 		
 		if(text[i]=='\n'){
-			yy+=font.linegap+2;
+			yy+=font.linegap+ypadding;
 			xx=0;
 			continue;
 		}
@@ -366,7 +427,7 @@ void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
 			hh = font.CharcturesArray['?'-32].h;
 			
 		}else if(text[i]<32){continue;}
-		xx+=ww;
+		xx+=ww+xpadding;
 	}
 	if(w&&xx>*w){
 		*(u32*)w=(u32)xx;
