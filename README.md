@@ -3,23 +3,28 @@
   <h3>multipltform OpenGL grahics library</h3>
 </div>
 
-dont get me wrong , i hate graphics programing
 # THIS IS TICK-TACK-TO
-yes i know that i miss prounsed it.
+*yes i know that i miss prounsed it.*
 
-i alwayes want to use a graphics library that is minmul and clear, in the time that most peopole are searching for feturs, i just want to know what i am drawing at the screen,
+A fast minmul proufourmence first UI library build on opengl and C++ for C/C++ applications
 
-most of chouse are ether 
-
-TICK-TACK-TO is a fast, simpel graphics library that maded for application ui, and based on opengl,
-
-it is minmul and "you do the job you want" style
 
 # Depdences
 - GLFW
 - GLEW
 - opengl
 
+that is it !
+
+# Why?
+i dont know, i am not even a ui programing fan,
+
+i think that i allways want a multiplafourm good loking library that is eazy to use, i liked Dear imGui, so i want to make a gui library with the same idea
 
 
-NOTE: yeah, this is not a game library, i never make it for games, not the best chouse
+this library is still in devoloping, but expect a good exprince with it
+
+
+NOTE: THIS IS NOT A GAME LIBRARY , i never make it for games, not the best chouse
+
+<div aling="center"> <h3> اتقِ الله في أعمالك </h3> </div>

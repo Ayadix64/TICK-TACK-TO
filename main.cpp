@@ -142,7 +142,7 @@ bool DrawButton(const char* str , float x , float y,GLFWwindow* window){
 }
 
 
-int main(){
+int main()<%
 	/****************************Init*************************/
 	if(!glfwInit()){
 		//Eloge("GLFW not init");
@@ -150,6 +150,7 @@ int main(){
 	}
 	//glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	//glEnable(GL_DEPTH_TEST);
+	//glfwSwapInterval(1);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -158,6 +159,7 @@ int main(){
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	GlewInit();
+	
 	
 	// During init, enable debug output
 	//glEnable              ( GL_DEBUG_OUTPUT );
@@ -207,7 +209,6 @@ int main(){
 	int adder=1;
 	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
 	//SetDefaultFont(&fira);	
-	
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -222,7 +223,7 @@ int main(){
 				if(animation==255)adder=-1;
 		if(animation==0)adder=1;
 		animation+=adder;
-		
+
 		ImGuiNewFrame();
 		TickNewFrame();
 
@@ -290,7 +291,7 @@ int main(){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}
-		DrawRoundedRectangel(300, 300, 100, 100, 20, 90, {0,0,255,255});
+		DrawRoundedRectangel(300, 300, 100, 100, 30, 90, {0,0,255,255});
 		//
 		//DrawCircleSegment(300, 300, 100, 70.0, 90.0, segments, {0,0,255,255});
 		TickRendre(window);
@@ -304,7 +305,7 @@ int main(){
 	}
 	ImGuiStop();
 	glfwTerminate();
-}
+%>
 
 
 
