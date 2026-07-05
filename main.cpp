@@ -208,7 +208,7 @@ int main()<%
 	u8 animation=0;
 	int adder=1;
 	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
-	//SetDefaultFont(&fira);	
+	SetDefaultFont(&fira);	
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -287,7 +287,7 @@ int main()<%
 		DrawTexture(ertheRise, x, y, 200, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 
-		if(DrawButton("Hello", 100, 100, window)){
+		if(DrawButtonPos("Button", 200, 200)){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}
