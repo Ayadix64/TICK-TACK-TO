@@ -5,7 +5,8 @@
 #include <GLFW/glfw3.h>
 
 #define TICK_TOP_Z 1.0f  //the top z level
-#define TICK_BUTTOM_Z 0.0f //the buttom z level
+#define TICK_BUTTOM_Z -1.0f //the buttom z level
+//for some reasen, opengl can display negative z cordnat as long as they are greater than -1.0, i will not ask why.
 #define TICK_Z_OFSSET 0.0000001f // the amount of Z getting reduced in evry draw
 #define TICK_MAX_DRAWING TICK_TOP_Z/TICK_Z_OFSSET
 
@@ -55,7 +56,11 @@ typedef struct {
 
 	int uniform2DMvp;
 	float Z; // the zed of elements; for evry element been drawn, this will enable drawing batching with drawing ordring for textures
-
+	
+	u32 selectCount;
+	u32 selectID;
+	u32 highlightedElement;
+	char selectedInThisFaild;
 }TickContext;
 
 typedef struct {

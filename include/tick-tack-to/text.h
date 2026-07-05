@@ -33,7 +33,8 @@ void DeleteFont_ctx(TickFont*font,TickContext*ctx);
 
 void GetTextDemensions(const char* text, u32* w, u32* h);
 void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h);
-void GetTextDemensionsExtended(const char* text, u32* w, u32* h);
+
+void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32* w, u32* h);
 void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
 
 

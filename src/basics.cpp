@@ -37,7 +37,7 @@ TickContext g_defultContext;
 std::atomic<bool> g_defultContextIsAlreadySet=false;
 std::atomic<bool> g_defaultFontAlreadySet=false; 
 void initDefautlFont();
-
+void InitUI();
 
 TickContext TickInit(){
 	TickContext context;
@@ -78,6 +78,7 @@ TickContext TickInit(){
 	}
 	if(!g_defaultFontAlreadySet){
 		initDefautlFont();
+		InitUI();
 		g_defaultFontAlreadySet=true;
 	}
 	glUseProgram(context.Shader2D);
