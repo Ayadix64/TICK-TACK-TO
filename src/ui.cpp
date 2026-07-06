@@ -63,7 +63,7 @@ char DrawButtonPos(const char* text,float x , float y ){
 	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
 
 	DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
-	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
+	DrawTextExtended(text, x+15,  y+15,0,0);
 	UpdateSelect(preased, highlited, &g_defultContext);
 	return preased;
 }

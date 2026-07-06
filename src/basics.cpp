@@ -78,7 +78,7 @@ TickContext TickInit(){
 	}
 	if(!g_defaultFontAlreadySet){
 		initDefautlFont();
-		InitUI();
+		InitUI();		
 		g_defaultFontAlreadySet=true;
 	}
 	glUseProgram(context.Shader2D);
@@ -799,11 +799,13 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	
 	Render(&context.Shape2D);
+
+	glDisable(GL_DEPTH_TEST);
 	for(int i = 0 ; i < context.samplerPtr ; i++){
 		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&context.samplers[i]);
 	}
-	
+	glEnable(GL_DEPTH_TEST);
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){

@@ -186,6 +186,9 @@ int main()<%
 
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_COLOR);
 
 
 
@@ -280,7 +283,7 @@ int main()<%
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
 		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
-		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{0,0,255,155});
+		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,animation});
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 400, 300);

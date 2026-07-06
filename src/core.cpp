@@ -133,7 +133,7 @@ void DeletVertexBuffer(u32* vbID){
 	if(*vbID){
 		CHECK_GL_ERORR(glDeleteBuffers(1,vbID));
 	}else {
-		fprintf(stderr,"No vertex buffer to delete");
+		fprintf(stderr,"[ERORR] No vertex buffer to delete\n");
 	}
 	return;
 
@@ -192,6 +192,10 @@ u32 GenTexture(){
 	CHECK_GL_ERORR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	CHECK_GL_ERORR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	CHECK_GL_ERORR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+
 	return texture;
 }
 
