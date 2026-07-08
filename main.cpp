@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdio>
+#include <ctime>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -148,33 +149,26 @@ int main()<%
 		//Eloge("GLFW not init");
 		return 1;
 	}
-	//glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	//glEnable(GL_DEPTH_TEST);
-	//glfwSwapInterval(1);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	GlewInit();
 	
-	
 	// During init, enable debug output
-	//glEnable              ( GL_DEBUG_OUTPUT );
-	//glDebugMessageCallback( MessageCallback, 0 );
+	glEnable              ( GL_DEBUG_OUTPUT );
+	glDebugMessageCallback( MessageCallback, 0 );
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
-	
-	glEnable(GL_BLEND);	
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	ImGuiIO& io=*ImGuiInit(window);
 	
 	TickInit();
 	
-	//glDepthMask(GL_FALSE);
 
 
 
@@ -186,32 +180,29 @@ int main()<%
 
 	int pw,ph ;
 	glfwGetFramebufferSize(window, &pw, &ph);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_COLOR);
 
 
 
 	float x=0.0,y=0.0,z=1000.0f , r=2.0f, r2=0.0f;
-	float yp1=(float)ph/2.0,yp2=(float)ph/2.0f;
 	float segments = 100.0;
-	SetScale(0.5);
 	float scale = 1.0f;
 	u32 image[320*255]{0xffffffff};
 	
-	TickTexture2D ertheRise = LoadTextureFromeFile(/*"NASA-Apollo8-Dec24-Earthrise.jpg"*/"github2.png");
-	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
 				int cl = ((i)&0xff) << 24 | ((i)&0xff) << 16 | ((i)&0xff) << 8 | (i)&0xff;
 				image[i*320+ii] = cl;
 			}
 		}
+	
+	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
+	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
+	
 	u8 animation=0;
 	int adder=1;
-	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
-	SetDefaultFont(&fira);	
+	SetDefaultFont(&fira);
+	u64 tflf = clock();
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -249,64 +240,51 @@ int main()<%
 		}
 		if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
 			y-=5.0f;
-			if(yp1>0.0){
-				yp1-=5.0;
-			}
 		}
 		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 			y+=5.0f;
-			if(yp1+50.0<=(float)ph){
-				yp1+=5.0;
-			}
 		}
 		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-			if(yp2+50.0<=(float)ph){
-				yp2+=5.0;
-			}
 		}
 		if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-			if(yp2>0.0){
-				yp2-=5.0;
-			}
 		}
 		if(glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
 			printf("CLCD\n");
 		}
-
 		
 		
 		glfwMakeContextCurrent(window);
-		//DrawTexture(ertheRise,x, y, 200, 200);
+		
+
 		DrawTexture(animatedTextutr, 0,0, 200, 200);
 		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
 		
-		DrawText("this is a text, or is it?\nit is ? butiful", 500, 100);
-		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,animation});
+		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,20});
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
-		DrawText("THE FAST QUICK FOX JUMP OVER THE LAZY SLOW DOG", 400, 300);
-		DrawTexture(ertheRise, x, y, 200, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 
-		if(DrawButtonPos("Button", 200, 200)){
+		if(DrawButtonPos("Button", x, y)){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}
-		DrawRoundedRectangel(300, 300, 100, 100, 30, 90, {0,0,255,255});
-		//
-		//DrawCircleSegment(300, 300, 100, 70.0, 90.0, segments, {0,0,255,255});
-		TickRendre(window);
+		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
+		DrawText("BOOM JUMP SCARE 67", x+70, y+70);
+		DrawTextSegment("It wase trome outside, no budy can see the past or the feture , popole are like a cows been threfet evry one on eche ether ther eat.", x, y, animation/4, 0, 400, 100);	
 		
+
+
+		TickRendre(window);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//usleep(1000000);
-		
+		glfwSwapInterval(1);
 	}
 	ImGuiStop();
+	
 	glfwTerminate();
 %>
 

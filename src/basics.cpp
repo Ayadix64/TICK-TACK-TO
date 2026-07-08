@@ -92,8 +92,27 @@ TickContext TickInit(){
 		//goood bruh in her
 	}
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+glDepthMask(GL_TRUE);
+glDepthFunc(GL_LEQUAL);
+glDepthRange(0.0f, 1.0f);
+glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+glEnable(GL_SAMPLE_ALPHA_TO_ONE);
+glEnable(GL_BLEND);
+glBlendEquation(GL_FUNC_ADD);
+glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+glEnable(GL_ALPHA_TEST);
+glAlphaFunc(GL_GREATER, 0.1f);
 
+glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	/*glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	glDepthFunc(GL_LESS);
+	*/
+
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+   	// glDepthFunc(GL_LEQUAL);
 
 	return context;
 }
@@ -444,7 +463,8 @@ void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , flo
 		DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
 		return;
 	}
-	DrawRectangel_ctx(x, y+r, w, h-r*2, cl,ctx);
+	DrawRectangel_ctx(x, y+r, r, h-r*2, cl,ctx);
+	DrawRectangel_ctx(x+w-r, y+r, r, h-r*2, cl,ctx);
 	DrawRectangel_ctx(x+r, y, w-r*2, h, cl,ctx);
 	
 	DrawCircleSegment_ctx(x+r  , y+r  , r, 90.0f, 270.0f, segments, cl, ctx);
@@ -767,7 +787,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	
 	int usedShader ;
-	glGetIntegerv(GL_ACTIVE_PROGRAM,&usedShader);
+	//glGetIntegerv(GL_ACTIVE_PROGRAM,&usedShader);
 	if(usedShader!=ctx->Shader2D){
 		CHECK_GL_ERORR(glUseProgram(ctx->Shader2D));
 	}
@@ -797,15 +817,13 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		context.window_w=window_w;
 		context.window_h=window_h;
 	}
-	
 	Render(&context.Shape2D);
-
-	glDisable(GL_DEPTH_TEST);
 	for(int i = 0 ; i < context.samplerPtr ; i++){
 		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&context.samplers[i]);
 	}
-	glEnable(GL_DEPTH_TEST);
+
+
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){

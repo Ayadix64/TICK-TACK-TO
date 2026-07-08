@@ -1,13 +1,14 @@
 #include "utils.h"
 #include "../include/tick-tack-to.h"
 #include "render.h"
+#include <atomic>
 #define STB_TRUETYPE_IMPLEMENTATION  
 #include "externel/stb_truetype.h"
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#define ENDPOINTS_SEPURTED 255 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
+#define ENDPOINTS_SEPURTED 3000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 
 extern "C" TickContext g_defultContext;
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
@@ -109,8 +110,8 @@ unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 
 
 
-TickFont g_DefaultFont;
-
+TickFont g_defaultFont;
+std::atomic_bool g_defaultFontSetToDefault;
 void initDefautlFont();
 void FontsInit(){
 	initDefautlFont();
@@ -118,31 +119,32 @@ void FontsInit(){
 
 
 void initDefautlFont(){
-	g_DefaultFont.cl=-1;
-	g_DefaultFont.size=13;
-	g_DefaultFont.linegap=13;
-	g_DefaultFont.scalex=1.0;
-	g_DefaultFont.scaley=1.0;
-	g_DefaultFont.CharcturesArray = (typeof(g_DefaultFont.CharcturesArray))malloc(sizeof(typeof (g_DefaultFont.CharcturesArray[0]))*95);
-	g_DefaultFont.maxChar=126;
+	g_defaultFontSetToDefault=true;
+	g_defaultFont.cl=-1;
+	g_defaultFont.size=13;
+	g_defaultFont.linegap=13;
+	g_defaultFont.scalex=1.0;
+	g_defaultFont.scaley=1.0;
+	g_defaultFont.CharcturesArray = (typeof(g_defaultFont.CharcturesArray))malloc(sizeof(typeof (g_defaultFont.CharcturesArray[0]))*95);
+	g_defaultFont.maxChar=126;
 	u32* texture = (u32*)malloc(8*13*95*sizeof(u32));
 	for(int i = 0 ; i < 95; i++){
 		for(int y = 0 ; y < 13 ; y++ ){
 			for(int x = 0 ; x < 8 ; x++){
 				if(defultFontBM[i][12-y]&(1<<(7-x))){
-					texture[y*95*8+x+i*8]=g_DefaultFont.cl;	
+					texture[y*95*8+x+i*8]=g_defaultFont.cl;	
 				}else {
 					texture[y*95*8+x+i*8]=0;
 				}
 			}
 		}
 		
-		g_DefaultFont.CharcturesArray[i].w=8;
-		g_DefaultFont.CharcturesArray[i].h=13;
-		g_DefaultFont.CharcturesArray[i].tcx=i*8;
-		g_DefaultFont.CharcturesArray[i].yoffset=0;
+		g_defaultFont.CharcturesArray[i].w=8;
+		g_defaultFont.CharcturesArray[i].h=13;
+		g_defaultFont.CharcturesArray[i].tcx=i*8;
+		g_defaultFont.CharcturesArray[i].yoffset=0;
 	}
-	g_DefaultFont.texture=LoadTexture(texture, 95*8, 13, 4);
+	g_defaultFont.texture=LoadTexture(texture, 95*8, 13, 4);
 }
 
 
@@ -156,7 +158,7 @@ void DeleteFont_ctx(TickFont*font,TickContext*ctx){
 		Eloge("Invaliad Font");
 		return;
 	}
-	RemoveTexture_ctx(&g_DefaultFont.texture,ctx);
+	RemoveTexture_ctx(&g_defaultFont.texture,ctx);
 	
 	free(font->CharcturesArray);
 	font->CharcturesArray=NULL;
@@ -165,10 +167,11 @@ void DeleteFont_ctx(TickFont*font,TickContext*ctx){
 
 
 void SetDefaultFont(TickFont* font){
-	if(memcmp(font,&g_DefaultFont,sizeof(TickFont))){
-		DeleteFont(&g_DefaultFont);
+	if(memcmp(font,&g_defaultFont,sizeof(TickFont)) && g_defaultFontSetToDefault){
+		DeleteFont(&g_defaultFont);
 	}
-	g_DefaultFont=*font;
+	g_defaultFont=*font;
+	g_defaultFontSetToDefault=false;
 }
 
 
@@ -183,7 +186,7 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 	u8* data = (u8*)readFile(filen,&lng);
 	if(!data){
 		fprintf(stderr, "[ERORR] cant load font \"%s\", file curepted or not exiset or not allawed to use it.\n",filen);
-		return g_DefaultFont;
+		return g_defaultFont;
 	}
 	ret = LoadMemFont_ctx(data, lng, scale, cl,ctx);
 	free(data);
@@ -237,7 +240,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 				textureheigth=h;
 			}			
 		}
-		ret.CharcturesArray[i].tcx=xoffset;//if some how the encoding errorr out (i dont know how ttf works btw) w & h will be zero, so just ignord
+		ret.CharcturesArray[i].tcx=xoffset;//if some how the encoding error out (i dont know how ttf works btw) w & h will be zero, so just ignord
 		ret.CharcturesArray[i].w=w;
 		ret.CharcturesArray[i].h=h;
 		xoffset+=w;
@@ -276,19 +279,97 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 
 
 
+TickFont GetDefaultFont(){return g_defaultFont;}
+void ResetDefaultFont(){
+	if(!g_defaultFontSetToDefault){
+		initDefautlFont();
+	}
+	return;
+}
+
+
+
+
+
+
+
+/**************************************** Text magerment functions **********************************/
+
+
+
+
+
+
+void GetTextDemensions(const char* text, u32* w, u32* h){
+	GetFontTextDemensions(text, g_defaultFont, w, h);
+}
+
+
+void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
+	GetFontTextDemensionsExtended(text, font, 0, 3, w, h);
+}
+
+
+
+void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32* w, u32* h){
+	GetFontTextDemensionsExtended(text, g_defaultFont,xppading,ypadding, w, h);
+}
+
+
+void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h){
+	*w=0;
+	*h=0;
+	u32 xx = 0;
+	u32 yy = font.linegap;
+	for(int i = 0 ; text[i]; i++){
+		u32 ww = font.CharcturesArray[text[i]-32].w;
+		u32 hh = font.CharcturesArray[text[i]-32].h;
+		
+		if(text[i]=='\n'){
+			yy+=font.linegap+ypadding;
+			xx=0;
+			continue;
+		}
+		else if(text[i]== ' '){
+			xx+=ww;
+			continue;
+		}
+		else if(text[i]>font.maxChar){
+			ww = font.CharcturesArray['?'-32].w;
+			hh = font.CharcturesArray['?'-32].h;
+			
+		}else if(text[i]<32){continue;}
+		xx+=ww+xpadding;
+	}
+	if(w&&xx>*w){
+		*(u32*)w=(u32)xx;
+	}
+	if(h){
+		*h = yy;
+	}
+	return;
+
+}
+
+
+
+
+
 
 /************************************* Text Drawing functions *******************************************/
 
 
 
+
+
 void DrawText(const char* text , float x, float y){
-	DrawTextFont_ctx(text, x, y, g_DefaultFont, &g_defultContext);	
+	DrawTextFont_ctx(text, x, y, g_defaultFont, &g_defultContext);	
 	return;
 }
 
 
 void DrawText_ctx(const char* text , float x, float y,TickContext* ctx){
-	DrawTextFont_ctx(text, x, y, g_DefaultFont, ctx);	
+	DrawTextFont_ctx(text, x, y, g_defaultFont, ctx);	
 	return;
 }
 
@@ -341,7 +422,7 @@ void DrawTextExtended(const char* text , float x, float y,float xpaading ,float 
 
 
 void DrawTextExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickContext* ctx){
-	 DrawTextFontExtended_ctx(text , x, y,xpaading ,ypadding ,g_DefaultFont, ctx);
+	 DrawTextFontExtended_ctx(text , x, y,xpaading ,ypadding ,g_defaultFont, ctx);
 }
 
 
@@ -391,56 +472,45 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 
 
 
-
-/**************************************** Text magerment functions **********************************/
-
-void GetTextDemensions(const char* text, u32* w, u32* h){
-	GetFontTextDemensions(text, g_DefaultFont, w, h);
+void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h){
+	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, &g_defultContext);
 }
 
+void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
+	float xpos = x;
+	TickFont & font= g_defaultFont;
+	u32 fcxoff=0;//first charceture x offset
+	u32 lcxoff=0;//last  ...
+	u32 ww=0,hh=0,tcx=0,yoff=0;
 
-void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
-	GetFontTextDemensionsExtended(text, font, 0, 3, w, h);
-}
-
-
-
-void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32* w, u32* h){
-	GetFontTextDemensionsExtended(text, g_DefaultFont,xppading,ypadding, w, h);
-}
-
-
-void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h){
-	*w=0;
-	*h=0;
-	u32 xx = 0;
-	u32 yy = font.linegap;
-	for(int i = 0 ; text[i]; i++){
-		u32 ww = font.CharcturesArray[text[i]-32].w;
-		u32 hh = font.CharcturesArray[text[i]-32].h;
+	for(int i = 0 ; text[i]; i++,xpos+=ww){
+		ww = font.CharcturesArray[text[i]-32].w;
+		hh = font.CharcturesArray[text[i]-32].h;
+		tcx = font.CharcturesArray[text[i]-32].tcx;
+		yoff = font.CharcturesArray[text[i]-32].yoffset;
+			
 		
-		if(text[i]=='\n'){
-			yy+=font.linegap+ypadding;
-			xx=0;
+		if(text[i]== '\n'){
+			y+=font.linegap+2;
+			xpos=x;
 			continue;
 		}
 		else if(text[i]== ' '){
-			xx+=ww;
 			continue;
 		}
 		else if(text[i]>font.maxChar){
 			ww = font.CharcturesArray['?'-32].w;
 			hh = font.CharcturesArray['?'-32].h;
-			
-		}else if(text[i]<32){continue;}
-		xx+=ww+xpadding;
+			tcx= font.CharcturesArray['?'-32].tcx;
+		}
+		else if(text[i]<32){continue;}
+		if(xpos-x+ww<xx || xpos-x>xx+w){continue;}
+		fcxoff = xpos-x<xx?xx-(xpos-x):0;
+		lcxoff = xpos-x+ww>xx+w?xpos-x+ww-(xx+w):0;
+		printf("%d\n",lcxoff);
+		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, y+yoff, ww-fcxoff-lcxoff, hh, tcx+fcxoff, 0, ww-fcxoff-lcxoff, hh,ctx);
+		
 	}
-	if(w&&xx>*w){
-		*(u32*)w=(u32)xx;
-	}
-	if(h){
-		*h = yy;
-	}
+	
 	return;
-
 }
