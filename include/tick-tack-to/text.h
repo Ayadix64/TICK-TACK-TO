@@ -49,4 +49,6 @@ void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickCont
 
 void DrawTextFontExtended(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font);
 void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font,TickContext* ctx);
+void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h);
+void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx);
 #endif
