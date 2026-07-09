@@ -20,6 +20,7 @@ typedef struct {
 
 
 void SetDefaultFont(TickFont* font);
+TickFont GetDefaultFont();
 
 TickFont LoadFont(const char* filen,u32 scale, Vec4c cl);
 TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx);
@@ -38,6 +39,7 @@ void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32*
 void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
 
 
+
 void DrawText(const char* text , float x, float y);
 void DrawText_ctx(const char* text , float x, float y,TickContext* ctx);
 
@@ -49,6 +51,15 @@ void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickCont
 
 void DrawTextFontExtended(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font);
 void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font,TickContext* ctx);
+
 void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h);
 void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx);
+
+
+void DrawTextSegmentExtended_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx);
+
+void DrawTextSegmentExtendedFont(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font);
+void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,
+		u32 xpadd, u32 ypadd , TickFont font,TickContext* ctx);
+
 #endif

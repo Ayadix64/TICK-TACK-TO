@@ -1,7 +1,7 @@
 #include "../include/tick-tack-to.h"
 #include "utils.h"
 
-extern "C" TickContext g_defultContext;
+extern "C" TickContext g_defaultContext;
 
 #define DEF_XPADD 1
 #define DEF_YPADD 4
@@ -54,7 +54,7 @@ char DrawButtonPos(const char* text,float x , float y ){
 	void SetDefaultUIColors();
 	bool preased = false;
 	bool highlited=false;
-	bool slected = IsSlected(&g_defultContext);
+	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
 	if(preased){
 		slected=true;
@@ -64,6 +64,6 @@ char DrawButtonPos(const char* text,float x , float y ){
 
 	DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
 	DrawTextExtended(text, x+15,  y+15,0,0);
-	UpdateSelect(preased, highlited, &g_defultContext);
+	UpdateSelect(preased, highlited, &g_defaultContext);
 	return preased;
 }

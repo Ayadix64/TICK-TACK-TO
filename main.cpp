@@ -169,7 +169,8 @@ int main()<%
 	
 	TickInit();
 	
-
+	
+	glfwSwapInterval(1);
 
 
 	/**********************************************************/
@@ -272,8 +273,9 @@ int main()<%
 		}
 		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
 		DrawText("BOOM JUMP SCARE 67", x+70, y+70);
-		DrawTextSegment("It wase trome outside, no budy can see the past or the feture , popole are like a cows been threfet evry one on eche ether ther eat.", x, y, animation/4, 0, 400, 100);	
-		
+		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
+		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\n popole are like a cows been threfet evry one on eche ether ther eat.", x+100, y, animation/4, animation/10, 400, 100);	
+			
 
 
 		TickRendre(window);

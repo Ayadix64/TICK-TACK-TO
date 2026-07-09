@@ -33,16 +33,16 @@ typedef struct {
 }__attribute__((packed)) VertexFlags;
 
 
-TickContext g_defultContext;
-std::atomic<bool> g_defultContextIsAlreadySet=false;
+TickContext g_defaultContext;
+std::atomic<bool> g_defaultContextIsAlreadySet=false;
 std::atomic<bool> g_defaultFontAlreadySet=false; 
 void initDefautlFont();
 void InitUI();
 
 TickContext TickInit(){
 	TickContext context;
-	if(g_defultContextIsAlreadySet){
-		context.Shader2D = g_defultContext.Shader2D;
+	if(g_defaultContextIsAlreadySet){
+		context.Shader2D = g_defaultContext.Shader2D;
 	}else {
 		context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
 	}
@@ -72,9 +72,9 @@ TickContext TickInit(){
 	context.Z = TICK_TOP_Z;	
 
 
-	if(!g_defultContextIsAlreadySet){
-		g_defultContext=context;
-		g_defultContextIsAlreadySet=true;
+	if(!g_defaultContextIsAlreadySet){
+		g_defaultContext=context;
+		g_defaultContextIsAlreadySet=true;
 	}
 	if(!g_defaultFontAlreadySet){
 		initDefautlFont();
@@ -117,19 +117,19 @@ glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_S
 	return context;
 }
 
-TickContext* GetDefaultContext(){return &g_defultContext;}
+TickContext* GetDefaultContext(){return &g_defaultContext;}
 
 void SetScaleX(float scale){
-	SetScaleX_ctx(&g_defultContext, scale);
+	SetScaleX_ctx(&g_defaultContext, scale);
 }
 void SetScaleY(float scale){
-	SetScaleY_ctx(&g_defultContext, scale);
+	SetScaleY_ctx(&g_defaultContext, scale);
 }
 void SetScaleXY( float scalex, float scaley){
-	SetScaleXY_ctx(&g_defultContext, scalex, scaley);
+	SetScaleXY_ctx(&g_defaultContext, scalex, scaley);
 }
 void SetScale(float scale){
-	SetScale_ctx(&g_defultContext, scale);
+	SetScale_ctx(&g_defaultContext, scale);
 }
 
 
@@ -159,14 +159,14 @@ void SetScale_ctx(TickContext* ctx, float scale){
 
 void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl)
 {
-	DrawTriangle_ctx(v1,  v2, v3, cl,&g_defultContext);
+	DrawTriangle_ctx(v1,  v2, v3, cl,&g_defaultContext);
 }
 
 
 
 void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl){
 
-	DrawLine_ctx( v1,  v2,  thicknis,  cl, &g_defultContext);
+	DrawLine_ctx( v1,  v2,  thicknis,  cl, &g_defaultContext);
 	return;	
 }
 
@@ -176,7 +176,7 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1__
 									 // v3"""v4
 {
 	
-	DrawQuadrilateral_ctx(v1 , v2, v3 , v4,cl,&g_defultContext);
+	DrawQuadrilateral_ctx(v1 , v2, v3 , v4,cl,&g_defaultContext);
 		
 }
 void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
@@ -186,7 +186,7 @@ void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
 
 
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
-	Draw2DVerteces_ctx(verteces,Vertecount,cl,&g_defultContext);
+	Draw2DVerteces_ctx(verteces,Vertecount,cl,&g_defaultContext);
 	return;
 }
 
@@ -194,13 +194,13 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
 
 
 void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl){
-	Draw2DVerteces_ctx(verteces,Vertecount,indeces,Indexcont,cl,&g_defultContext);
+	Draw2DVerteces_ctx(verteces,Vertecount,indeces,Indexcont,cl,&g_defaultContext);
 	return;
 }
 
 
 void DrawCircle(float x , float y , float r, float steps , Vec4c cl){
-	DrawCircle_ctx(x, y, r,  steps,  cl, &g_defultContext);
+	DrawCircle_ctx(x, y, r,  steps,  cl, &g_defaultContext);
 	return;
 
 }
@@ -214,10 +214,10 @@ void DrawCircleSegment(float x , float y , float r, float segmetDegree , float s
  * hope that this is straid forwared*/
 {
 
-	DrawCircleSegment_ctx(x, y, r, segmetDegree, segmentsDegreeStart, segments, cl, &g_defultContext);
+	DrawCircleSegment_ctx(x, y, r, segmetDegree, segmentsDegreeStart, segments, cl, &g_defaultContext);
 }
 void DrawRoundedRectangel(float x, float y , float w , float h,float r , float segments ,Vec4c cl){
-	DrawRoundedRectangel_ctx(x, y, w, h, r, segments, cl, &g_defultContext);
+	DrawRoundedRectangel_ctx(x, y, w, h, r, segments, cl, &g_defaultContext);
 
 }
 
@@ -484,36 +484,36 @@ void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , flo
 
 
 TickTexture2D LoadTexture(void* bitmap,float w, float h, u32 bpp){
-	return LoadTexture_ctx(bitmap,w, h, bpp, &g_defultContext);
+	return LoadTexture_ctx(bitmap,w, h, bpp, &g_defaultContext);
 }
 TickTexture2D LoadTextureFromeFile(const char * fileName){
-	return LoadTextureFromeFile_ctx(fileName, &g_defultContext);
+	return LoadTextureFromeFile_ctx(fileName, &g_defaultContext);
 }
 void DrawTexture(TickTexture2D index,float x , float y , float w,  float h ){
-	DrawTexture_ctx(index, x, y, w,  h, &g_defultContext);
+	DrawTexture_ctx(index, x, y, w,  h, &g_defaultContext);
 	return;
 }
 void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh ){
-	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defultContext);//heh, did you know that you can do that?
+	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defaultContext);//heh, did you know that you can do that?
 }
 void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4, Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 ){
-	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4, &g_defultContext);
+	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4, &g_defaultContext);
 }
 
 
 
 void RemoveTexture(TickTexture2D* index){
-	RemoveTexture_ctx(index, &g_defultContext);
+	RemoveTexture_ctx(index, &g_defaultContext);
 	return;
 }
 
 void ReloadTextureFromeFile(TickTexture2D* index, const char* fileName){
-	ReloadTextureFromeFile_ctx(index, fileName, &g_defultContext);
+	ReloadTextureFromeFile_ctx(index, fileName, &g_defaultContext);
 	return;
 }
 
 void ReloadTexture(TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp ){
-	ReloadTexture_ctx(index, data, w, h, bpp, &g_defultContext);
+	ReloadTexture_ctx(index, data, w, h, bpp, &g_defaultContext);
 	return;
 }
 
@@ -762,14 +762,14 @@ void RemoveTexture_ctx(TickTexture2D* texture, TickContext* ctx){
 
 
 void TickRendre(GLFWwindow* window){
-	TickRendre_ctx(window, &g_defultContext);
+	TickRendre_ctx(window, &g_defaultContext);
 
 	return;
 }
 
 
 void TickNewFrame(){
-	TickNewFrame_ctx(&g_defultContext);
+	TickNewFrame_ctx(&g_defaultContext);
 	return;
 
 }
@@ -781,7 +781,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		Eloge("Z <=  "+std::to_string(TICK_BUTTOM_Z)+" you draw too much and part of that will not been rendred!");
 	}
 	
-	if(!g_defultContextIsAlreadySet){
+	if(!g_defaultContextIsAlreadySet){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 		return;
 	}
@@ -839,11 +839,11 @@ void TickNewFrame_ctx(TickContext* context){
 
 
 void TickClose(){
-	if(!g_defultContextIsAlreadySet){
+	if(!g_defaultContextIsAlreadySet){
 		Eloge("Tick never init to close");
 		return;
 	}
-	g_defultContextIsAlreadySet=false;
+	g_defaultContextIsAlreadySet=false;
 
 }
 

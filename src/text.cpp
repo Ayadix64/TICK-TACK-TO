@@ -10,7 +10,7 @@
 #include <cstring>
 #define ENDPOINTS_SEPURTED 3000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 
-extern "C" TickContext g_defultContext;
+extern "C" TickContext g_defaultContext;
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
 	{0x00, 0x00, 0x18, 0x18, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18},// ! :33
@@ -149,7 +149,7 @@ void initDefautlFont(){
 
 
 void DeleteFont(TickFont*font){
-	DeleteFont_ctx(font, &g_defultContext);
+	DeleteFont_ctx(font, &g_defaultContext);
 }
 
 
@@ -175,10 +175,12 @@ void SetDefaultFont(TickFont* font){
 }
 
 
+TickFont GetDefaultFont(){return g_defaultFont;}
+
 /*************************** Font Load Functions ****************************************/
 
 TickFont LoadFont(const char* filen,u32 scale, Vec4c cl){
-	return LoadFont_ctx(filen, scale,cl,&g_defultContext);
+	return LoadFont_ctx(filen, scale,cl,&g_defaultContext);
 }
 TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 	TickFont ret;
@@ -195,7 +197,7 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx){
 
 
 TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
-	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defultContext);
+	return LoadMemFont_ctx(fontData,size,scale, cl, &g_defaultContext);
 }
 
 
@@ -279,7 +281,6 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 
 
 
-TickFont GetDefaultFont(){return g_defaultFont;}
 void ResetDefaultFont(){
 	if(!g_defaultFontSetToDefault){
 		initDefautlFont();
@@ -363,7 +364,7 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 
 
 void DrawText(const char* text , float x, float y){
-	DrawTextFont_ctx(text, x, y, g_defaultFont, &g_defultContext);	
+	DrawTextFont_ctx(text, x, y, g_defaultFont, &g_defaultContext);	
 	return;
 }
 
@@ -376,48 +377,17 @@ void DrawText_ctx(const char* text , float x, float y,TickContext* ctx){
 
 
 void DrawTextFont(const char* text , float x, float y,TickFont font){
-	DrawTextFont_ctx(text, x, y, font, &g_defultContext);
+	DrawTextFont_ctx(text, x, y, font, &g_defaultContext);
 	return;
 }
 void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickContext* ctx){
-	float xx = x;
-	u32 mxh = 0;
-	for(int i = 0 ; text[i]; i++){
-		u32 ww = font.CharcturesArray[text[i]-32].w;
-		u32 hh = font.CharcturesArray[text[i]-32].h;
-		if(hh>mxh){
-			mxh=hh;
-		}
-		u32 tcx = font.CharcturesArray[text[i]-32].tcx;
-		int yoff = font.CharcturesArray[text[i]-32].yoffset;
-		if(text[i]== '\n'){
-			y+=font.linegap+2;
-			xx=x;
-			continue;
-		}
-		else if(text[i]== ' '){
-			xx+=ww;
-			continue;
-		}
-		else if(text[i]>font.maxChar){
-			ww = font.CharcturesArray['?'-32].w;
-			hh = font.CharcturesArray['?'-32].h;
-			tcx= font.CharcturesArray['?'-32].tcx;
-
-			DrawTextureSegment_ctx(font.texture, xx, y, ww, hh, tcx, 0, ww, hh,ctx);
-		}else if(text[i]<32){continue;}
-		else {
-			DrawTextureSegment_ctx(font.texture, xx, y+yoff, ww, hh, tcx, 0, ww, hh,ctx);
-		}
-		xx+=ww;
-	}
-	
+	DrawTextFontExtended_ctx(text, x, y, 0, 3, g_defaultFont, ctx);
 	return;
 }
 
 
 void DrawTextExtended(const char* text , float x, float y,float xpaading ,float ypadding ){
-	DrawTextExtended_ctx(text,  x, y, xpaading, ypadding, &g_defultContext);
+	DrawTextExtended_ctx(text,  x, y, xpaading, ypadding, &g_defaultContext);
 }
 
 
@@ -429,20 +399,22 @@ void DrawTextExtended_ctx(const char* text , float x, float y,float xpaading ,fl
 
 
 void DrawTextFontExtended(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font){
-	DrawTextFontExtended_ctx(text, x, y, xpaading, ypadding, font, &g_defultContext);
+	DrawTextFontExtended_ctx(text, x, y, xpaading, ypadding, font, &g_defaultContext);
 }
 
 void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font,TickContext* ctx){
 	float xx = x;
-	u32 mxh = 0;
+	u32 ww=0,hh=0,tcx=0;
+	int yoff=0;
 	for(int i = 0 ; text[i]; i++){
-		u32 ww = font.CharcturesArray[text[i]-32].w;
-		u32 hh = font.CharcturesArray[text[i]-32].h;
-		if(hh>mxh){
-			mxh=hh;
+		if(text[i]>=32 && text[i]<font.maxChar){
+			ww = font.CharcturesArray[text[i]-32].w;
+			hh = font.CharcturesArray[text[i]-32].h;
+			tcx = font.CharcturesArray[text[i]-32].tcx;
+			yoff = font.CharcturesArray[text[i]-32].yoffset;
+		}else {
+			ww=hh=tcx=yoff=0;
 		}
-		u32 tcx = font.CharcturesArray[text[i]-32].tcx;
-		int yoff = font.CharcturesArray[text[i]-32].yoffset;
 		if(text[i]== '\n'){
 			y+=font.linegap+ypadding;
 			xx=x;
@@ -473,29 +445,62 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 
 
 void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h){
-	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, &g_defultContext);
+	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, &g_defaultContext);
 }
 
 void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, 0, 3, g_defaultFont, &g_defaultContext);
+
+	return;
+}
+
+
+
+void DrawTextSegmentExtended(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, &g_defaultContext);
+	return;
+}
+
+void DrawTextSegmentExtended_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, ctx);
+	return;
+}
+
+
+
+
+void DrawTextSegmentExtendedFont(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, font, &g_defaultContext);
+	return;
+}
+
+void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
+					u32 xx , u32 yy ,
+					u32 w , u32 h,
+					u32 xpadd, u32 ypadd ,
+					TickFont font,TickContext* ctx) //bor is it a long name
+{
 	float xpos = x;
-	TickFont & font= g_defaultFont;
+	float ypos = y;
 	u32 fcxoff=0;//first charceture x offset
 	u32 lcxoff=0;//last  ...
+	u32 fcyoff=0;//first charceture x offset
+	u32 lcyoff=0;
 	u32 ww=0,hh=0,tcx=0,yoff=0;
 
-	for(int i = 0 ; text[i]; i++,xpos+=ww){
-		ww = font.CharcturesArray[text[i]-32].w;
-		hh = font.CharcturesArray[text[i]-32].h;
-		tcx = font.CharcturesArray[text[i]-32].tcx;
-		yoff = font.CharcturesArray[text[i]-32].yoffset;
-			
+	for(int i = 0 ; text[i]; i++,xpos+=ww+xpadd){
+		if(text[i]>=32){
+			ww = font.CharcturesArray[text[i]-32].w;
+			hh = font.CharcturesArray[text[i]-32].h;
+			tcx = font.CharcturesArray[text[i]-32].tcx;
+			yoff = font.CharcturesArray[text[i]-32].yoffset;
+		}else{
+			ww=hh=tcx=yoff=0;
+		}
 		
 		if(text[i]== '\n'){
-			y+=font.linegap+2;
-			xpos=x;
-			continue;
-		}
-		else if(text[i]== ' '){
+			ypos+=font.linegap+ypadd;
+			xpos=x-ww-xpadd;//this is all will automaticly aded
 			continue;
 		}
 		else if(text[i]>font.maxChar){
@@ -503,14 +508,16 @@ void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy ,
 			hh = font.CharcturesArray['?'-32].h;
 			tcx= font.CharcturesArray['?'-32].tcx;
 		}
-		else if(text[i]<32){continue;}
-		if(xpos-x+ww<xx || xpos-x>xx+w){continue;}
+		else if(text[i]<=32){continue;}
+		if(xpos-x+ww<xx || xpos-x>xx+w || ypos-y+hh<yy || ypos-y>yy+h){continue;}
+		
 		fcxoff = xpos-x<xx?xx-(xpos-x):0;
 		lcxoff = xpos-x+ww>xx+w?xpos-x+ww-(xx+w):0;
-		printf("%d\n",lcxoff);
-		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, y+yoff, ww-fcxoff-lcxoff, hh, tcx+fcxoff, 0, ww-fcxoff-lcxoff, hh,ctx);
-		
+				
+		fcyoff = ypos-y<yy?yy-(ypos-y):0;
+		lcyoff = ypos-y+hh>yy+h?ypos-y+hh-(yy+h):0;
+
+		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, ypos+yoff+fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff, tcx+fcxoff, fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,ctx);
 	}
-	
 	return;
 }
