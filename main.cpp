@@ -151,6 +151,8 @@ int main()<%
 		return 1;
 	}
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_SAMPLES, 8);
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -267,16 +269,15 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-		char butnflags = DrawButton("Button", x, y)&1;
+		char butnflags = DrawButton("Butto\nn", x, y);
 		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}else if(butnflags&2){
-			DrawCircle(x, y, 25, 27, {255,255,255,255});
 			printf("HOVER\n");
 		}
 		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
-		DrawText("BOOM JUMP SCARE 67", x+70, y+70);
+		DrawText("BOOM JUMP SCARE", x+70, y+70);
 		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
 		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\n popole are like a cows been threfet evry one on eche ether ther eat.", x+100, y, animation/4, animation/10, 400, 100);	
 			

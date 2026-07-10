@@ -36,11 +36,15 @@ typedef struct {
 
 
 TickContext g_defaultContext;
+
 std::atomic<bool> g_defaultContextIsAlreadySet=false;
 std::atomic<bool> g_defaultFontAlreadySet=false; 
-std::atomic_uint g_doubleClickeDelaye=300;//in ms
+std::atomic_uint  g_doubleClickeDelaye=300;//in ms
+
+
 void initDefautlFont();
 void InitUI();
+
 
 TickContext TickInit(){
 	TickContext context;
@@ -74,6 +78,9 @@ TickContext TickInit(){
 	context.scaleY=1.0f;
 	context.Z = TICK_TOP_Z;	
 	context.lastClick=0;
+	context.mousex=~0;
+	context.mousey=~0;
+	context.mousemensions=0;
 
 	if(!g_defaultContextIsAlreadySet){
 		g_defaultContext=context;
@@ -107,6 +114,7 @@ TickContext TickInit(){
 	glAlphaFunc(GL_GREATER, 0.1f);
 
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);*/
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
