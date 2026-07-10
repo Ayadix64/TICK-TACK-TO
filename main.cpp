@@ -199,7 +199,7 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf", 25, {0,0,255,155});
+	TickFont fira = LoadFont("FiraCode.ttf", 34, {0,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
@@ -267,10 +267,13 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-
-		if(DrawButton("Button", x, y,window)){
+		char butnflags = DrawButton("Button", x, y)&1;
+		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
+		}else if(butnflags&2){
+			DrawCircle(x, y, 25, 27, {255,255,255,255});
+			printf("HOVER\n");
 		}
 		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
 		DrawText("BOOM JUMP SCARE 67", x+70, y+70);

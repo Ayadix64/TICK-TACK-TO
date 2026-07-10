@@ -79,7 +79,7 @@ typedef struct {
 
 
 TickContext TickInit();
-TickContext*GetDefaultContext();
+inline TickContext*GetDefaultContext();
 
 void TickNewFrame();
 void TickRendre(GLFWwindow* window);
@@ -87,6 +87,12 @@ void TickRendre(GLFWwindow* window);
 void TickNewFrame_ctx(TickContext* context);
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
 
+
+Vec2i GetMousePos();
+Vec2i GetMousePos_ctx(TickContext* ctx);
+
+u32 GetMouseClickes();
+u32 GetMouseClickes_ctx(TickContext* ctx);
 
 
 void SetScaleX(float scale);
