@@ -4,6 +4,7 @@
 #include "render.h"
 
 #include <GL/gl.h>
+#include <GLFW/glfw3.h>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -11,6 +12,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <atomic>
+#include <ctime>
 #include <string>
 #include <strings.h>
 
@@ -36,6 +38,7 @@ typedef struct {
 TickContext g_defaultContext;
 std::atomic<bool> g_defaultContextIsAlreadySet=false;
 std::atomic<bool> g_defaultFontAlreadySet=false; 
+std::atomic_uint g_doubleClickeDelaye=300;//in ms
 void initDefautlFont();
 void InitUI();
 
@@ -70,7 +73,7 @@ TickContext TickInit(){
 	context.scaleX=1.0f;
 	context.scaleY=1.0f;
 	context.Z = TICK_TOP_Z;	
-
+	context.lastClick=0;
 
 	if(!g_defaultContextIsAlreadySet){
 		g_defaultContext=context;
@@ -91,26 +94,25 @@ TickContext TickInit(){
 		}
 		//goood bruh in her
 	}
-	glEnable(GL_DEPTH_TEST);
-glDepthMask(GL_TRUE);
-glDepthFunc(GL_LEQUAL);
-glDepthRange(0.0f, 1.0f);
-glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-glEnable(GL_SAMPLE_ALPHA_TO_ONE);
-glEnable(GL_BLEND);
-glBlendEquation(GL_FUNC_ADD);
-glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-glEnable(GL_ALPHA_TEST);
-glAlphaFunc(GL_GREATER, 0.1f);
-
-glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	/*glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
-	glDepthFunc(GL_LESS);
-	*/
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0f, 1.0f);
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	glEnable(GL_SAMPLE_ALPHA_TO_ONE);
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1f);
 
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);*/
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	
 	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
    	// glDepthFunc(GL_LEQUAL);
 
@@ -822,7 +824,21 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&context.samplers[i]);
 	}
-
+	double xmouse,ymouse;
+	glfwGetCursorPos(window, &xmouse, &ymouse);	
+	context.mousex=xmouse;
+	context.mousey=ymouse;
+	bool Lmousebefaure = context.mousemensions&1;
+	context.mousemensions=0;
+	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS );
+	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
+	
+	clock_t deley = ((clock() - context.lastClick)*100000)/(CLOCKS_PER_SEC);
+	
+	context.mousemensions|=((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !Lmousebefaure)<<2;
+	if(context.mousemensions&1){	
+		context.lastClick=clock();
+	}
 
 	return;
 }
@@ -850,6 +866,6 @@ void TickClose(){
 
 void TickClose_ctx(TickContext* context){
 
-	DeletRendrer(&context->Shape2D);	
+	DeletRendrer(&context->Shape2D);
 	DeletRendrer(&context->ShapeCir2D);
 }

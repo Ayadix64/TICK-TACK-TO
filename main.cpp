@@ -125,18 +125,19 @@ bool DrawButton(const char* str , float x , float y,GLFWwindow* window){
         glfwGetCursorPos(window, &xpos, &ypos);
 	bool clicked = false;
 
-	if(glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && (xpos >= x && xpos<=x+w && 
+	   ypos>= y && ypos <= y+h) ){
 		clicked=true;
 		printf("CLCD\n");
 	}
 	if(xpos >= x && xpos<=x+w && 
 	   ypos>= y && ypos <= y+h&& !clicked){
-		DrawRectangel(x, y, w, h, {100,100,200,255});
+		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {000,000,200,255});
 	}else if(xpos >= x && xpos<=x+w && 
-	   ypos>= y && ypos <= y+h&& clicked){
-		DrawRectangel(x, y, w, h, {150,150,250,255});
+		ypos>= y && ypos <= y+h&& clicked){
+		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {50,50,250,255});
 	}else {
-		DrawRectangel(x, y, w, h, {75,75,100,255});
+		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {0,0,100,255});
 	}
 	DrawText(str, x, y);
 	return clicked;
@@ -267,7 +268,7 @@ int main()<%
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 
-		if(DrawButtonPos("Button", x, y)){
+		if(DrawButton("Button", x, y,window)){
 			printf("CLICKED!\n");
 			fflush(stdout);
 		}
