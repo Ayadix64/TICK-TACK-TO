@@ -9,7 +9,8 @@
 #include <cstdlib>
 #include <cstring>
 #define ENDPOINTS_SEPURTED 1024 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
-
+#define DEFAULTXPADD 1
+#define DEFAULTYPADD 3
 extern "C" TickContext g_defaultContext;
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
@@ -307,7 +308,7 @@ void GetTextDemensions(const char* text, u32* w, u32* h){
 
 
 void GetFontTextDemensions(const char* text, TickFont font,u32* w, u32* h){
-	GetFontTextDemensionsExtended(text, font, 0, 3, w, h);
+	GetFontTextDemensionsExtended(text, font, DEFAULTXPADD, DEFAULTYPADD, w, h);
 }
 
 
@@ -322,8 +323,9 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 	*h=0;
 	u32 xx = 0;
 	u32 yy = font.linegap;
-	u32 ww,hh;
+	u32 ww=0,hh=0;
 	for(int i = 0 ; text[i]; i++){
+		
 		if(text[i]>=32){
 			ww = font.CharcturesArray[text[i]-32].w;
 			hh = font.CharcturesArray[text[i]-32].h;
@@ -336,7 +338,7 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 			continue;
 		}
 		else if(text[i]== ' '){
-			xx+=ww;
+			xx+=ww+xpadding;
 			continue;
 		}
 		else if(text[i]>font.maxChar){
@@ -345,9 +347,9 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 			
 		}else if(text[i]<32){continue;}
 		xx+=ww+xpadding;
-	}
-	if(w&&xx>*w){
-		*(u32*)w=(u32)xx;
+		if(w&&xx>*w){
+			*(u32*)w=(u32)xx;
+		}
 	}
 	if(h){
 		*h = yy;
@@ -385,7 +387,7 @@ void DrawTextFont(const char* text , float x, float y,TickFont font){
 	return;
 }
 void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickContext* ctx){
-	DrawTextFontExtended_ctx(text, x, y, 0, 3, g_defaultFont, ctx);
+	DrawTextFontExtended_ctx(text, x, y, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, ctx);
 	return;
 }
 
@@ -452,7 +454,7 @@ void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32
 }
 
 void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
-	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, 0, 3, g_defaultFont, &g_defaultContext);
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, &g_defaultContext);
 
 	return;
 }

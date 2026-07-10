@@ -1,6 +1,7 @@
 #include "../include/tick-tack-to.h"
 #include "utils.h"
 #include <cstdio>
+#include <cstdlib>
 
 extern "C" TickContext g_defaultContext;
 
@@ -110,11 +111,49 @@ char DrawButton(const char* text,float x , float y ){
 	else {
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
 	}
-	DrawTextExtended(text, x+15,  y+15,0,0);
+	
+	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
 
 	UpdateSelect(preased, highlited, &g_defaultContext);
 	return preased;
 }
 
 
+void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
+	tbd->size=1024;
+	tbd->pos=0;
+	tbd->maxsize=maxsize?maxsize:-1;
+	tbd->flags={.EnableNumbers=1,.EnbleCharctures=1};
+	tbd->data=(char*)malloc(tbd->size);
+}
 
+char TextBox(const char* text,float x , float y , float w, float h , TextBoxData* tbd){
+	void SetDefaultUIColors();
+	char preased = false;
+	bool highlited=false;
+	bool slected = IsSlected(&g_defaultContext);
+	if(slected){highlited=true;};
+	if(preased){
+		slected=true;
+	}
+	u32 tw, th;
+	
+	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&tw, &th);
+	
+
+	if(Hover(x, y, w+30, h+30)){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
+		preased|=2;
+	}
+	else if(Clicked(x, y, w+30, h+30)){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
+		preased|=1;
+	}
+	else {
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
+	}
+	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
+
+	UpdateSelect(preased, highlited, &g_defaultContext);
+	return preased;
+}
