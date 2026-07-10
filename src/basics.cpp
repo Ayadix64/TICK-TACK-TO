@@ -121,6 +121,30 @@ TickContext TickInit(){
 
 TickContext* GetDefaultContext(){return &g_defaultContext;}
 
+
+
+
+Vec2i GetMousePos(){
+	Vec2i ret = {g_defaultContext.mousex,g_defaultContext.mousey};
+	return ret;
+}
+
+Vec2i GetMousePos_ctx(TickContext* ctx){
+	Vec2i ret = {ctx->mousex,ctx->mousey};
+	return ret;
+}
+
+u32 GetMouseClickes(){
+	return g_defaultContext.mousemensions;
+}
+u32 GetMouseClickes_ctx(TickContext* ctx){
+	return ctx->mousemensions;
+}
+
+
+
+
+
 void SetScaleX(float scale){
 	SetScaleX_ctx(&g_defaultContext, scale);
 }
@@ -152,6 +176,8 @@ void SetScale_ctx(TickContext* ctx, float scale){
 	ctx->scaleX=scale;
 	ctx->scaleY=scale;
 }
+
+
 
 
 
@@ -230,6 +256,7 @@ void DrawRoundedRectangel(float x, float y , float w , float h,float r , float s
 
 
 
+
 /************************************* Context Functions **********************************/
 
 
@@ -260,6 +287,7 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 
 
 
+
 void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* ctx){
 	float offsetFromeTheSenter = thicknis/2.0f;//we ant the center line to be align with the line that the user want
 	if(v1.y == v2.y && v1.x == v2.x){
@@ -279,6 +307,10 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 	
 	return;	
 }
+
+
+
+
 
 void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, TickContext* ctx)
 {
@@ -826,8 +858,8 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	double xmouse,ymouse;
 	glfwGetCursorPos(window, &xmouse, &ymouse);	
-	context.mousex=xmouse;
-	context.mousey=ymouse;
+	context.mousex=xmouse/context.scaleX;
+	context.mousey=ymouse/context.scaleY;
 	bool Lmousebefaure = context.mousemensions&1;
 	context.mousemensions=0;
 	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS );

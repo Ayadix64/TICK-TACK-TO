@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#define ENDPOINTS_SEPURTED 3000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
+#define ENDPOINTS_SEPURTED 1024 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 
 extern "C" TickContext g_defaultContext;
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
@@ -440,7 +440,6 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 		}
 		xx+=ww+xpaading;
 	}
-	
 	return;
 }
 
@@ -513,13 +512,13 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
 			tcx= font.CharcturesArray['?'-32].tcx;
 		}
 		else if(text[i]<=32){continue;}
-		if(xpos-x+ww<xx || xpos-x>xx+w || ypos-y+hh<yy || ypos-y>yy+h){continue;}
+		if(xpos-x+ww<xx || xpos-x>xx+w || ypos+yoff-y+hh<yy || ypos+yoff-y>yy+h){continue;}
 		
 		fcxoff = xpos-x<xx?xx-(xpos-x):0;
 		lcxoff = xpos-x+ww>xx+w?xpos-x+ww-(xx+w):0;
 				
-		fcyoff = ypos-y<yy?yy-(ypos-y):0;
-		lcyoff = ypos-y+hh>yy+h?ypos-y+hh-(yy+h):0;
+		fcyoff = ypos+yoff-y<yy?yy-(ypos+yoff-y):0;
+		lcyoff = ypos+yoff-y+hh>yy+h?ypos+yoff-y+hh-(yy+h):0;
 
 		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, ypos+yoff+fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff, tcx+fcxoff, fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,ctx);
 	}

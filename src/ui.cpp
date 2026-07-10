@@ -1,5 +1,6 @@
 #include "../include/tick-tack-to.h"
 #include "utils.h"
+#include <cstdio>
 
 extern "C" TickContext g_defaultContext;
 
@@ -25,7 +26,7 @@ enum TickEventSource{
 void SetDefaultUIColors(){
 	g_defaultBackgroundColour = UI_DEFAULT_BACKGROUND_COLOR;
 	g_defaultHoverColour      = UI_DEFAULT_HOUVER_COLOR;
-	g_defaultSlecetColour     = UI_DEFAULT_HOUVER_COLOR;
+	g_defaultSlecetColour     = UI_DEFAULT_SELECT_COLOR;
 
 };
 
@@ -50,9 +51,43 @@ void UpdateSelect(bool selected, bool highlited,TickContext* ctx){
 
 
 
+bool Hover(u32 x , u32 y , u32 w , u32 h){
+	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && !GetMouseClickes();
+}
+bool Hover_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+	
+	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && !GetMouseClickes_ctx(ctx);
+}
+
+
+bool Clicked(u32 x , u32 y , u32 w , u32 h){
+	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&1;
+}
+bool Clicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+	
+	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&1;
+}
+
+bool DoubleClicked(u32 x , u32 y , u32 w , u32 h){
+	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<2);
+}
+bool DoubleClicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<2);
+}
+
+
+
+
+
 char DrawButton(const char* text,float x , float y ){
 	void SetDefaultUIColors();
-	bool preased = false;
+	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
@@ -60,10 +95,26 @@ char DrawButton(const char* text,float x , float y ){
 		slected=true;
 	}
 	u32 w , h;
+	
 	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
+	
 
-	DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
+	if(Hover(x, y, w+30, h+30)){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
+		preased|=2;
+	}
+	else if(Clicked(x, y, w+30, h+30)){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
+		preased|=1;
+	}
+	else {
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
+	}
 	DrawTextExtended(text, x+15,  y+15,0,0);
+
 	UpdateSelect(preased, highlited, &g_defaultContext);
 	return preased;
 }
+
+
+
