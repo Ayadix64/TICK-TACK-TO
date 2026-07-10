@@ -50,7 +50,7 @@ void UpdateSelect(bool selected, bool highlited,TickContext* ctx){
 
 
 
-char DrawButtonPos(const char* text,float x , float y ){
+char DrawButton(const char* text,float x , float y ){
 	void SetDefaultUIColors();
 	bool preased = false;
 	bool highlited=false;

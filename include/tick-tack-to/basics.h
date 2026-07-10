@@ -3,6 +3,7 @@
 #include "utils.h"
 #include <cstddef>
 #include <GLFW/glfw3.h>
+#include <ctime>
 
 #define TICK_TOP_Z 0.0f  //the top z level
 #define TICK_BUTTOM_Z -1.0f //the buttom z level
@@ -57,8 +58,17 @@ typedef struct {
 	int uniform2DMvp;
 	float Z; // the zed of elements; for evry element been drawn, this will enable drawing batching with drawing ordring for textures
 	
+	u32 mousex,mousey;
+
+	clock_t lastClick;
+	
+	u8 mousemensions;//LeftC , RightC, LDouleClicked
+	
+
+
 	u32 selectCount;
 	u32 selectID;
+	
 	u32 highlightedElement;
 	char selectedInThisFaild;
 }TickContext;

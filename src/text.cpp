@@ -322,10 +322,14 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 	*h=0;
 	u32 xx = 0;
 	u32 yy = font.linegap;
+	u32 ww,hh;
 	for(int i = 0 ; text[i]; i++){
-		u32 ww = font.CharcturesArray[text[i]-32].w;
-		u32 hh = font.CharcturesArray[text[i]-32].h;
-		
+		if(text[i]>=32){
+			ww = font.CharcturesArray[text[i]-32].w;
+			hh = font.CharcturesArray[text[i]-32].h;
+		}else {
+			ww=hh=0;
+		}
 		if(text[i]=='\n'){
 			yy+=font.linegap+ypadding;
 			xx=0;
