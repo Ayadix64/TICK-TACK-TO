@@ -60,7 +60,7 @@ typedef struct {
 	
 	u32 mousex,mousey;
 
-	clock_t lastClick;
+	double lastClick;
 	
 	u8 mousemensions;//LeftC , RightC, LDouleClicked
 	
@@ -69,7 +69,7 @@ typedef struct {
 	u32 selectCount;
 	u32 selectID;
 	
-	u32 highlightedElement;
+	u32  highlightedElement;
 	char selectedInThisFaild;
 }TickContext;
 
@@ -79,13 +79,16 @@ typedef struct {
 
 
 TickContext TickInit();
-inline TickContext*GetDefaultContext();
+TickContext*GetDefaultContext();
+void TickInitWindowFlags();
 
 void TickNewFrame();
 void TickRendre(GLFWwindow* window);
 
 void TickNewFrame_ctx(TickContext* context);
 void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
+
+
 
 
 Vec2i GetMousePos();

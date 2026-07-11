@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "../include/tick-tack-to.h"
 #include "render.h"
+#include <algorithm>
 #include <atomic>
 #define STB_TRUETYPE_IMPLEMENTATION  
 #include "externel/stb_truetype.h"
@@ -414,20 +415,20 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 	int yoff=0;
 	for(int i = 0 ; text[i]; i++){
 		if(text[i]>=32 && text[i]<font.maxChar){
-			ww = font.CharcturesArray[text[i]-32].w;
-			hh = font.CharcturesArray[text[i]-32].h;
-			tcx = font.CharcturesArray[text[i]-32].tcx;
+			ww   = font.CharcturesArray[text[i]-32].w      ;
+			hh   = font.CharcturesArray[text[i]-32].h      ;
+			tcx  = font.CharcturesArray[text[i]-32].tcx    ;
 			yoff = font.CharcturesArray[text[i]-32].yoffset;
 		}else {
 			ww=hh=tcx=yoff=0;
 		}
 		if(text[i]== '\n'){
-			y+=font.linegap+ypadding;
+			y+=font.linegap*font.scaley+ypadding;
 			xx=x;
 			continue;
 		}
 		else if(text[i]== ' '){
-			xx+=ww;
+			xx+=ww*font.scalex;
 			continue;
 		}
 		else if(text[i]>font.maxChar){
@@ -435,12 +436,11 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 			hh = font.CharcturesArray['?'-32].h;
 			tcx= font.CharcturesArray['?'-32].tcx;
 
-			DrawTextureSegment_ctx(font.texture, xx, y, ww, hh, tcx, 0, ww, hh,ctx);
 		}else if(text[i]<32){continue;}
 		else {
-			DrawTextureSegment_ctx(font.texture, xx, y+yoff, ww, hh, tcx, 0, ww, hh,ctx);
+			DrawTextureSegment_ctx(font.texture, xx, y+yoff, ww*font.scalex, hh*font.scaley, tcx, 0, ww, hh,ctx);
 		}
-		xx+=ww+xpaading;
+		xx+=ww*font.scalex+xpaading;
 	}
 	return;
 }
@@ -493,7 +493,7 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
 	u32 lcyoff=0;
 	u32 ww=0,hh=0,tcx=0,yoff=0;
 
-	for(int i = 0 ; text[i]; i++,xpos+=ww+xpadd){
+	for(int i = 0 ; text[i]; i++,xpos+=ww*font.scalex+xpadd){
 		if(text[i]>=32){
 			ww = font.CharcturesArray[text[i]-32].w;
 			hh = font.CharcturesArray[text[i]-32].h;
@@ -504,8 +504,8 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
 		}
 		
 		if(text[i]== '\n'){
-			ypos+=font.linegap+ypadd;
-			xpos=x-ww-xpadd;//this is all will automaticly aded
+			ypos+=font.linegap*font.scaley+ypadd;
+			xpos=x-(ww)*font.scalex-xpadd;//this is all will automaticly aded
 			continue;
 		}
 		else if(text[i]>font.maxChar){
@@ -522,7 +522,7 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
 		fcyoff = ypos+yoff-y<yy?yy-(ypos+yoff-y):0;
 		lcyoff = ypos+yoff-y+hh>yy+h?ypos+yoff-y+hh-(yy+h):0;
 
-		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, ypos+yoff+fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff, tcx+fcxoff, fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,ctx);
+		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, ypos+yoff+fcyoff, (ww-fcxoff-lcxoff)*font.scalex, (hh-fcyoff-lcyoff)*font.scaley, tcx+fcxoff, fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,ctx);
 	}
 	return;
 }

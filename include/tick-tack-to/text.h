@@ -55,7 +55,7 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h);
 void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx);
 
-
+void DrawTextSegmentExtended(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd);
 void DrawTextSegmentExtended_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx);
 
 void DrawTextSegmentExtendedFont(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font);

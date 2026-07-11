@@ -77,7 +77,7 @@ TickContext TickInit(){
 	context.scaleX=1.0f;
 	context.scaleY=1.0f;
 	context.Z = TICK_TOP_Z;	
-	context.lastClick=0;
+	context.lastClick=0.0;
 	context.mousex=~0;
 	context.mousey=~0;
 	context.mousemensions=0;
@@ -101,19 +101,7 @@ TickContext TickInit(){
 		}
 		//goood bruh in her
 	}
-	/*glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LEQUAL);
-	glDepthRange(0.0f, 1.0f);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glEnable(GL_SAMPLE_ALPHA_TO_ONE);
-	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.1f);
-
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);*/
+	
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -121,11 +109,21 @@ TickContext TickInit(){
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	
-	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-   	// glDepthFunc(GL_LEQUAL);
 
 	return context;
 }
+
+
+void TickInitWindowFlags(){
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_SAMPLES, 8);
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+	return;
+}
+
 
 TickContext* GetDefaultContext(){return &g_defaultContext;}
 
@@ -829,7 +827,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	}
 	
 	int usedShader ;
-	//glGetIntegerv(GL_ACTIVE_PROGRAM,&usedShader);
+	glGetIntegerv(GL_CURRENT_PROGRAM,&usedShader);
 	if(usedShader!=ctx->Shader2D){
 		CHECK_GL_ERORR(glUseProgram(ctx->Shader2D));
 	}
@@ -870,16 +868,17 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	context.mousey=ymouse/context.scaleY;
 	bool Lmousebefaure = context.mousemensions&1;
 	context.mousemensions=0;
-	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS );
+	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS);
 	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
 	
-	clock_t deley = ((clock() - context.lastClick)*100000)/(CLOCKS_PER_SEC);
+	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
 	
 	context.mousemensions|=((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !Lmousebefaure)<<2;
+	
 	if(context.mousemensions&1){	
-		context.lastClick=clock();
+		context.lastClick=glfwGetTime();
 	}
-
+	
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){
