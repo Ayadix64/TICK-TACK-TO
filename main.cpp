@@ -150,14 +150,7 @@ int main()<%
 		//Eloge("GLFW not init");
 		return 1;
 	}
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glfwWindowHint(GLFW_SAMPLES, 8);
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-	
-
+	TickInitWindowFlags();
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	GlewInit();
@@ -173,7 +166,7 @@ int main()<%
 	TickInit();
 	
 	
-	glfwSwapInterval(1);
+	//glfwSwapInterval(0);
 
 
 	/**********************************************************/
@@ -187,7 +180,7 @@ int main()<%
 
 
 
-	float x=0.0,y=0.0,z=1000.0f , r=2.0f, r2=0.0f;
+	float x=10.0,y=10.0,z=1000.0f , r=2.0f, r2=0.0f;
 	float segments = 100.0;
 	float scale = 1.0f;
 	u32 image[320*255]{0xffffffff};
@@ -206,7 +199,11 @@ int main()<%
 	u8 animation=0;
 	int adder=1;
 	SetDefaultFont(&fira);
-	u64 tflf = clock();
+
+	
+	double tflf = glfwGetTime ();
+
+	char FPS[100];
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -221,21 +218,10 @@ int main()<%
 				if(animation==255)adder=-1;
 		if(animation==0)adder=1;
 		animation+=adder;
-
-		ImGuiNewFrame();
+		
 		TickNewFrame();
+		
 
-		ImGui::Begin("Hello TICK-TACK-TO");
-		
-		ImGui::Text("Hi, he , hallo, hi");
-		ImGui::SliderFloat("steps", &segments, 1, 360);
-		ImGui::SliderFloat("Scale", &scale , 0.0f,10.0f);
-		
-		ImGui::Text("latency: %.3f ms/frame\nFPS: %.1f", 1000.0f / io.Framerate, io.Framerate);
-		ImGui::End();
-		SetScale(scale);
-		ImGui::Render();
-		
 		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
 			x+=5.0f;
 		}
@@ -269,7 +255,7 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-		char butnflags = DrawButton("Butto\nn", x, y);
+		char butnflags = DrawButton("Button", x, y);
 		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
@@ -280,21 +266,20 @@ int main()<%
 		DrawText("BOOM JUMP SCARE", x+70, y+70);
 		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
 		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\n popole are like a cows been threfet evry one on eche ether ther eat.", x+100, y, animation/4, animation/10, 400, 100);	
-			
-
-
+		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
+		DrawText(FPS, 0, 0);
+		//printf("CLOCK: %f\n",(glfwGetTime()));	
 		TickRendre(window);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glfwSwapInterval(1);
+		tflf=glfwGetTime ();
 	}
 	ImGuiStop();
 	
 	glfwTerminate();
 %>
-
 
 
 
