@@ -1,5 +1,6 @@
 #include "../include/tick-tack-to.h"
 #include "utils.h"
+#include <GLFW/glfw3.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -13,7 +14,7 @@ extern "C" TickContext g_defaultContext;
 Vec4c g_defaultBackgroundColour;
 Vec4c g_defaultSlecetColour;
 Vec4c g_defaultHoverColour;
-
+u32 g_Roundness=30;
 
 
 
@@ -51,6 +52,9 @@ void UpdateSelect(bool selected, bool highlited,TickContext* ctx){
 	ctx->selectCount++;
 }
 
+void DiscardSelect(TickContext* ctx){
+	ctx->selectID=-1;
+}
 
 
 bool Hover(u32 x , u32 y , u32 w , u32 h){
@@ -87,8 +91,7 @@ bool DoubleClicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
 
 
 
-char DrawButton(const char* text,float x , float y ){
-	void SetDefaultUIColors();
+char Button(const char* text,float x , float y ){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -101,21 +104,24 @@ char DrawButton(const char* text,float x , float y ){
 	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
 	
 
-	if(Hover(x, y, w+30, h+30)){
+	if(Hover(x, y, w+30, h+30) || (slected && !IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w+30, h+30)){
+	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
 	}
 	else {
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
+		if(GetMouseClickes()&1){
+			DiscardSelect(&g_defaultContext);
+		}
 	}
-	
+	if(preased&1){slected=1;}	
 	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
 
-	UpdateSelect(preased, highlited, &g_defaultContext);
+	UpdateSelect(slected&1, highlited, &g_defaultContext);
 	return preased;
 }
 
@@ -133,33 +139,36 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 
 
 char TextBox(float x , float y , float w, TextBoxData* tbd){
-	void SetDefaultUIColors();
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
-	if(preased){
-		slected=true;
-	}
+	
 	u32 tw, th;
 	
 	GetTextDemensionsExtended(tbd->data,DEF_XPADD,DEF_YPADD,&tw, &th);
-	
 	
 
 	if(Hover(x, y, w, th+30)){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultHoverColour);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w, th+30)){
+	else if(Clicked(x, y, w, th+30)||slected){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
+		slected=1;
 	}
 	else {
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultBackgroundColour);
 	}
 	DrawTextSegmentExtended(tbd->data, x+15,  y+15,tbd->xoffset,0,w-30,th,DEF_XPADD,DEF_YPADD);
-
+	u32 curserpos ;
+	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
+	DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255});
+	if(slected&&g_defaultContext.lastkey){
+			
+	}	
 	UpdateSelect(preased, highlited, &g_defaultContext);
 	return preased;
 }
+

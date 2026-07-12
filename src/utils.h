@@ -78,4 +78,11 @@ void readFile(std::string path, std::string& data);
 void* readFile(const char* fileName , unsigned long * sizeOUT);
 void tRotate(float* x,float* y,float xx,float yy,float theta);
 
+char ReadBitmap(void* bm,u32 num);
+void SetBitmap(void* bm,u32 num, char val);
+
+u32 GetUnicode8Size(char* text,u32 size);//retutns the number of utf-8 charctures in the string (ASCII + utf8)
+u32 GetUnicode8(char* text, u32 number);//not safe! it dosnt try to be safe!
+
+
 #endif 

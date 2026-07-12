@@ -44,6 +44,7 @@ typedef struct {
 
 
 typedef struct {
+	GLFWwindow* window;
 	u32 window_w,window_h;
 	float scaleX, scaleY;
 	int Shader2D;
@@ -65,12 +66,14 @@ typedef struct {
 	u8 mousemensions;//LeftC , RightC, LDouleClicked
 	
 
+	u32 lastkey;
 
+	char selectedInThisFaild;
 	u32 selectCount;
 	u32 selectID;
-	
 	u32  highlightedElement;
-	char selectedInThisFaild;
+		
+
 }TickContext;
 
 typedef struct {
@@ -78,17 +81,22 @@ typedef struct {
 }TickTexture2D;
 
 
-TickContext TickInit();
+TickContext TickInit(GLFWwindow* window);
 TickContext*GetDefaultContext();
 void TickInitWindowFlags();
 
+void TickSetWindow(GLFWwindow* window);
+void TickSetWindow_ctx(GLFWwindow* window , TickContext* ctx);
+
 void TickNewFrame();
-void TickRendre(GLFWwindow* window);
+void TickRendre();
 
 void TickNewFrame_ctx(TickContext* context);
-void TickRendre_ctx(GLFWwindow* window,TickContext* ctx);
+void TickRendre_ctx(TickContext* ctx);
 
 
+void TickClose();
+void TickClose_ctx(TickContext* context);
 
 
 Vec2i GetMousePos();
@@ -96,6 +104,10 @@ Vec2i GetMousePos_ctx(TickContext* ctx);
 
 u32 GetMouseClickes();
 u32 GetMouseClickes_ctx(TickContext* ctx);
+
+char IsKeyPreased(u32 k);
+char IsKeyPreased_ctx(u32 k,TickContext* ctx);
+
 
 
 void SetScaleX(float scale);

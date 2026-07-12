@@ -15,6 +15,7 @@
 #include "externel/imgui/imgui_impl_opengl3.h"
 #include "include/tick-tack-to/basics.h"
 #include "include/tick-tack-to/text.h"
+#include "include/tick-tack-to/ui.h"
 #include "utils.hpp"
 #include "src/utils.h"
 #include <unistd.h>
@@ -156,14 +157,14 @@ int main()<%
 	GlewInit();
 	
 	// During init, enable debug output
-	glEnable              ( GL_DEBUG_OUTPUT );
-	glDebugMessageCallback( MessageCallback, 0 );
+	//glEnable              ( GL_DEBUG_OUTPUT );
+	//glDebugMessageCallback( MessageCallback, 0 );
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	
 	ImGuiIO& io=*ImGuiInit(window);
 	
-	TickInit();
+	TickInit(window);
 	
 	
 	//glfwSwapInterval(0);
@@ -194,15 +195,16 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf", 34, {0,255,255,255});
+	TickFont fira = LoadFont("FiraCode.ttf", 15, {0,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
-	SetDefaultFont(&fira);
+	//SetDefaultFont(&fira);
 
 	
 	double tflf = glfwGetTime ();
-
+	TextBoxData tbd;
+	InitTextBoxData(&tbd, 0);
 	char FPS[100];
 	while(!glfwWindowShouldClose(window) ){
 		
@@ -255,7 +257,7 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-		char butnflags = DrawButton("Button", x, y);
+		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
 		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
@@ -265,11 +267,14 @@ int main()<%
 		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
 		DrawText("BOOM JUMP SCARE", x+70, y+70);
 		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
-		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\n popole are like a cows been threfet evry one on eche ether ther eat.", x+100, y, animation/4, animation/10, 400, 100);	
+		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\npopole are like a cows been threfet evry one on eche ether ther eat.\n67", x+100, y, animation/4, animation/10, 400, 100);	
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
 		DrawText(FPS, 0, 0);
 		//printf("CLOCK: %f\n",(glfwGetTime()));	
-		TickRendre(window);
+		
+		TextBox( 20, 20, 80, &tbd);
+
+		TickRendre();
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

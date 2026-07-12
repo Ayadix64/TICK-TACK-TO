@@ -37,8 +37,7 @@ typedef struct {
 
 TickContext g_defaultContext;
 
-std::atomic<bool> g_defaultContextIsAlreadySet=false;
-std::atomic<bool> g_defaultFontAlreadySet=false; 
+std::atomic<bool> g_LibraryHaveBeenInit=false;
 std::atomic_uint  g_doubleClickeDelaye=300;//in ms
 
 
@@ -46,9 +45,10 @@ void initDefautlFont();
 void InitUI();
 
 
-TickContext TickInit(){
+TickContext TickInit(GLFWwindow* window){
 	TickContext context;
-	if(g_defaultContextIsAlreadySet){
+	context.window=window;
+	if(g_LibraryHaveBeenInit){
 		context.Shader2D = g_defaultContext.Shader2D;
 	}else {
 		context.Shader2D= CreatShader(g_2DShape_vertexshader, g_2DShape_fragmentshader);
@@ -81,15 +81,12 @@ TickContext TickInit(){
 	context.mousex=~0;
 	context.mousey=~0;
 	context.mousemensions=0;
-
-	if(!g_defaultContextIsAlreadySet){
+	context.selectID=-1;
+	if(!g_LibraryHaveBeenInit){
 		g_defaultContext=context;
-		g_defaultContextIsAlreadySet=true;
-	}
-	if(!g_defaultFontAlreadySet){
 		initDefautlFont();
-		InitUI();		
-		g_defaultFontAlreadySet=true;
+		InitUI();	
+		g_LibraryHaveBeenInit=true;
 	}
 	glUseProgram(context.Shader2D);
 	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
@@ -102,6 +99,8 @@ TickContext TickInit(){
 		//goood bruh in her
 	}
 	
+	
+
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -109,9 +108,9 @@ TickContext TickInit(){
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	
-
 	return context;
 }
+
 
 
 void TickInitWindowFlags(){
@@ -128,7 +127,18 @@ void TickInitWindowFlags(){
 TickContext* GetDefaultContext(){return &g_defaultContext;}
 
 
+void TickSetWindow(GLFWwindow* window){
+	g_defaultContext.window=window;
+}
 
+
+void TickSetWindow_ctx(GLFWwindow* window , TickContext* ctx){
+	ctx->window=window;
+}
+
+
+
+/************* Mouse input ***********/
 
 Vec2i GetMousePos(){
 	Vec2i ret = {g_defaultContext.mousex,g_defaultContext.mousey};
@@ -143,11 +153,20 @@ Vec2i GetMousePos_ctx(TickContext* ctx){
 u32 GetMouseClickes(){
 	return g_defaultContext.mousemensions;
 }
+
 u32 GetMouseClickes_ctx(TickContext* ctx){
 	return ctx->mousemensions;
 }
 
+char IsKeyPreased(u32 k){
+	return (glfwGetKey(g_defaultContext.window, k)==GLFW_PRESS);
+}
 
+char IsKeyPreased_ctx(u32 k,TickContext* ctx){
+	return (glfwGetKey(ctx->window, k)==GLFW_PRESS);
+}
+
+/************** Scale***************/
 
 
 
@@ -184,7 +203,7 @@ void SetScale_ctx(TickContext* ctx, float scale){
 }
 
 
-
+/******************************** Shapes Drawing ***********************************/
 
 
 
@@ -801,8 +820,8 @@ void RemoveTexture_ctx(TickTexture2D* texture, TickContext* ctx){
 
 
 
-void TickRendre(GLFWwindow* window){
-	TickRendre_ctx(window, &g_defaultContext);
+void TickRendre(){
+	TickRendre_ctx(&g_defaultContext);
 
 	return;
 }
@@ -815,13 +834,13 @@ void TickNewFrame(){
 }
 
 
-void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
+void TickRendre_ctx(TickContext* ctx){
 	TickContext& context = *ctx;
 	if(ctx->Z<=TICK_BUTTOM_Z){
 		Eloge("Z <=  "+std::to_string(TICK_BUTTOM_Z)+" you draw too much and part of that will not been rendred!");
 	}
 	
-	if(!g_defaultContextIsAlreadySet){
+	if(!g_LibraryHaveBeenInit){
 		Eloge("Rendring without a Context ===> did you call TickInit() ?");
 		return;
 	}
@@ -834,7 +853,7 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 	
 	//if the window changed, update the mvp
 	int real_w=0, real_h=0;
-	glfwGetFramebufferSize(window, &real_w, &real_h);
+	glfwGetFramebufferSize(ctx->window, &real_w, &real_h);
 	int window_w= (int)(((float)real_w)/context.scaleX);
 	int window_h= (int)(((float)real_h)/context.scaleY);
 	static float iw = 0.0;
@@ -863,20 +882,24 @@ void TickRendre_ctx(GLFWwindow* window,TickContext* ctx){
 		RenderTexture(&context.samplers[i]);
 	}
 	double xmouse,ymouse;
-	glfwGetCursorPos(window, &xmouse, &ymouse);	
+	glfwGetCursorPos(ctx->window, &xmouse, &ymouse);	
 	context.mousex=xmouse/context.scaleX;
 	context.mousey=ymouse/context.scaleY;
 	bool Lmousebefaure = context.mousemensions&1;
 	context.mousemensions=0;
-	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS);
-	context.mousemensions |= (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS);
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
 	
 	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
 	
 	context.mousemensions|=((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !Lmousebefaure)<<2;
-	
+	context.lastkey=0;
 	if(context.mousemensions&1){	
 		context.lastClick=glfwGetTime();
+	}
+	for(int i = 0 ; i < 256 ; i++){
+		context.lastkey=glfwGetKey(context.window, i);
+		if(context.lastkey)break;
 	}
 	
 	return;
@@ -887,24 +910,25 @@ void TickNewFrame_ctx(TickContext* context){
 	for(int i = 0 ; i < context->samplerPtr ; i++){
 		ResetRendrer(&context->samplers[i].rendrer);
 	}
-
+	
 	context->Z=TICK_TOP_Z;
+	context->selectCount=0;
 	return;
 }
 
 
 void TickClose(){
-	if(!g_defaultContextIsAlreadySet){
+	if(!g_LibraryHaveBeenInit){
 		Eloge("Tick never init to close");
 		return;
 	}
-	g_defaultContextIsAlreadySet=false;
-
+	g_LibraryHaveBeenInit=false;
+	TickClose_ctx(&g_defaultContext);
+	
 }
 
 
 void TickClose_ctx(TickContext* context){
-
 	DeletRendrer(&context->Shape2D);
 	DeletRendrer(&context->ShapeCir2D);
 }
