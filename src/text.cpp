@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#define ENDPOINTS_SEPURTED 1024 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
+#define ENDPOINTS_SEPURTED 2000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 #define DEFAULTXPADD 1
 #define DEFAULTYPADD 3
 extern "C" TickContext g_defaultContext;
@@ -206,6 +206,9 @@ TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl){
 TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* ctx){
 	TickFont ret;
 	stbtt_fontinfo font;
+	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
+	
+
 	ret.CharcturesArray = (typeof ret.CharcturesArray)malloc(((ENDPOINTS_SEPURTED-32))*sizeof(typeof(ret.CharcturesArray[0])));
 	
 	ret.size=scale;
@@ -215,16 +218,14 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	ret.cl=c;
 	
 	
-	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
 	
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0;
 	float fntscale = stbtt_ScaleForPixelHeight(&font, (float)scale);
 	u32 gap;
 	stbtt_GetFontVMetrics(&font, (int*)&gap, 0, 0);
-	
 	ret.linegap=gap*fntscale;
-	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 ; i++){
+	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 && i < font.numGlyphs ; i++){
 		int w =0, h=0 , y0=0,x0=0;
 		if(!i){
 			u32 advance,lsb;
@@ -254,7 +255,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	xoffset=0;
 	u32 * texture = (u32*)malloc(texturewidth*textureheigth*sizeof(u32));
 	
-	for(int i = 1 ; i < ENDPOINTS_SEPURTED-32 ; i++){
+	for(int i = 1 ; i < ENDPOINTS_SEPURTED-32 && i < font.numGlyphs ; i++){
 		int w , h;
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
 
@@ -320,12 +321,35 @@ void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32*
 
 
 void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h){
-	*w=0;
-	*h=0;
+	GetFontTextDemensionsExtendedSize(text, strlen(text), font, xpadding, ypadding, w, h);	
+	return;
+
+}
+
+
+void GetTextDemensionsSuze(const char* text, u32 textSize,u32* w, u32* h){
+	GetFontTextDemensionsSize(text, textSize, g_defaultFont, w, h);
+}
+
+
+void GetFontTextDemensionsSize(const char* text,u32 textSize ,TickFont font,u32* w, u32* h){
+	GetFontTextDemensionsExtendedSize(text,textSize ,font, DEFAULTXPADD, DEFAULTYPADD, w, h);
+}
+
+
+
+void GetTextDemensionsExtendedSize(const char* text,u32 textSize,u32 xppading, u32 ypadding, u32* w, u32* h){
+	GetFontTextDemensionsExtendedSize(text, textSize, g_defaultFont,xppading,ypadding, w, h);
+}
+
+
+void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h){
+	if(w)*w=0;
+	if(h)*h=0;
 	u32 xx = 0;
 	u32 yy = font.linegap;
 	u32 ww=0,hh=0;
-	for(int i = 0 ; text[i]; i++){
+	for(int i = 0 ; i<textSize ;i++){
 		
 		if(text[i]>=32){
 			ww = font.CharcturesArray[text[i]-32].w;
@@ -358,8 +382,6 @@ void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding
 	return;
 
 }
-
-
 
 
 

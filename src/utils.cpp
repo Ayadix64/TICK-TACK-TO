@@ -82,3 +82,49 @@ void tRotate(float* x,float* y,float xx,float yy,float theta){
 	*y=yy+X*sin(raduis)+Y*cos(raduis);
 	return ;
 }
+
+char ReadBitmap(void* bm,u32 num){
+	return ((u8*)bm)[num/8]&(1<<(num%8));
+}
+void SetBitmap(void* bm,u32 num,char val){
+	((u8*)bm)[num/8]&=~(1<<(num%8));
+	((u8*)bm)[num/8]|=((val&1)<<(num%8));
+	return;
+}
+
+
+
+u32 GetUnicode8Size(char* text,u32 size){
+	u32 ret=0;
+	for(u32 i = 0 ; i<=size;i++){
+		if((((u8)text[i])&(3<<5)) == 1<<6){//10xxxxxxx, a continue
+			continue;
+		}
+		ret++;
+	}
+	return ret;
+}
+
+u32 GetUnicode8(char *text, u32 number,char val){
+	u32 unicode=0;
+	for(u32 i = 0, uniN=0  ; uniN<=number; i++){
+		if(!text[i])return 32;
+		if(!(text[i]&(1<<7))){
+			unicode=text[i];
+			uniN++;
+		}else if((text[i]&(3<<6))==1<<7){
+			unicode<<=6;
+			unicode|=text[i]&0x3f;;	
+		}else if ((text[i]&(3<<6))==3<<6 ){
+			unicode=0;
+			
+			uniN++ ;
+			int leftshift=6;
+			for(int ii = 6 ; ii  >= 0 ;  ii--,leftshift--){
+				if(!(text[i]&(1<<ii)))break;
+			}
+			unicode|=text[i]&~(0xff<<leftshift);
+		}
+	}
+	return unicode;
+}

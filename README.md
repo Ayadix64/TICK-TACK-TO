@@ -75,7 +75,7 @@ int main(){
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	
 	
-	TickInit();
+	TickInit(window);
 	
     while(!glfwWindowShouldClose(window) ){
         DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
@@ -90,12 +90,12 @@ int main(){
         DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
         DrawText("BOOM JUMP SCARE", x+70, y+70);
         DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,"
-                        "\n bla bla too mush of a talk", 100, 50, 20, 10, 400, 100);	
+                        "\n bla bla too mush of a talk\nwho want 3.14 part of a tomato?", 100, 50, 20, 10, 400, 100);	
 
 
  
 
-        TickRendre(window);
+        TickRendre();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -105,6 +105,12 @@ int main(){
 
 
 ```
+## Philosophy
+This Library dosnt want to do any thing fancy
+
+it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a thing that i persounly wanted from a UI library
+
+This Library gives the issuntiol to build , with 
 
 
 ## Fear Allah in your work

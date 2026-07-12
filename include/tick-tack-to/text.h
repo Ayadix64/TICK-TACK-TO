@@ -39,6 +39,15 @@ void GetTextDemensionsExtended(const char* text,u32 xppading, u32 ypadding, u32*
 void GetFontTextDemensionsExtended(const char* text, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
 
 
+void GetTextDemensionsSize(const char* text , u32 textSize, u32* w, u32* h);
+void GetFontTextDemensionsSize(const char* text , u32 textSize, TickFont font,u32* w, u32* h);
+
+void GetTextDemensionsExtendedSize(const char* text , u32 textSize,u32 xppading, u32 ypadding, u32* w, u32* h);
+void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
+
+
+
+
 
 void DrawText(const char* text , float x, float y);
 void DrawText_ctx(const char* text , float x, float y,TickContext* ctx);

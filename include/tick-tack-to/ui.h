@@ -21,6 +21,6 @@ typedef struct {
 
 void InitTextBoxData(TextBoxData* tbd,u32 maxsize);
 
-char DrawButton(const char* text,float x , float y ); //bit1: preased, bit2: hover
-char TextBox(const char* text,float x , float y , float w, TextBoxData* tbd);
+char Button(const char* text,float x , float y ); //bit1: preased, bit2: hover
+char TextBox(float x , float y , float w, TextBoxData* tbd);
 #endif
