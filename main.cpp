@@ -167,7 +167,6 @@ int main()<%
 	TickInit(window);
 	
 	
-	//glfwSwapInterval(0);
 
 
 	/**********************************************************/
@@ -258,6 +257,7 @@ int main()<%
 		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
+		Button("How is the dat of Kbnuib", 600, 600);
 		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
@@ -270,6 +270,7 @@ int main()<%
 		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\npopole are like a cows been threfet evry one on eche ether ther eat.\n67", x+100, y, animation/4, animation/10, 400, 100);	
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
 		DrawText(FPS, 0, 0);
+		DrawEmptyRoundedRectangel(300, 400, 90, 60, 30, 20, 90, {255,255,0,255});
 		//printf("CLOCK: %f\n",(glfwGetTime()));	
 		
 		TextBox( 20, 20, 80, &tbd);

@@ -110,8 +110,8 @@ This Library dosnt want to do any thing fancy
 
 it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a thing that i persounly wanted from a UI library
 
-This Library gives the issuntiol to build , with 
+This Library gives the issuntiol to build ,with the maximum effert to make never toch opengl and any rendrer  , impliminting that with a good prouformance Batch rendrer.
 
 
 ## Fear Allah in your work
-## Have a nice day.
+## Have a nice day

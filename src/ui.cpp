@@ -100,23 +100,72 @@ char Button(const char* text,float x , float y ){
 		slected=true;
 	}
 	u32 w , h;
-	
-	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
-	
 
-	if(Hover(x, y, w+30, h+30) || (slected && !IsKeyPreased(GLFW_KEY_ENTER))){
+	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
+	if(slected){
+		DrawRoundedRectangel(x-1, y-1, w + (32), h + (32), 10, 90,  g_defaultHoverColour);
+
+	}
+
+	if(Hover(x, y, w+30, h+30)){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+	if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
 	}
-	else {
+	if(!preased) {
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
-		if(GetMouseClickes()&1){
-			DiscardSelect(&g_defaultContext);
-		}
+
+	}
+	
+	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1){
+		DiscardSelect(&g_defaultContext);
+		slected=false;
+	}
+	if(preased&1){slected=1;}	
+	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
+
+	UpdateSelect(slected&1, highlited, &g_defaultContext);
+	return preased;
+}
+
+
+
+
+char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
+	char preased = false;
+	bool highlited=false;
+	bool slected = IsSlected(&g_defaultContext);
+	if(slected){highlited=true;};
+	if(preased){
+		slected=true;
+	}
+	u32 w , h;
+
+	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
+	if(slected){
+		DrawRoundedRectangel(x-1, y-1, w + (32), h + (32), 10, 90,  hoverbg);
+
+	}
+
+	if(Hover(x, y, w+30, h+30)){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, hoverbg);
+		preased|=2;
+	}
+	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, slectbg);
+		preased|=1;
+	}
+	else {
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, bg);
+
+	}
+	
+	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1 && slected){
+		DiscardSelect(&g_defaultContext);
+		slected=false;
 	}
 	if(preased&1){slected=1;}	
 	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
