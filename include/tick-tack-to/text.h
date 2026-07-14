@@ -12,7 +12,7 @@ typedef struct {
 	
 	struct {
 		u32 w, h,yoffset;
-		u32 tcx;
+		u32 tcx,tcy;
 
 	} *CharcturesArray;
 	u32 cl;	
@@ -45,6 +45,8 @@ void GetFontTextDemensionsSize(const char* text , u32 textSize, TickFont font,u3
 void GetTextDemensionsExtendedSize(const char* text , u32 textSize,u32 xppading, u32 ypadding, u32* w, u32* h);
 void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
 
+void GetCharDemensions(u32 c,  TickFont font ,u32* w, u32* h);
+void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h);
 
 
 

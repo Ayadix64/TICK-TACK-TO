@@ -194,11 +194,11 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf", 15, {0,255,255,255});
+	TickFont fira = LoadFont("FiraCode.ttf",20 , {0,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
-	//SetDefaultFont(&fira);
+	SetDefaultFont(&fira);
 
 	
 	double tflf = glfwGetTime ();
@@ -254,7 +254,7 @@ int main()<%
 		
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,20});
 		
-		DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
+		DrawText("the fast quick fox jump over the lazy slow\n dog", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
 		Button("How is the dat of Kbnuib", 600, 600);
@@ -265,7 +265,7 @@ int main()<%
 			printf("HOVER\n");
 		}
 		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
-		DrawText("BOOM JUMP SCARE", x+70, y+70);
+		DrawText("BOOM JUMP \tSCARE", x+70, y+70);
 		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
 		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\npopole are like a cows been threfet evry one on eche ether ther eat.\n67", x+100, y, animation/4, animation/10, 400, 100);	
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));

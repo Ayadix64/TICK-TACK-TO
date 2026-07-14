@@ -163,7 +163,7 @@ char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg ,
 
 	}
 	
-	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1 && slected){
+	if(!preased&& GetMouseClickes()&1 && !slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
