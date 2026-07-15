@@ -9,13 +9,16 @@
 typedef struct {
 	u32 size;
 	u32 maxsize;
+	u32 usedsize;
+	
 	u32 pos;
 	u32 xoffset;
 	struct {
 		char EnableNumbers:1;
 		char EnbleCharctures:1;
+		char Password:1;
 	} flags;
-	clock_t flickers;
+	double flickers;
 	char* data;
 }TextBoxData;
 

@@ -1,5 +1,5 @@
 #include "utils.h"
-
+#include <stdlib.h>
 void loge(std::string lg , std::string ms ){
 	std::cout << "[" << lg << "] " << ms << ".\n";
 	return;
@@ -127,4 +127,52 @@ u32 GetUnicode8(char *text, u32 number,char val){
 		}
 	}
 	return unicode;
+}
+
+
+u64 max(u64 v1 , u64 v2){
+	return v1>v2?v1:v2;
+}
+u64 min(u64 v1 , u64 v2){
+	return v1>v2?v2:v1;
+}
+void* PushMatrix(void* val , u32 sizeofstr ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	
+	if(usedData+sizeofstr>= dataSize){
+		size_t newDataSize = *usedData+sizeofstr+0x1000;
+		data=realloc(data,newDataSize);
+		
+	}
+	if(pos>=*dataSize){
+		size_t newDataSize = pos+sizeofstr+0x1000;
+		data=realloc(data, newDataSize);
+		*dataSize=newDataSize;
+	}
+	for(u32 i = *usedData+sizeofstr; i>pos+sizeofstr; i--){
+		((u8*)data)[i-1] = ((u8*)data)[i-sizeofstr-1];
+	}
+	
+	for(u32 i = 0 ; i < sizeofstr ; i++){
+		((u8*)data)[i+pos]=((u8*)val)[i];
+	}
+	*usedData+=sizeofstr;
+	return data;
+}
+void* PushChar   (char val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , 1 , pos,  dataSize , usedData , data);
+}
+void* PushShort  (short val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data); //intristing stuff
+}
+void* PushInteger(int val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+}
+void* PushFloat  (float val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+}
+void* PushLong   (long val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+}
+void* PushDouble (double val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
 }

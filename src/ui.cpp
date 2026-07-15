@@ -1,10 +1,10 @@
-#include "../include/tick-tack-to.h"
 #include "utils.h"
-#include <GLFW/glfw3.h>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
+#include "../include/tick-tack-to.h"
 extern "C" TickContext g_defaultContext;
 
 #define DEF_XPADD 1
@@ -120,7 +120,7 @@ char Button(const char* text,float x , float y ){
 
 	}
 	
-	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1){
+	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1 && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
@@ -163,7 +163,7 @@ char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg ,
 
 	}
 	
-	if(!preased&& GetMouseClickes()&1 && !slected){
+	if(!preased&& GetMouseClickes()&1 && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
@@ -210,13 +210,21 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	else {
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultBackgroundColour);
 	}
+	if(g_defaultContext.lastkey && tbd->size  < tbd->maxsize){
+		size_t sz=tbd->size,usz=tbd->usedsize;
+		tbd->data=(char*)PushChar(g_defaultContext.lastkey, tbd->pos, &sz, (size_t*)&usz, tbd->data);	//TODO: not safe
+		tbd->size=sz;
+		tbd->usedsize=usz;
+	}
 	DrawTextSegmentExtended(tbd->data, x+15,  y+15,tbd->xoffset,0,w-30,th,DEF_XPADD,DEF_YPADD);
 	u32 curserpos ;
 	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
 	DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255});
 	if(slected&&g_defaultContext.lastkey){
-			
+		tbd->data =(char*) PushChar  ((char)g_defaultContext.lastkey  ,tbd->pos,  (size_t*)&tbd->size , (size_t*)&tbd->maxsize , tbd->data);
 	}	
+	
+	//(const char *text, float x, float y, u32 xx, u32 yy, u32 w, u32 h, u32 xpadd, u32 ypadd)
 	UpdateSelect(preased, highlited, &g_defaultContext);
 	return preased;
 }
