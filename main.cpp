@@ -17,7 +17,6 @@
 #include "include/tick-tack-to/text.h"
 #include "include/tick-tack-to/ui.h"
 #include "utils.hpp"
-#include "src/utils.h"
 #include <unistd.h>
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);

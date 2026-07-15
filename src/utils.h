@@ -1,5 +1,5 @@
-#ifndef UTILS_TICKTACKTO
-#define UTILS_TICKTACKTO
+#ifndef UTILS_TICKTACKTO_CORE
+#define UTILS_TICKTACKTO_CORE
 
 #include <complex>
 #include <cstdlib>
@@ -20,7 +20,6 @@
 
 
 //#define DEBUG_MODE //if you want to dosnt enter debug mod and save memory , comment this
-
 
 typedef unsigned char  u8 ;
 typedef unsigned short u16;
@@ -84,5 +83,12 @@ void SetBitmap(void* bm,u32 num, char val);
 u32 GetUnicode8Size(char* text,u32 size);//retutns the number of utf-8 charctures in the string (ASCII + utf8)
 u32 GetUnicode8(char* text, u32 number);//not safe! it dosnt try to be safe!
 
+void* PushMatrix(void* val , u32 Vsize ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 
+void* PushChar   (char   val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushShort  (short  val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushInteger(int    val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushFloat  (float  val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushLong   (long   val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushDouble (double val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 #endif 

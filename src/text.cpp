@@ -10,8 +10,8 @@
 #include <cstdlib>
 #include <cstring>
 #define ENDPOINTS_SEPURTED 5000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
-#define DEFAULTXPADD 1
-#define DEFAULTYPADD 3
+#define DEFAULTXPADD (u32)1
+#define DEFAULTYPADD (u32)3
 extern "C" TickContext g_defaultContext;
 std::atomic_uint g_tabSpaces = 5;
 
@@ -322,7 +322,9 @@ void ResetDefaultFont(){
 }
 
 
-
+void SetTabSpaces(u32 tabs){
+	g_tabSpaces=tabs;
+}
 
 
 
@@ -440,56 +442,202 @@ void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h){
 
 
 
-/************************************* Text Drawing functions *******************************************/
+/***************************************** Text Drawing functions ************************************************/
 
 
 
 
 
-void DrawText(const char* text , float x, float y){
+void DrawText(const char* text , u32 x, u32 y){
 	DrawTextFont_ctx(text, x, y, g_defaultFont, &g_defaultContext);	
 	return;
 }
 
 
-void DrawText_ctx(const char* text , float x, float y,TickContext* ctx){
+void DrawText_ctx(const char* text , u32 x, u32 y,TickContext* ctx){
 	DrawTextFont_ctx(text, x, y, g_defaultFont, ctx);	
 	return;
 }
 
 
 
-void DrawTextFont(const char* text , float x, float y,TickFont font){
+void DrawTextFont(const char* text , u32 x, u32 y,TickFont font){
 	DrawTextFont_ctx(text, x, y, font, &g_defaultContext);
 	return;
 }
-void DrawTextFont_ctx(const char* text , float x, float y,TickFont font,TickContext* ctx){
+void DrawTextFont_ctx(const char* text , u32 x, u32 y,TickFont font,TickContext* ctx){
 	DrawTextFontExtended_ctx(text, x, y, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, ctx);
 	return;
 }
 
 
-void DrawTextExtended(const char* text , float x, float y,float xpaading ,float ypadding ){
+void DrawTextExtended(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ){
 	DrawTextExtended_ctx(text,  x, y, xpaading, ypadding, &g_defaultContext);
 }
 
 
-void DrawTextExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickContext* ctx){
+void DrawTextExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickContext* ctx){
 	 DrawTextFontExtended_ctx(text , x, y,xpaading ,ypadding ,g_defaultFont, ctx);
 }
 
 
 
 
-void DrawTextFontExtended(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font){
+void DrawTextFontExtended(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickFont font){
 	DrawTextFontExtended_ctx(text, x, y, xpaading, ypadding, font, &g_defaultContext);
 }
 
-void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading ,float ypadding ,TickFont font,TickContext* ctx){
-	float xx = x;
+
+void DrawTextFontExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickFont font,TickContext* ctx){
+	DrawTextFontExtendedSize_ctx(text, strlen(text), x, y, xpaading, ypadding, font, ctx);
+	return;
+}
+
+
+
+
+void DrawTextSegment(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h){
+	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, &g_defaultContext);
+}
+
+void DrawTextSegment_ctx(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, &g_defaultContext);
+
+	return;
+}
+
+
+
+void DrawTextSegmentExtended(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, &g_defaultContext);
+	return;
+}
+
+void DrawTextSegmentExtended_ctx(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, ctx);
+	return;
+}
+
+
+
+
+void DrawTextSegmentExtendedFont(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font){
+	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, font, &g_defaultContext);
+	return;
+}
+
+
+
+void DrawTextSegmentExtendedFont_ctx(const char* text , u32 x, u32 y ,
+					u32 xx , u32 yy ,
+					u32 w , u32 h,
+					u32 xpadd, u32 ypadd ,
+					TickFont font,TickContext* ctx)
+{
+
+	DrawTextSegmentExtendedFontSize_ctx(text,strlen(text),x,y,xx,yy,w,h,xpadd,ypadd,font,ctx);
+} 
+
+
+
+/************************** Draw Text Size (i dont have a better name btw) *****************************/
+
+
+void DrawTextSize(const char* text , u32 size , u32 x, u32 y){
+	DrawTextFontSize_ctx(text,size, x, y, g_defaultFont, &g_defaultContext);	
+	return;
+}
+
+
+void DrawTextSize_ctx(const char* text , u32 size , u32 x, u32 y,TickContext* ctx){
+	DrawTextFontSize_ctx(text,size, x, y, g_defaultFont, ctx);	
+	return;
+}
+
+
+
+void DrawTextFontSize(const char* text , u32 size , u32 x, u32 y,TickFont font){
+	DrawTextFontSize_ctx(text,size, x, y, font, &g_defaultContext);
+	return;
+}
+void DrawTextFontSize_ctx(const char* text , u32 size , u32 x, u32 y,TickFont font,TickContext* ctx){
+	DrawTextFontExtendedSize_ctx(text,size, x, y, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, ctx);
+	return;
+}
+
+
+void DrawTextExtendedSize(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding ){
+	DrawTextExtendedSize_ctx(text,size,  x, y, xpaading, ypadding, &g_defaultContext);
+}
+
+
+void DrawTextExtendedSize_ctx(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickContext* ctx){
+	 DrawTextFontExtendedSize_ctx(text ,  size , x, y,xpaading ,ypadding ,g_defaultFont, ctx);
+}
+
+
+
+
+void DrawTextFontExtendedSize(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickFont font){
+	DrawTextFontExtendedSize_ctx(text,size, x, y, xpaading, ypadding, font, &g_defaultContext);
+}
+
+
+
+
+void DrawTextSegmentSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h){
+	DrawTextSegmentSize_ctx(text,size, x, y, xx, yy, w, h, &g_defaultContext);
+}
+
+void DrawTextSegmentSize_ctx(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
+	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, &g_defaultContext);
+
+	return;
+}
+
+
+
+void DrawTextSegmentExtendedSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd){
+	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, &g_defaultContext);
+	return;
+}
+
+void DrawTextSegmentExtendedSize_ctx(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx){
+	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, ctx);
+	return;
+}
+
+
+
+
+void DrawTextSegmentExtendedFontSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font){
+	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd, font, &g_defaultContext);
+	return;
+}
+
+
+
+void DrawTextSegmentExtendedFontSize(const char* text , u32 x, u32 y ,
+					u32 xx , u32 yy ,
+					u32 w , u32 h,
+					u32 xpadd, u32 ypadd ,
+					TickFont font)
+{
+
+	/*TODO*/
+} 
+
+
+
+
+
+
+void DrawTextFontExtendedSize_ctx(const char* text , u32 size,u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickFont font,TickContext* ctx)
+{
+	u32 xx = x;
 	u32 ww=0,hh=0,tcx=0,tcy=0;
 	int yoff=0;
-	for(int i = 0 ; text[i]; i++){
+	for(int i = 0 ; i<size; i++){
 		if(text[i]>=32 && text[i]<font.maxChar){
 			ww   = font.CharcturesArray[text[i]-32].w      ;
 			hh   = font.CharcturesArray[text[i]-32].h      ;
@@ -529,52 +677,21 @@ void DrawTextFontExtended_ctx(const char* text , float x, float y,float xpaading
 
 
 
-
-void DrawTextSegment(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h){
-	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, &g_defaultContext);
-}
-
-void DrawTextSegment_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,TickContext* ctx){
-	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD, g_defaultFont, &g_defaultContext);
-
-	return;
-}
-
-
-
-void DrawTextSegmentExtended(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd){
-	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, &g_defaultContext);
-	return;
-}
-
-void DrawTextSegmentExtended_ctx(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx){
-	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, g_defaultFont, ctx);
-	return;
-}
-
-
-
-
-void DrawTextSegmentExtendedFont(const char* text , float x, float y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd , TickFont font){
-	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, font, &g_defaultContext);
-	return;
-}
-
-void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
+void DrawTextSegmentExtendedFontSize_ctx(const char* text ,u32 size, u32 x, u32 y ,
 					u32 xx , u32 yy ,
 					u32 w , u32 h,
 					u32 xpadd, u32 ypadd ,
 					TickFont font,TickContext* ctx) //bor is it a long name
 {
-	float xpos = x;
-	float ypos = y;
+	u32 xpos = x;
+	u32 ypos = y;
 	u32 fcxoff=0;//first charceture x offset
 	u32 lcxoff=0;//last  ...
-	u32 fcyoff=0;//first charceture x offset
-	u32 lcyoff=0;
+	u32 fcyoff=0;//first charceture y offset
+	u32 lcyoff=0;//last  ...
 	u32 ww=0,hh=0,tcx=0,tcy=0,yoff=0;
 
-	for(int i = 0 ; text[i]; i++,xpos+=ww*font.scalex+xpadd){
+	for(int i = 0 ; i<size; i++,xpos+=ww*font.scalex+xpadd){
 		if(text[i]>=32){
 			ww = font.CharcturesArray[text[i]-32].w;
 			hh = font.CharcturesArray[text[i]-32].h;
@@ -608,7 +725,13 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , float x, float y ,
 		fcyoff = ypos+yoff-y<yy?yy-(ypos+yoff-y):0;
 		lcyoff = ypos+yoff-y+hh>yy+h?ypos+yoff-y+hh-(yy+h):0;
 
-		DrawTextureSegment_ctx(font.texture, xpos+fcxoff, ypos+yoff+fcyoff, (ww-fcxoff-lcxoff)*font.scalex, (hh-fcyoff-lcyoff)*font.scaley, tcx+fcxoff, tcy+fcyoff, ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,ctx);
+		DrawTextureSegment_ctx( font.texture, xpos+fcxoff         , 
+					ypos+yoff+fcyoff                  , 
+					(ww-fcxoff-lcxoff)*font.scalex    ,
+					(hh-fcyoff-lcyoff)*font.scaley    , 
+					tcx+fcxoff, tcy+fcyoff            , 
+					ww-fcxoff-lcxoff, hh-fcyoff-lcyoff,
+					ctx);
 	}
 	return;
 }
