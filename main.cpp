@@ -18,6 +18,7 @@
 #include "include/tick-tack-to/ui.h"
 #include "utils.hpp"
 #include <unistd.h>
+
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
 
@@ -193,11 +194,11 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf",20 , {0,255,255,255});
+	//TickFont fira = LoadFont("FiraCode.ttf",20 , {0,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
-	SetDefaultFont(&fira);
+	//SetDefaultFont(&fira);
 
 	
 	double tflf = glfwGetTime ();
@@ -234,14 +235,6 @@ int main()<%
 		if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 			y+=5.0f;
 		}
-		if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-		}
-		if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-		}
-		if(glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
-			printf("CLCD\n");
-		}
-		
 		
 		glfwMakeContextCurrent(window);
 		
@@ -253,9 +246,10 @@ int main()<%
 		
 		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,20});
 		
-		DrawText("the fast quick fox jump over the lazy slow\n dog", 300, 200);
+		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
+
 		Button("How is the dat of Kbnuib", 600, 600);
 		if(butnflags&1){
 			printf("CLICKED!\n");
@@ -263,16 +257,11 @@ int main()<%
 		}else if(butnflags&2){
 			printf("HOVER\n");
 		}
-		DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
-		DrawText("BOOM JUMP \tSCARE", x+70, y+70);
-		//DrawRectangel(x+animation/4,  y,400 ,13, {0,255,0,255});
-		DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,\npopole are like a cows been threfet evry one on eche ether ther eat.\n67", x+100, y, animation/4, animation/10, 400, 100);	
+		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
 		DrawText(FPS, 0, 0);
 		DrawEmptyRoundedRectangel(300, 400, 90, 60, 30, 20, 90, {255,255,0,255});
-		//printf("CLOCK: %f\n",(glfwGetTime()));	
-		
-		TextBox( 20, 20, 80, &tbd);
+		TextBox( 20, 20, 200, &tbd);
 
 		TickRendre();
 		

@@ -1,4 +1,6 @@
 #include "utils.h"
+#include <cstddef>
+#include <cstdio>
 #include <stdlib.h>
 void loge(std::string lg , std::string ms ){
 	std::cout << "[" << lg << "] " << ms << ".\n";
@@ -136,12 +138,12 @@ u64 max(u64 v1 , u64 v2){
 u64 min(u64 v1 , u64 v2){
 	return v1>v2?v2:v1;
 }
-void* PushMatrix(void* val , u32 sizeofstr ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
+void* PushBuffer(void* val , u32 sizeofstr ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
 	
-	if(usedData+sizeofstr>= dataSize){
+	if(((*usedData)+sizeofstr) >= *dataSize){
 		size_t newDataSize = *usedData+sizeofstr+0x1000;
 		data=realloc(data,newDataSize);
-		
+		*dataSize=newDataSize;
 	}
 	if(pos>=*dataSize){
 		size_t newDataSize = pos+sizeofstr+0x1000;
@@ -159,20 +161,74 @@ void* PushMatrix(void* val , u32 sizeofstr ,size_t pos,  size_t* dataSize , size
 	return data;
 }
 void* PushChar   (char val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , 1 , pos,  dataSize , usedData , data);
+	void *ret= PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data);
+	return ret;
 }
 void* PushShort  (short val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data); //intristing stuff
+	return  PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data); //intristing stuff
 }
 void* PushInteger(int val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+	return  PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data);
 }
 void* PushFloat  (float val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+	return  PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data);
 }
 void* PushLong   (long val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+	return  PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data);
 }
 void* PushDouble (double val  ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
-	return  PushMatrix(&val , (u32)sizeof(typeof(val)) , pos,  dataSize , usedData , data);
+	return  PushBuffer(&val , (u32)sizeof(typeof(val)) , pos*sizeof(typeof(val)),  dataSize , usedData , data);
 }
+
+
+void PopBuffer(size_t pos, u32 size,  size_t* dataSize ,void* data){
+	if(size>*dataSize ){
+		printf("[**ERORR**] poped size biger then the buffer size");
+		return;
+	}
+	if(pos+size>*dataSize ){
+		printf("[**ERORR**] poped pos over buffer size");
+		return;
+	}
+	for(size_t i = pos ; i+size<*dataSize ; i++){
+		*(u8*)((size_t)data+i) = *(u8*)((size_t)data+i+size);
+	}
+	for(u32 i = 0 ; i < size ; i++){
+		((u8*)data)[*dataSize-i]=0;
+	}
+	*dataSize-=size;
+	return ;
+}
+
+
+char PopChar   (size_t pos,  size_t* dataSize ,  void* data){
+	char ret = *(char*)((size_t)data+pos*sizeof(char));
+	PopBuffer(pos , (u32)sizeof(char) ,  dataSize ,  data);
+	return ret;
+}
+short PopShort  (size_t pos,  size_t* dataSize ,  void* data){
+	short ret = *(short*)((size_t)data+pos*sizeof(short));
+	PopBuffer(pos , (u32)sizeof(short) ,   dataSize ,  data); //intristing stuff
+	return ret;
+}
+int PopInteger(size_t pos,  size_t* dataSize ,  void* data){
+	int ret = *(int*)((size_t)data+pos*sizeof(int));
+	PopBuffer(pos , (u32)sizeof(int) ,  dataSize ,  data);
+	return ret;
+}
+float PopFloat  (size_t pos,  size_t* dataSize ,  void* data){
+	float ret = *(float*)((size_t)data+pos*sizeof(float));
+	PopBuffer(pos , (u32)sizeof(float) ,   dataSize ,  data);
+	return ret;
+}
+long PopLong   (size_t pos,  size_t* dataSize ,  void* data){
+	long ret = *(long*)((size_t)data+pos*sizeof(long));
+	PopBuffer(pos , (u32)sizeof(long) ,   dataSize ,  data);
+	return ret;
+}
+double PopDouble (size_t pos,  size_t* dataSize ,  void* data){
+	double ret = *(double*)((size_t)data+pos*sizeof(double));
+	PopBuffer(pos , (u32)sizeof(double) , dataSize ,  data);
+	return ret;
+}
+

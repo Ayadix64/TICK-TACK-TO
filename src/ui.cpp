@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <GLFW/glfw3.h>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -96,14 +97,12 @@ char Button(const char* text,float x , float y ){
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
-	if(preased){
-		slected=true;
-	}
+	
 	u32 w , h;
 
 	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
 	if(slected){
-		DrawRoundedRectangel(x-1, y-1, w + (32), h + (32), 10, 90,  g_defaultHoverColour);
+		DrawEmptyRoundedRectangel(x-1, y-1, w + (32), h + (32), 10,2 ,90,  g_defaultHoverColour);
 
 	}
 
@@ -139,14 +138,11 @@ char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg ,
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
-	if(preased){
-		slected=true;
-	}
 	u32 w , h;
-
 	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
+	
 	if(slected){
-		DrawRoundedRectangel(x-1, y-1, w + (32), h + (32), 10, 90,  hoverbg);
+		DrawEmptyRoundedRectangel(x-1, y-1, w + (32), h + (32), 10,2, 90,  hoverbg);
 
 	}
 
@@ -182,6 +178,7 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 	tbd->flags={.EnableNumbers=1,.EnbleCharctures=1};
 	tbd->xoffset=0;
 	tbd->data=(char*)malloc(tbd->size);
+	tbd->usedsize=0;
 	memset(tbd->data, 0, tbd->size);
 }
 
@@ -193,39 +190,102 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
 	
-	u32 tw, th;
+	u32 th=GetDefaultFont().linegap;
 	
-	GetTextDemensionsExtended(tbd->data,DEF_XPADD,DEF_YPADD,&tw, &th);
-	
+	if(slected){
+		DrawRoundedRectangel(x-1, y-1, w+2, th +30+2, 10, 90,  g_defaultHoverColour);
+
+	}
 
 	if(Hover(x, y, w, th+30)){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultHoverColour);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w, th+30)||slected){
+	else if(Clicked(x, y, w, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
-		slected=1;
 	}
-	else {
+	if(!preased){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultBackgroundColour);
 	}
-	if(g_defaultContext.lastkey && tbd->size  < tbd->maxsize){
-		size_t sz=tbd->size,usz=tbd->usedsize;
-		tbd->data=(char*)PushChar(g_defaultContext.lastkey, tbd->pos, &sz, (size_t*)&usz, tbd->data);	//TODO: not safe
-		tbd->size=sz;
-		tbd->usedsize=usz;
+	
+	if(preased&1){slected=1;}	
+	if(!preased&& GetMouseClickes()&1 && slected){
+		DiscardSelect(&g_defaultContext);
+		slected=false;
 	}
-	DrawTextSegmentExtended(tbd->data, x+15,  y+15,tbd->xoffset,0,w-30,th,DEF_XPADD,DEF_YPADD);
+	UpdateSelect(slected, highlited, &g_defaultContext);
+	
+
+	
 	u32 curserpos ;
 	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
-	DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255});
-	if(slected&&g_defaultContext.lastkey){
-		tbd->data =(char*) PushChar  ((char)g_defaultContext.lastkey  ,tbd->pos,  (size_t*)&tbd->size , (size_t*)&tbd->maxsize , tbd->data);
-	}	
+
+	if((g_defaultContext.lastkey>=32 || g_defaultContext.lastkey=='\t') && tbd->size < tbd->maxsize && slected){
+		size_t sz=tbd->size,usz=tbd->usedsize;
+		tbd->data=(char*)PushChar(g_defaultContext.lastkey, tbd->pos, &sz, (size_t*)&usz, tbd->data);
+		tbd->size=sz;
+		tbd->usedsize=usz;
+		tbd->pos++;
+		u32 cw;
+		GetCharDemensions(g_defaultContext.lastkey, &cw, 0);
+		if(curserpos+cw+30> w){
+			tbd->xoffset+=cw+DEF_XPADD;
+		}
+		curserpos+=cw+DEF_XPADD;
+	}
 	
-	//(const char *text, float x, float y, u32 xx, u32 yy, u32 w, u32 h, u32 xpadd, u32 ypadd)
-	UpdateSelect(preased, highlited, &g_defaultContext);
+	if(IsKeyPreased(GLFW_KEY_BACKSPACE) && tbd->pos&& slected){
+		size_t usz=tbd->usedsize;
+		
+		tbd->pos--;
+		PopChar(tbd->pos, &usz, tbd->data);
+		tbd->usedsize=usz;
+		u32 cw;
+		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		if( tbd->xoffset){
+			tbd->xoffset-=(cw+DEF_XPADD);
+		}else if(curserpos){}
+			curserpos-=cw+DEF_XPADD;
+		
+	}
+ 	
+	if(IsKeyPreased(GLFW_KEY_LEFT) && tbd->pos && slected){
+		tbd->pos--;
+		u32 cw;
+		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		if( (curserpos-tbd->xoffset)<=0){
+			tbd->xoffset-=(cw+DEF_XPADD);
+		}else if(curserpos){
+			curserpos-=cw+DEF_XPADD;
+		}
+	}
+	
+	if(IsKeyPreased(GLFW_KEY_RIGHT) && tbd->pos < tbd->usedsize && slected){
+		tbd->pos++;
+		u32 cw;
+		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		if( (curserpos-tbd->xoffset)+30>=w){
+			tbd->xoffset+=(cw+DEF_XPADD);
+		}else if(curserpos){
+			curserpos+=cw+DEF_XPADD;
+		}
+	}
+	
+
+
+
+	if(slected){
+		if((u64)(glfwGetTime()*2.0)%2){ //aka; flicker evry half a secend
+			DrawRectangel(x+15+curserpos-tbd->xoffset, y+13, DEF_XPADD, th+4, {200,200,255,255});
+		}	
+	}else {
+		DrawRectangel(x+15+curserpos-tbd->xoffset, y+13, DEF_XPADD, th+4, {200,200,255,255}); //the cusrsure
+	}
+	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
+	
+
+	
 	return preased;
 }
 

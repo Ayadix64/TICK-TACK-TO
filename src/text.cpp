@@ -308,8 +308,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	}
 	ret.texture = LoadTexture_ctx(texture, texturewidth, textureheigth, 4,ctx);
 	free(texture);
-	printf("Texture [%dx%d]\n",texturewidth,textureheigth);
-	return ret;	
+	return ret;
 }
 
 
@@ -398,10 +397,7 @@ void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont
 			xx+=font.CharcturesArray[0].w*g_tabSpaces;
 			continue;
 		}
-		else if(text[i]== ' '){
-			xx+=ww+xpadding;
-			continue;
-		}
+	
 		else if(text[i]>font.maxChar){
 			ww = font.CharcturesArray['?'-32].w;
 			hh = font.CharcturesArray['?'-32].h;
@@ -419,7 +415,7 @@ void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont
 
 }
 
-void GetCharDemensions(u32 c,  TickFont font ,u32* w, u32* h){
+void GetCharDemensions(u32 c ,u32* w, u32* h){
 	GetFontCharDemensions(c, g_defaultFont, w, h);
 }
 
@@ -429,7 +425,7 @@ void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h){
 	if(c=='\n'){
 		if(h)*h=font.linegap;
 	}else if(c=='\t'){
-		
+		*w = 	font.CharcturesArray[0].w*g_tabSpaces;
 	}
 	else if(c<font.maxChar && c>=32){
 		if(w)*w=font.CharcturesArray[c-32].w;
@@ -540,7 +536,11 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , u32 x, u32 y ,
 
 
 
+
+
 /************************** Draw Text Size (i dont have a better name btw) *****************************/
+
+
 
 
 void DrawTextSize(const char* text , u32 size , u32 x, u32 y){
@@ -614,18 +614,6 @@ void DrawTextSegmentExtendedFontSize(const char* text , u32 size , u32 x, u32 y 
 	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd, font, &g_defaultContext);
 	return;
 }
-
-
-
-void DrawTextSegmentExtendedFontSize(const char* text , u32 x, u32 y ,
-					u32 xx , u32 yy ,
-					u32 w , u32 h,
-					u32 xpadd, u32 ypadd ,
-					TickFont font)
-{
-
-	/*TODO*/
-} 
 
 
 
@@ -708,7 +696,7 @@ void DrawTextSegmentExtendedFontSize_ctx(const char* text ,u32 size, u32 x, u32 
 			continue;
 		}
 		else if(text[i]=='\t'){
-			xx+=font.CharcturesArray[0].w*g_tabSpaces;
+			ww=font.CharcturesArray[0].w*g_tabSpaces;
 			continue;
 		}
 		else if(text[i]>font.maxChar){

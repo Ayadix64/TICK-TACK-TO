@@ -89,14 +89,14 @@ TickContext TickInit(GLFWwindow* window){
 		g_LibraryHaveBeenInit=true;
 	}
 	glUseProgram(context.Shader2D);
-	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
+
 		char textureN[50];
+	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
 		sprintf(textureN,"texture%d",i);
 		u32 text =GetUniform((const char*)textureN, context.Shader2D);
 		if(text!=-1){
 			glUniform1i(text,i);
 		}
-		//goood bruh in her
 	}
 	
 	
@@ -104,9 +104,10 @@ TickContext TickInit(GLFWwindow* window){
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
+	
 	glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	
 	return context;
 }
@@ -854,7 +855,8 @@ TickTexture2D LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
 	TickTexture2D ret{.index=(u32)-1};
 	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
 	if(!pb){
-		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		//Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		printf("[ERORR] Cant Load Texture \"%s\" , %s .\n",fileName,stbi_failure_reason());
 		return ret;
 	}	
 
@@ -1000,17 +1002,13 @@ void TickRendre_ctx(TickContext* ctx){
 	static float iw = 0.0;
 	if(window_w!=context.window_w || window_h!=context.window_h){
 		float proj[4][4] ;
-		for(int i= 0 ; i < 16; i++){
-			proj[i/4][i%4]=0.0f;
-			
-		}
+		memset(&proj[0][0],0,sizeof(proj));
 		proj[0][0] = 2.0f / (float)window_w;
 		proj[1][1] =-2.0f / (float)window_h;
 		proj[2][2] = 1.0f;
 		proj[3][0] =-1.0f;
 		proj[3][1] = 1.0f;
 		proj[3][3] = 1.0f;
-
 
 		glViewport(0,0,real_w,real_h);
 		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
@@ -1028,20 +1026,25 @@ void TickRendre_ctx(TickContext* ctx){
 	context.mousey=ymouse/context.scaleY;
 	bool Lmousebefaure = context.mousemensions&1;
 	context.mousemensions=0;
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS);
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) ;
 	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
 	
 	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
 	
 	context.mousemensions|=((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !Lmousebefaure)<<2;
 	context.lastkey=0;
-	if(context.mousemensions&1){	
+	if(context.mousemensions&1){
 		context.lastClick=glfwGetTime();
 	}
-	for(int i = 0 ; i < 256 ; i++){
-		context.lastkey=glfwGetKey(context.window, i);
-		if(context.lastkey)break;
-	}
+	/*if(context.lastClick){
+		context.lastkey=glfwGetKey(context.window, context.lastkey)?context.lastkey:0;
+	}*/
+	//else {
+		for(int i = 0 ; i < 256 ; i++){
+			context.lastkey=glfwGetKey(context.window, i)?i:0;
+			if(context.lastkey)break;
+		}
+	//}
 	
 	return;
 }

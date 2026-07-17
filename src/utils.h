@@ -83,7 +83,7 @@ void SetBitmap(void* bm,u32 num, char val);
 u32 GetUnicode8Size(char* text,u32 size);//retutns the number of utf-8 charctures in the string (ASCII + utf8)
 u32 GetUnicode8(char* text, u32 number);//not safe! it dosnt try to be safe!
 
-void* PushMatrix(void* val , u32 Vsize ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+void* PushBuffer(void* val , u32 Vsize ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 
 void* PushChar   (char   val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 void* PushShort  (short  val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
@@ -91,4 +91,14 @@ void* PushInteger(int    val ,size_t pos,  size_t* dataSize , size_t* usedData ,
 void* PushFloat  (float  val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 void* PushLong   (long   val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 void* PushDouble (double val ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
+
+
+void PopBuffer(size_t pos, u32 size,  size_t* dataSize ,void* data);
+
+char   PopChar   (size_t pos,  size_t* dataSize ,  void* data);
+short  PopShort  (size_t pos,  size_t* dataSize ,  void* data);
+int    PopInteger(size_t pos,  size_t* dataSize ,  void* data);
+float  PopFloat  (size_t pos,  size_t* dataSize ,  void* data);
+long   PopLong   (size_t pos,  size_t* dataSize ,  void* data);
+double PopDouble (size_t pos,  size_t* dataSize ,  void* data);
 #endif 
