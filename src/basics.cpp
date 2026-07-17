@@ -159,6 +159,8 @@ u32 GetMouseClickes_ctx(TickContext* ctx){
 	return ctx->mousemensions;
 }
 
+
+
 char IsKeyPreased(u32 k){
 	return (glfwGetKey(g_defaultContext.window, k)==GLFW_PRESS);
 }
@@ -1020,32 +1022,49 @@ void TickRendre_ctx(TickContext* ctx){
 		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&context.samplers[i]);
 	}
+	
 	double xmouse,ymouse;
+	
 	glfwGetCursorPos(ctx->window, &xmouse, &ymouse);	
+	
 	context.mousex=xmouse/context.scaleX;
 	context.mousey=ymouse/context.scaleY;
-	bool Lmousebefaure = context.mousemensions&1;
+	if(glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE){
+		context.mousemensions&=~1;
+	} 
+	
+	if(glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)!=GLFW_RELEASE){
+		context.mousemensions&=~2;
+	}
+	
+	
+	char mousebefaure = context.mousemensions;
 	context.mousemensions=0;
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) ;
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS)<<1;
+	
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)!=GLFW_PRESS) && (mousebefaure&(1<<3));
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)!=GLFW_PRESS && (mousebefaure&(1<<4)))<<1;
+		
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS  ) <<3;
+	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS ) <<4;
+	
+
 	
 	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
 	
-	context.mousemensions|=((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !Lmousebefaure)<<2;
+	context.mousemensions|= (((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !(mousebefaure&1))&1)<<2;
 	context.lastkey=0;
+	
 	if(context.mousemensions&1){
 		context.lastClick=glfwGetTime();
 	}
-	/*if(context.lastClick){
-		context.lastkey=glfwGetKey(context.window, context.lastkey)?context.lastkey:0;
-	}*/
-	//else {
-		for(int i = 0 ; i < 256 ; i++){
-			context.lastkey=glfwGetKey(context.window, i)?i:0;
-			if(context.lastkey)break;
-		}
-	//}
 	
+
+
+	for(int i = 0 ; i < 256 ; i++){
+		context.lastkey=glfwGetKey(context.window, i)?i:0;
+		if(context.lastkey)break;
+	}
+
 	return;
 }
 void TickNewFrame_ctx(TickContext* context){

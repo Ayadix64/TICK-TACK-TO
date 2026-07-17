@@ -60,20 +60,30 @@ void DiscardSelect(TickContext* ctx){
 
 bool Hover(u32 x , u32 y , u32 w , u32 h){
 	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && !GetMouseClickes();
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && !(GetMouseClickes()&(1<<3));
 }
 bool Hover_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
 	
 	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && !GetMouseClickes_ctx(ctx);
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && !(GetMouseClickes_ctx(ctx)&(1<<3));
 }
 
 
 bool Clicked(u32 x , u32 y , u32 w , u32 h){
 	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&1;
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
 }
 bool Clicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+	
+	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
+}
+
+bool ClickedAndReleased(u32 x , u32 y , u32 w , u32 h){
+	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&1;
+}
+bool ClickedAndReleased_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
 	
 	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
 	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&1;
@@ -81,11 +91,11 @@ bool Clicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
 
 bool DoubleClicked(u32 x , u32 y , u32 w , u32 h){
 	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<2);
+	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
 }
 bool DoubleClicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
 	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<2);
+	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
 }
 
 
@@ -110,7 +120,12 @@ char Button(const char* text,float x , float y ){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
 		preased|=2;
 	}
-	if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
+		preased|=2;
+		
+	}
+	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
 	}
@@ -152,18 +167,23 @@ char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg ,
 	}
 	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, slectbg);
+		if(ClickedAndReleased( x, y, w+30, h+30)){
+			preased|=1;
+		}	
+	}
+	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
 	}
-	else {
+	if(!preased) {
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, bg);
-
 	}
 	
 	if(!preased&& GetMouseClickes()&1 && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
-	if(preased&1){slected=1;}	
+	if(preased&1){slected=1;}
 	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
 
 	UpdateSelect(slected&1, highlited, &g_defaultContext);
@@ -202,6 +222,10 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 		preased|=2;
 	}
 	else if(Clicked(x, y, w, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);	
+		preased|=2;
+	}
+	if(ClickedAndReleased( x, y, w+30, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
 		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);
 		preased|=1;
 	}
@@ -288,4 +312,58 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	
 	return preased;
 }
+
+
+
+
+
+
+
+void CheckBox(const char* bx ,float x , float y , char * b){
+	char preased = false;
+	bool highlited=false;
+	
+	bool slected = IsSlected(&g_defaultContext);
+	if(slected){highlited=true;};
+	
+	u32 th=GetDefaultFont().linegap;
+	
+	if(slected){
+		DrawRoundedRectangel(x-1, y-1, th+2, th+2, 10, 90,  g_defaultHoverColour);
+
+	}
+
+	if(Hover(x, y, th, th)){
+		DrawRoundedRectangel(x, y, th , th, 10, 90, g_defaultHoverColour);
+		preased|=2;
+	}
+	else if(Clicked(x, y, th, th) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, th ,th, 10, 90, g_defaultSlecetColour);
+		
+		if(ClickedAndReleased( x, y, th, th)){
+			preased|=1;
+		}	
+	}
+	if(!preased){
+		DrawRoundedRectangel(x, y, th , th , 10, 90, g_defaultBackgroundColour);
+	}
+	
+	if(preased&1){slected=1;}	
+	if(!preased&& GetMouseClickes()&1 && slected){
+		DiscardSelect(&g_defaultContext);
+		slected=false;
+	}
+	UpdateSelect(slected, highlited, &g_defaultContext);
+	
+
+	DrawTextExtended(bx, x+th, y, DEF_XPADD, DEF_XPADD);
+	if(preased){
+		*b=!*b;
+	}
+
+	
+	return;
+}
+
+
 

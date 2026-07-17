@@ -114,16 +114,14 @@ This Library gives the issuntiol to build ,with the maximum effert to make never
 ## Known Bugs
 - transparncy dosnt work will
 
-## AI ...
+## AI Policy
 TLDR:NO.
 
 this project is targeting a old systems; and even some critcule system use , a bug can be the difrunts betwen a satisfaide user and a sad one
 
 I dont have that much of time , and sending a AI-genrated code will not help me nether the goals of this project; 
 
-I think AI is a great serching tool; may even bug report tool, but not that good coder, ispatioly in proufourmence fucuse project like this,
-
-And no, i am not against using AI for naming / text grammar fixing, or searching, as long as ther is a humune monotoring the work of it,
+You can use it for naming varuables / searching / gramer curaction, as long as it is been revude by you
 
 With that been sed, no AI-code pleas, thank you for indrstanding, have a nice day.
 
