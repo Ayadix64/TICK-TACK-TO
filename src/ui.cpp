@@ -179,7 +179,7 @@ char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg ,
 		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, bg);
 	}
 	
-	if(!preased&& GetMouseClickes()&1 && slected){
+	if(!preased&& GetMouseClickes()&(1<<3) && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
@@ -234,7 +234,7 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	}
 	
 	if(preased&1){slected=1;}	
-	if(!preased&& GetMouseClickes()&1 && slected){
+	if(!preased&& GetMouseClickes()&(1<<3) && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
@@ -319,45 +319,53 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 
 
 
-void CheckBox(const char* bx ,float x , float y , char * b){
+void CheckBox(const char* bx ,float x , float y , bool* b){
 	char preased = false;
 	bool highlited=false;
 	
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
 	
-	u32 th=GetDefaultFont().linegap;
+	u32 th=GetDefaultFont().size;
 	
 	if(slected){
-		DrawRoundedRectangel(x-1, y-1, th+2, th+2, 10, 90,  g_defaultHoverColour);
+		DrawRoundedRectangel(x-1, y-1, th+2, th+2, 5, 90,  g_defaultHoverColour);
 
 	}
 
-	if(Hover(x, y, th, th)){
-		DrawRoundedRectangel(x, y, th , th, 10, 90, g_defaultHoverColour);
+	if(Hover(x, y, th, th) && !*b){
+		DrawRoundedRectangel(x, y, th , th, 5, 90, g_defaultHoverColour);
 		preased|=2;
 	}
 	else if(Clicked(x, y, th, th) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, th ,th, 10, 90, g_defaultSlecetColour);
+		DrawRoundedRectangel(x, y, th ,th, 5, 90, g_defaultSlecetColour);
+		preased|=2;
 		
-		if(ClickedAndReleased( x, y, th, th)){
-			preased|=1;
-		}	
+	}
+	if(ClickedAndReleased( x, y, th, th) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel(x, y, th ,th, 5, 90, g_defaultSlecetColour);
+		preased|=1;
 	}
 	if(!preased){
-		DrawRoundedRectangel(x, y, th , th , 10, 90, g_defaultBackgroundColour);
+		if(*b){
+			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultSlecetColour);
+		}else {
+			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultBackgroundColour);
+		}
 	}
 	
 	if(preased&1){slected=1;}	
-	if(!preased&& GetMouseClickes()&1 && slected){
+
+	if(!preased&& GetMouseClickes()&(1<<3) && slected){
 		DiscardSelect(&g_defaultContext);
 		slected=false;
 	}
 	UpdateSelect(slected, highlited, &g_defaultContext);
 	
 
-	DrawTextExtended(bx, x+th, y, DEF_XPADD, DEF_XPADD);
-	if(preased){
+	DrawTextExtended(bx, x+10+th, y, DEF_XPADD, DEF_XPADD);
+	
+	if(preased&1){
 		*b=!*b;
 	}
 

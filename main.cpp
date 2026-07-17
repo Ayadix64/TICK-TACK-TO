@@ -205,6 +205,7 @@ int main()<%
 	TextBoxData tbd;
 	InitTextBoxData(&tbd, 0);
 	char FPS[100];
+	bool check;
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -250,7 +251,7 @@ int main()<%
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
 
-		Button("How is the dat of Kbnuib", 600, 600);
+		//Button("How is the dat of Kbnuib", 600, 600);
 		if(butnflags&1){
 			printf("CLICKED!\n");
 			fflush(stdout);
@@ -263,12 +264,24 @@ int main()<%
 		DrawEmptyRoundedRectangel(300, 400, 90, 60, 30, 20, 90, {255,255,0,255});
 		TextBox( 20, 20, 200, &tbd);
 
-		TickRendre();
+
+		CheckBox("Check Box Bora Broa Broa .", 20, 300, &check);
 		
+		
+		if(check){
+			printf("checked\n ");
+		}
+
+		
+
+		/******************** Render ********************/
+		TickRendre();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		tflf=glfwGetTime ();
+		
+
 	}
 	ImGuiStop();
 	

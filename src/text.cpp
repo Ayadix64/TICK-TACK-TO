@@ -485,7 +485,7 @@ void DrawTextFontExtended(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypad
 
 
 void DrawTextFontExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,TickFont font,TickContext* ctx){
-	DrawTextFontExtendedSize_ctx(text, strlen(text), x, y, xpaading, ypadding, font, ctx);
+	DrawTextFontExtendedSize_ctx(text, (u32)strlen(text), x, y, xpaading, ypadding, font, ctx);
 	return;
 }
 
@@ -625,7 +625,7 @@ void DrawTextFontExtendedSize_ctx(const char* text , u32 size,u32 x, u32 y,u32 x
 	u32 xx = x;
 	u32 ww=0,hh=0,tcx=0,tcy=0;
 	int yoff=0;
-	for(int i = 0 ; i<size; i++){
+	for(int i = 0 ; i< size; i++){
 		if(text[i]>=32 && text[i]<font.maxChar){
 			ww   = font.CharcturesArray[text[i]-32].w      ;
 			hh   = font.CharcturesArray[text[i]-32].h      ;
