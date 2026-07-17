@@ -63,14 +63,14 @@ typedef struct {
 
 	double lastClick;
 	
-	u8 mousemensions;//LeftC , RightC, LDouleClicked
+	u8 mousemensions;//LeftC&Released , RightC&Released, LDouleClicked , LeftPress, RigthPress
 	
 
 	u32 lastkey;
 
 	char selectedInThisFaild;
-	u32 selectCount;
-	u32 selectID;
+	u32  selectCount;
+	u32  selectID;
 	u32  highlightedElement;
 		
 
@@ -102,8 +102,12 @@ void TickClose_ctx(TickContext* context);
 Vec2i GetMousePos();
 Vec2i GetMousePos_ctx(TickContext* ctx);
 
-u32 GetMouseClickes();
-u32 GetMouseClickes_ctx(TickContext* ctx);
+u32 GetMouseClickes();/*bit1 LeftBClickAndReleasd, bit2 RightBClickAndReleased, bit3 double click , 
+			bit4 LBPress, bit5 RBPress; the click is one time and it will set to zero*/
+u32 GetMouseClickes_ctx(TickContext* ctx);/*bit1 LeftBClick, bit2 RightBClick, bit3 double click ,
+					    bit4 LBPress, bit5 RBPress; the click is one time and it will set to zero*/
+
+
 
 char IsKeyPreased(u32 k);
 char IsKeyPreased_ctx(u32 k,TickContext* ctx);
