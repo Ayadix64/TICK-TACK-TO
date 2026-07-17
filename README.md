@@ -54,7 +54,7 @@ void GlewInit(){
 
 
 int main(){
-	/****************************Init*************************/
+	/**************************** Init *************************/
 	if(!glfwInit()){
 		fprintf(stderr,"[ERORR] glfw init fail.\n");
         return 1;
@@ -111,7 +111,21 @@ This Library dosnt want to do any thing fancy
 it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a thing that i persounly wanted from a UI library
 
 This Library gives the issuntiol to build ,with the maximum effert to make never toch opengl and any rendrer  , impliminting that with a good prouformance Batch rendrer.
+## Known Bugs
+- transparncy dosnt work will
 
+## AI ...
+TLDR:NO.
+
+this project is targeting a old systems; and even some critcule system use , a bug can be the difrunts betwen a satisfaide user and a sad one
+
+I dont have that much of time , and sending a AI-genrated code will not help me nether the goals of this project; 
+
+I think AI is a great serching tool; may even bug report tool, but not that good coder, ispatioly in proufourmence fucuse project like this,
+
+And no, i am not against using AI for naming / text grammar fixing, or searching, as long as ther is a humune monotoring the work of it,
+
+With that been sed, no AI-code pleas, thank you for indrstanding, have a nice day.
 
 ## Fear Allah in your work
 ## Have a nice day

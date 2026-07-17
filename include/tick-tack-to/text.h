@@ -2,6 +2,7 @@
 #define TICK_FONTS
 #include "utils.h"
 #include "basics.h"
+
 typedef struct {
 	u32 maxChar;
 	u32 size;
@@ -19,6 +20,7 @@ typedef struct {
 }TickFont;
 
 
+
 void SetDefaultFont(TickFont* font);
 TickFont GetDefaultFont();
 
@@ -27,9 +29,11 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,Vec4c cl,TickContext* ctx);
 TickFont LoadMemFont(void* fontData, u32 size, u32 scale , Vec4c cl);
 TickFont LoadMemFont_ctx(void* fontData,u32 size, u32 scale , Vec4c cl,TickContext* ctx);
 
+
 void DeleteFont(TickFont*font);
 void DeleteFont_ctx(TickFont*font,TickContext*ctx);
 void SetTabSpaces(u32 tabs);
+
 
 
 void GetTextDemensions(const char* text, u32* w, u32* h);
@@ -45,7 +49,7 @@ void GetFontTextDemensionsSize(const char* text , u32 textSize, TickFont font,u3
 void GetTextDemensionsExtendedSize(const char* text , u32 textSize,u32 xppading, u32 ypadding, u32* w, u32* h);
 void GetFontTextDemensionsExtendedSize(const char* text , u32 textSize, TickFont font, u32 xpadding, u32 ypadding ,u32* w, u32* h);
 
-void GetCharDemensions(u32 c,  TickFont font ,u32* w, u32* h);
+void GetCharDemensions(u32 c, u32* w, u32* h);
 void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h);
 
 
@@ -76,7 +80,6 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , u32 x, u32 y , u32 xx , 
 
 
 
-
 void DrawTextSize(const char* text, u32 size, u32 x, u32 y);
 void DrawTextSize_ctx(const char* text, u32 size, u32 x, u32 y,TickContext* ctx);
 
@@ -95,11 +98,13 @@ void DrawTextSegmentSize_ctx(const char* text, u32 size, u32 x, u32 y , u32 xx ,
 void DrawTextSegmentExtendedSize(const char* text, u32 size, u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd);
 void DrawTextSegmentExtendedSize_ctx(const char* text, u32 size, u32 x, u32 y ,
 		u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,TickContext* ctx);
+
 void DrawTextSegmentExtendedFontSize(const char* text ,u32 size, u32 x, u32 y ,
 					u32 xx , u32 yy ,
 					u32 w , u32 h,
 					u32 xpadd, u32 ypadd ,
 					TickFont font);
+
 void DrawTextSegmentExtendedFontSize_ctx(const char* text,u32 size , u32 x, u32 y ,
 					u32 xx , u32 yy ,
 					u32 w , u32 h,
