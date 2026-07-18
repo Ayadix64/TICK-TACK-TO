@@ -180,7 +180,7 @@ int main()<%
 
 
 
-	float x=10.0,y=10.0,z=1000.0f , r=2.0f, r2=0.0f;
+	float x=20.0,y=400.0,z=1000.0f , r=2.0f, r2=0.0f;
 	float segments = 100.0;
 	float scale = 1.0f;
 	u32 image[320*255]{0xffffffff};
@@ -194,11 +194,11 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	//TickFont fira = LoadFont("FiraCode.ttf",20 , {0,255,255,255});
+	TickFont fira = LoadFont("FiraCode.ttf",20 , {255,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
-	//SetDefaultFont(&fira);
+	SetDefaultFont(&fira);
 
 	
 	double tflf = glfwGetTime ();
@@ -249,7 +249,7 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-		char butnflags = Button("Button\nThis is a hellow world button\nor is it?", x, y);
+		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y);
 
 		//Button("How is the dat of Kbnuib", 600, 600);
 		if(butnflags&1){
@@ -265,11 +265,11 @@ int main()<%
 		TextBox( 20, 20, 200, &tbd);
 
 
-		CheckBox("Check Box Bora Broa Broa .", 20, 300, &check);
+		CheckBox("Check Box Bora Broa Broa .", 20, 300, (char*)&check);
 		
 		
 		if(check){
-			printf("checked\n ");
+			printf("checked");
 		}
 
 		

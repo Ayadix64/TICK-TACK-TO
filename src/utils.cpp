@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <cstdarg>
 #include <cstddef>
 #include <cstdio>
 #include <stdlib.h>
@@ -135,9 +136,33 @@ u32 GetUnicode8(char *text, u32 number,char val){
 u64 max(u64 v1 , u64 v2){
 	return v1>v2?v1:v2;
 }
+
+
 u64 min(u64 v1 , u64 v2){
 	return v1>v2?v2:v1;
 }
+
+
+
+size_t minarg(u32 count ,...){
+	va_list args;
+
+	va_start(args,count);
+	size_t ret = -1;
+	
+	size_t arg__;
+	for(u32 i = 0 ; i < count ; i++){
+		arg__=va_arg(args, size_t);
+		ret=arg__<ret?arg__:ret;
+	}
+
+	va_end(args);	
+	return ret;
+}
+
+
+
+
 void* PushBuffer(void* val , u32 sizeofstr ,size_t pos,  size_t* dataSize , size_t* usedData , void* data){
 	
 	if(((*usedData)+sizeofstr) >= *dataSize){
@@ -231,4 +256,8 @@ double PopDouble (size_t pos,  size_t* dataSize ,  void* data){
 	PopBuffer(pos , (u32)sizeof(double) , dataSize ,  data);
 	return ret;
 }
+
+
+
+
 
