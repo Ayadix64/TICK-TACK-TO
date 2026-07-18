@@ -19,7 +19,7 @@
 //#define TEXTURES_MAX_SLOT 32
 
 
-//#define DEBUG_MODE //if you want to dosnt enter debug mod and save memory , comment this
+#define DEBUG_MODE //if you want to dosnt enter debug mod and save memory , comment this
 
 typedef unsigned char  u8 ;
 typedef unsigned short u16;
@@ -82,6 +82,11 @@ void SetBitmap(void* bm,u32 num, char val);
 
 u32 GetUnicode8Size(char* text,u32 size);//retutns the number of utf-8 charctures in the string (ASCII + utf8)
 u32 GetUnicode8(char* text, u32 number);//not safe! it dosnt try to be safe!
+
+size_t minarg(u32 count ,...);
+u64 max(u64 v1 , u64 v2);
+u64 min(u64 v1 , u64 v2);
+
 
 void* PushBuffer(void* val , u32 Vsize ,size_t pos,  size_t* dataSize , size_t* usedData , void* data);
 

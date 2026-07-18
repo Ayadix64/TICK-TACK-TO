@@ -58,44 +58,44 @@ void DiscardSelect(TickContext* ctx){
 }
 
 
-bool Hover(u32 x , u32 y , u32 w , u32 h){
-	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && !(GetMouseClickes()&(1<<3));
+bool Hover(int x , int y , int w , int h){
+	return (int)GetMousePos().x>=x && (int)GetMousePos().x <=w+x &&
+	       (int)GetMousePos().y>=y && (int)GetMousePos().y <= y+h && !(GetMouseClickes()&(1<<3));
 }
-bool Hover_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+bool Hover_ctx(int x , int y , int w , int h, TickContext* ctx){
 	
-	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && !(GetMouseClickes_ctx(ctx)&(1<<3));
+	return (int)GetMousePos_ctx(ctx).x>=x && (int)GetMousePos_ctx(ctx).x <=w+x &&
+	       (int)GetMousePos_ctx(ctx).y>=y && (int)GetMousePos_ctx(ctx).y <= y+h && !(GetMouseClickes_ctx(ctx)&(1<<3));
 }
 
 
-bool Clicked(u32 x , u32 y , u32 w , u32 h){
-	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
+bool Clicked(int x , int y , int w , int h){
+	return (int)GetMousePos().x>=x && (int)GetMousePos().x <=w+x &&
+	       (int)GetMousePos().y>=y && (int)GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
 }
-bool Clicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+bool Clicked_ctx(int x , int y , int w , int h, TickContext* ctx){
 	
-	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
+	return (int)GetMousePos_ctx(ctx).x>=x && (int)GetMousePos_ctx(ctx).x <=w+x &&
+	       (int)GetMousePos_ctx(ctx).y>=y && (int)GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
 }
 
-bool ClickedAndReleased(u32 x , u32 y , u32 w , u32 h){
-	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&1;
+bool ClickedAndReleased(int x , int y , int w , int h){
+	return (int)GetMousePos().x>=x && (int)GetMousePos().x <=w+x &&
+	       (int)GetMousePos().y>=y && (int)GetMousePos().y <= y+h && GetMouseClickes()&1;
 }
-bool ClickedAndReleased_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
+bool ClickedAndReleased_ctx(int x , int y , int w , int h, TickContext* ctx){
 	
-	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&1;
+	return (int)GetMousePos_ctx(ctx).x>=x && (int)GetMousePos_ctx(ctx).x <=w+x &&
+	       (int)GetMousePos_ctx(ctx).y>=y && (int)GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&1;
 }
 
-bool DoubleClicked(u32 x , u32 y , u32 w , u32 h){
-	return GetMousePos().x>=x && GetMousePos().x <=w+x &&
-	       GetMousePos().y>=y && GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
+bool DoubleClicked(int x , int y , int w , int h){
+	return (int)GetMousePos().x>=x && (int)GetMousePos().x <=w+x &&
+	       (int)GetMousePos().y>=y && (int)GetMousePos().y <= y+h && GetMouseClickes()&(1<<3);
 }
-bool DoubleClicked_ctx(u32 x , u32 y , u32 w , u32 h, TickContext* ctx){
-	return GetMousePos_ctx(ctx).x>=x && GetMousePos_ctx(ctx).x <=w+x &&
-	       GetMousePos_ctx(ctx).y>=y && GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
+bool DoubleClicked_ctx(int x , int y , int w , int h, TickContext* ctx){
+	return (int)GetMousePos_ctx(ctx).x>=x && (int)GetMousePos_ctx(ctx).x <=w+x &&
+	       (int)GetMousePos_ctx(ctx).y>=y && (int)GetMousePos_ctx(ctx).y <= y+h && GetMouseClickes_ctx(ctx)&(1<<3);
 }
 
 
@@ -203,8 +203,7 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 }
 
 
-
-char TextBox(float x , float y , float w, TextBoxData* tbd){
+char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -213,24 +212,24 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	u32 th=GetDefaultFont().linegap;
 	
 	if(slected){
-		DrawRoundedRectangel(x-1, y-1, w+2, th +30+2, 10, 90,  g_defaultHoverColour);
+		DrawRoundedRectangel(x-1, y-1, w+2, th +30+2, 10, 90,  hbg);
 
 	}
 
 	if(Hover(x, y, w, th+30)){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultHoverColour);
+		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, hbg);
 		preased|=2;
 	}
 	else if(Clicked(x, y, w, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);	
+		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, sbg);	
 		preased|=2;
 	}
 	if(ClickedAndReleased( x, y, w+30, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultSlecetColour);
+		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, sbg);
 		preased|=1;
 	}
 	if(!preased){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, g_defaultBackgroundColour);
+		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, bg);
 	}
 	
 	if(preased&1){slected=1;}	
@@ -242,8 +241,29 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 	
 
 	
-	u32 curserpos ;
+	u32 curserpos =0;
 	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
+	//DrawRectangel(x+15, y+15-th, curserpos, th, {200,200,0,255});
+	
+	//DrawRectangel(x+15, y+th+15, tbd->xoffset, th, {70,70,70,255});
+	//DrawRectangel(x+15+tbd->xoffset, y+th+15, w-30, th, {200,0,0,255});
+	;curserpos-=tbd->xoffset;
+	
+
+	
+	if(slected){
+		if((u64)(glfwGetTime()*4.0)%2){ //aka; flicker evry half a secend
+			DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, cursurCl);
+		}	
+	}else {
+		DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255}); //the cusrsure
+	}
+	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
+	
+	//DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15, y+15+th, 0, 0, 3000, th,DEF_XPADD,DEF_YPADD);
+
+
+
 
 	if((g_defaultContext.lastkey>=32 || g_defaultContext.lastkey=='\t') && tbd->size < tbd->maxsize && slected){
 		size_t sz=tbd->size,usz=tbd->usedsize;
@@ -256,61 +276,50 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 		if(curserpos+cw+30> w){
 			tbd->xoffset+=cw+DEF_XPADD;
 		}
-		curserpos+=cw+DEF_XPADD;
-	}
-	
-	if(IsKeyPreased(GLFW_KEY_BACKSPACE) && tbd->pos&& slected){
-		size_t usz=tbd->usedsize;
-		
+	}else if(IsKeyPreased(GLFW_KEY_BACKSPACE) && tbd->pos&& slected){
 		tbd->pos--;
+		u32 cw;
+		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		
+		if((int)(curserpos-cw)<=0){	
+			tbd->xoffset-= min((cw+DEF_XPADD),tbd->xoffset);
+		}
+
+		size_t usz=tbd->usedsize;
 		PopChar(tbd->pos, &usz, tbd->data);
 		tbd->usedsize=usz;
-		u32 cw;
-		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
-		if( tbd->xoffset){
-			tbd->xoffset-=(cw+DEF_XPADD);
-		}else if(curserpos){}
-			curserpos-=cw+DEF_XPADD;
+	}else if(IsKeyPreased(GLFW_KEY_LEFT) && tbd->pos && slected){
 		
-	}
- 	
-	if(IsKeyPreased(GLFW_KEY_LEFT) && tbd->pos && slected){
+		u32 cw;
+		
+		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		
 		tbd->pos--;
+		if((int)(curserpos-cw)<=0){
+			tbd->xoffset-=min((cw+DEF_XPADD),tbd->xoffset); // so we are not sub zero
+		}
+
+		
+	}else if(IsKeyPreased(GLFW_KEY_RIGHT) && tbd->pos < tbd->usedsize && slected){
 		u32 cw;
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
-		if( (curserpos-tbd->xoffset)<=0){
-			tbd->xoffset-=(cw+DEF_XPADD);
-		}else if(curserpos){
-			curserpos-=cw+DEF_XPADD;
-		}
-	}
-	
-	if(IsKeyPreased(GLFW_KEY_RIGHT) && tbd->pos < tbd->usedsize && slected){
+		
 		tbd->pos++;
-		u32 cw;
-		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
-		if( (curserpos-tbd->xoffset)+30>=w){
-			tbd->xoffset+=(cw+DEF_XPADD);
-		}else if(curserpos){
-			curserpos+=cw+DEF_XPADD;
+		if((int)(curserpos)>=(int)(w-cw-30)){
+			tbd->xoffset+=cw+DEF_XPADD;// so we are not sub zero
 		}
+
 	}
 	
 
-
-
-	if(slected){
-		if((u64)(glfwGetTime()*2.0)%2){ //aka; flicker evry half a secend
-			DrawRectangel(x+15+curserpos-tbd->xoffset, y+13, DEF_XPADD, th+4, {200,200,255,255});
-		}	
-	}else {
-		DrawRectangel(x+15+curserpos-tbd->xoffset, y+13, DEF_XPADD, th+4, {200,200,255,255}); //the cusrsure
-	}
-	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
-	
 
 	
 	return preased;
+}
+
+
+char TextBox(float x , float y , float w, TextBoxData* tbd){
+	return TextBoxColour(x, y, w, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255});
 }
 
 
@@ -319,14 +328,14 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 
 
 
-void CheckBox(const char* bx ,float x , float y , bool* b){
+void CheckBox(const char* bx ,float x , float y , char* b){
 	char preased = false;
 	bool highlited=false;
 	
 	bool slected = IsSlected(&g_defaultContext);
 	if(slected){highlited=true;};
 	
-	u32 th=GetDefaultFont().size;
+	u32 th=GetDefaultFont().linegap;
 	
 	if(slected){
 		DrawRoundedRectangel(x-1, y-1, th+2, th+2, 5, 90,  g_defaultHoverColour);
@@ -349,6 +358,8 @@ void CheckBox(const char* bx ,float x , float y , bool* b){
 	if(!preased){
 		if(*b){
 			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultSlecetColour);
+			//DrawLine({x,y+th/2}, {x+th/2,y+th}, 2, {255,255,255,255});	
+			//DrawLine({x+th/2,y+th}, {x+th,y}, 2, {255,255,255,255});
 		}else {
 			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultBackgroundColour);
 		}
