@@ -165,7 +165,7 @@ int main()<%
 	ImGuiIO& io=*ImGuiInit(window);
 	
 	TickInit(window);
-	
+	//glfwSwapInterval(0);
 	
 
 
@@ -206,6 +206,7 @@ int main()<%
 	InitTextBoxData(&tbd, 0);
 	char FPS[100];
 	bool check;
+	float slid = 0.0f;
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -217,12 +218,13 @@ int main()<%
 				image[i*320+ii] = cl;
 		 	}
 		}
-				if(animation==255)adder=-1;
+		if(animation==255)adder=-1;
 		if(animation==0)adder=1;
 		animation+=adder;
 		
+	
 		TickNewFrame();
-		
+			
 
 		if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
 			x+=5.0f;
@@ -269,9 +271,9 @@ int main()<%
 		
 		
 		if(check){
-			printf("checked");
+			printf("checked , slider : %f \n",slid);
 		}
-
+		Slider(200,500,300,&slid);
 		
 
 		/******************** Render ********************/

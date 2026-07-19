@@ -102,7 +102,7 @@ bool DoubleClicked_ctx(int x , int y , int w , int h, TickContext* ctx){
 
 
 
-char Button(const char* text,float x , float y ){
+char Button(const char* text,u32 x , u32 y ){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -148,7 +148,7 @@ char Button(const char* text,float x , float y ){
 
 
 
-char ButtonColor(const char* text,float x , float y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
+char ButtonColor(const char* text,u32 x , u32 y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -203,7 +203,7 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 }
 
 
-char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
+char TextBoxColour(u32 x , u32 y , u32 w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -243,11 +243,18 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 	
 	u32 curserpos =0;
 	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
-	//DrawRectangel(x+15, y+15-th, curserpos, th, {200,200,0,255});
 	
-	//DrawRectangel(x+15, y+th+15, tbd->xoffset, th, {70,70,70,255});
-	//DrawRectangel(x+15+tbd->xoffset, y+th+15, w-30, th, {200,0,0,255});
-	;curserpos-=tbd->xoffset;
+	/*
+	DrawRectangel(x+15, y+15-th, curserpos, th, {200,200,0,255});
+	
+	DrawRectangel(x+15, y+th+15, tbd->xoffset, th, {70,70,70,255});
+	DrawRectangel(x+15+tbd->xoffset, y+th+15, w-30, th, {200,0,0,255});
+
+	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15, y+15+th, 0, 0, 3000, th,DEF_XPADD,DEF_YPADD);// */
+
+
+
+	curserpos-=tbd->xoffset;
 	
 
 	
@@ -259,10 +266,6 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 		DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255}); //the cusrsure
 	}
 	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
-	
-	//DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15, y+15+th, 0, 0, 3000, th,DEF_XPADD,DEF_YPADD);
-
-
 
 
 	if((g_defaultContext.lastkey>=32 || g_defaultContext.lastkey=='\t') && tbd->size < tbd->maxsize && slected){
@@ -281,7 +284,7 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 		u32 cw;
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
-		if((int)(curserpos-cw)<=0){	
+		if((int)(curserpos-(cw+DEF_XPADD)-w-30)<=0){	
 			tbd->xoffset-= min((cw+DEF_XPADD),tbd->xoffset);
 		}
 
@@ -290,13 +293,13 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 		tbd->usedsize=usz;
 	}else if(IsKeyPreased(GLFW_KEY_LEFT) && tbd->pos && slected){
 		
+		tbd->pos--;
 		u32 cw;
 		
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
-		tbd->pos--;
-		if((int)(curserpos-cw)<=0){
-			tbd->xoffset-=min((cw+DEF_XPADD),tbd->xoffset); // so we are not sub zero
+		if((int)(curserpos-(cw+DEF_XPADD))<=0){
+			tbd->xoffset-= min((cw+DEF_XPADD),tbd->xoffset); // so we are not sub zero
 		}
 
 		
@@ -305,7 +308,7 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
 		tbd->pos++;
-		if((int)(curserpos)>=(int)(w-cw-30)){
+		if((int)(curserpos)>=(int)(w-cw-DEF_XPADD-30)){
 			tbd->xoffset+=cw+DEF_XPADD;// so we are not sub zero
 		}
 
@@ -318,7 +321,7 @@ char TextBoxColour(float x , float y , float w, TextBoxData* tbd, Vec4c bg, Vec4
 }
 
 
-char TextBox(float x , float y , float w, TextBoxData* tbd){
+char TextBox(u32 x , u32 y , u32 w, TextBoxData* tbd){
 	return TextBoxColour(x, y, w, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255});
 }
 
@@ -328,7 +331,7 @@ char TextBox(float x , float y , float w, TextBoxData* tbd){
 
 
 
-void CheckBox(const char* bx ,float x , float y , char* b){
+void CheckBox(const char* bx ,u32 x , u32 y , char* b){
 	char preased = false;
 	bool highlited=false;
 	
@@ -385,4 +388,47 @@ void CheckBox(const char* bx ,float x , float y , char* b){
 }
 
 
+char Slider(u32 x , u32 y , u32 w,  float* s){
+	char preased = false;
+	bool highlited=false;
+		
+	bool slected = IsSlected(&g_defaultContext);
+	if(slected){highlited=true;};
+	
+	u32 th=GetDefaultFont().linegap;
+	
+	float _s = *s>=0.0f?*s<=1.0f?*s:1.0f:0.0f;//very indrstundabel , cheks if 0.0 <= *s <= 1.0, if it isnt, set to eather 1.0 or 0.0
+	DrawRoundedRectangel(x, y+2, w, 6, 3, 30, {50,50,60,255}); //the slider
+	if(slected){
+		DrawEmptyCircle(x+_s*w, y+5, 10,1, 30,  g_defaultHoverColour);
+	}
 
+	if(Hover(x, y, w, 20)){
+		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultHoverColour);
+		preased|=2;
+	}else 	
+	if(Clicked(x, y, w, 10) || (slected && GetMouseClickes()&(1<<3)) /*aka, not realeased*/){
+		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultSlecetColour);
+		int offset = (int)GetMousePos().x - (int)x;
+		offset=offset>(int)w?(int)w: offset<=0?0:offset;
+		*s = ((float)(offset)/ (float)w);
+		preased|=1;
+		
+	}else {
+		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultBackgroundColour);
+		if(slected){
+			DiscardSelect(&g_defaultContext);
+			slected=false;
+		}
+	}
+	
+		
+	if(preased&1){slected=1;}	
+
+	if(!preased&& GetMouseClickes()&(1<<3) && slected){
+	}
+	UpdateSelect(slected, highlited, &g_defaultContext);
+	
+
+	return preased;
+}
