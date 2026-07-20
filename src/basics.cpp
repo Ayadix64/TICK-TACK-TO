@@ -47,6 +47,7 @@ void InitUI();
 
 TickContext TickInit(GLFWwindow* window){
 	TickContext context;
+	memset(&context,0,sizeof(TickContext));
 	context.window=window;
 	if(g_LibraryHaveBeenInit){
 		context.Shader2D = g_defaultContext.Shader2D;
@@ -82,6 +83,7 @@ TickContext TickInit(GLFWwindow* window){
 	context.mousey=~0;
 	context.mousemensions=0;
 	context.selectID=-1;
+	
 	if(!g_LibraryHaveBeenInit){
 		g_defaultContext=context;
 		initDefautlFont();
@@ -90,8 +92,8 @@ TickContext TickInit(GLFWwindow* window){
 	}
 	glUseProgram(context.Shader2D);
 
-		char textureN[50];
-	for(int i = 0 ; i < MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB && i < context.maxTexturesSlotsSepurted; i++){
+	char textureN[50];
+	for(int i = 0 ; i < min(TICK_MAX_TEXTURE_SLOTS_SEPURTED , context.maxTexturesSlotsSepurted); i++){
 		sprintf(textureN,"texture%d",i);
 		u32 text =GetUniform((const char*)textureN, context.Shader2D);
 		if(text!=-1){
@@ -107,8 +109,8 @@ TickContext TickInit(GLFWwindow* window){
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	
+	glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 	return context;
 }
 
@@ -117,7 +119,6 @@ TickContext TickInit(GLFWwindow* window){
 void TickInitWindowFlags(){
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_SAMPLES, 8);
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -204,7 +205,20 @@ void SetScale_ctx(TickContext* ctx, float scale){
 	ctx->scaleX=scale;
 	ctx->scaleY=scale;
 }
-
+u32 GetLastKey_ctx(TickContext* ctx){
+	/*
+	if(glfwGetTime()-ctx->lastKeyPressTime <= 1/60.0){
+		return ctx->lastkey;
+	}
+	printf("def key t : %f\n",glfwGetTime()- ctx->lastKeyPressTime);
+	if((glfwGetTime()-ctx->lastKeyPressTime)>0.5 && !(((u32)((glfwGetTime()-ctx->lastKeyPressTime)*1000.0) )%3)){//reapet evry 300 ms
+		return ctx->lastkey;
+	}*/
+	return ctx->key;
+}
+u32 GetLastKey(){
+	return GetLastKey_ctx(&g_defaultContext);
+}
 
 /******************************** Shapes Drawing ***********************************/
 
@@ -839,7 +853,7 @@ TickTexture2D LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContex
 	ctx->samplers[samplerNumber].texture[textureSlot] = GenTexture();
 	CHECK_GL_ERORR(glBindTexture(GL_TEXTURE_2D, ctx->samplers[samplerNumber].texture[textureSlot]));
 	SetTextureData((u8*)bitmap, w, h, bpp);
-
+	
 	if(!notempty){
 		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
 	}
@@ -1052,18 +1066,32 @@ void TickRendre_ctx(TickContext* ctx){
 	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
 	
 	context.mousemensions|= (((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !(mousebefaure&1))&1)<<2;
-	context.lastkey=0;
+	
+	u32 lastKeyPress=context.presskey;
+	context.presskey=0;
 	
 	if(context.mousemensions&1){
+		
 		context.lastClick=glfwGetTime();
 	}
 	
 
-
 	for(int i = 0 ; i < 256 ; i++){
-		context.lastkey=glfwGetKey(context.window, i)?i:0;
-		if(context.lastkey)break;
+		context.presskey=glfwGetKey(context.window, i)?i:0;
+		if(context.presskey)break;
 	}
+	if(context.presskey!=lastKeyPress){
+		context.lastKeyPressTime=glfwGetTime();
+		context.key=context.presskey;
+	}else {
+		context.key=0;
+		double delta = glfwGetTime()-context.lastKeyPressTime;
+		if(delta>0.5 && !(((u32)(delta*10.0))%2)){
+			context.key=context.presskey;
+		}
+	}
+	
+	
 
 	return;
 }

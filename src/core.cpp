@@ -58,7 +58,7 @@ int GetUniform(const char* uniform, u32 shader){
 	int uniformLocation=glGetUniformLocation(shader,uniform);
 	if(uniformLocation==-1){
 		//Wloge("uniform \""+std::string(uniform)+"\" never found");
-		fprintf(stderr,"[WARNING] unifor \"%s\" never found",uniform);
+		fprintf(stderr,"[WARNING] unifor \"%s\" never found\n",uniform);
 	}
 	return uniformLocation;
 }

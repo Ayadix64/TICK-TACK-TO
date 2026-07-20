@@ -28,7 +28,7 @@ static const char* g_2DShape_vertexshader =
 	"	vec4 posi=position;\n"
 	"	if( (Flags & 0xfu) == uint(1)){\n"
 	"		posi.xy= Rotate(position.xy,location3.xy,location3.z); // the thread float of 'location3' will hold the theta\n"
-	"	}else if( (flags & 0x10u) > uint(0)){\n"
+	"	}else if( (Flags & 0x10u) > uint(0)){\n"
 	"		texCoord = location3.xy;\n"
 	"	}\n"
 	"	gl_Position= u_MVP*posi;//vec4(posi.x/800.0,posi.y/600.0,posi.zw);\n"

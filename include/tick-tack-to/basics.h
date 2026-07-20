@@ -65,8 +65,9 @@ typedef struct {
 	
 	u8 mousemensions;//LeftC&Released , RightC&Released, LDouleClicked , LeftPress, RigthPress
 	
-
-	u32 lastkey;
+	double lastKeyPressTime;
+	u32 presskey;
+	u32 key;
 
 	char selectedInThisFaild;
 	u32  selectCount;
@@ -107,7 +108,8 @@ u32 GetMouseClickes();/*bit1 LeftBClickAndReleasd, bit2 RightBClickAndReleased, 
 u32 GetMouseClickes_ctx(TickContext* ctx);/*bit1 LeftBClick, bit2 RightBClick, bit3 double click ,
 					    bit4 LBPress, bit5 RBPress; the click is one time and it will set to zero*/
 
-
+u32 GetLastKey_ctx(TickContext* ctx);
+u32 GetLastKey();
 
 char IsKeyPreased(u32 k);
 char IsKeyPreased_ctx(u32 k,TickContext* ctx);
