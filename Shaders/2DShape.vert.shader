@@ -27,7 +27,7 @@ void main(){
 	vec4 posi=position;
 	if( (Flags & 0xfu) == uint(1)){
 		posi.xy= Rotate(position.xy,location3.xy,location3.z); // the thread float of 'location3' will hold the theta
-	}else if( (flags & 0x10u) > uint(0)){
+	}else if( (Flags & 0x10u) > uint(0)){
 		texCoord = location3.xy;
 	}
 	gl_Position= u_MVP*posi;//vec4(posi.x/800.0,posi.y/600.0,posi.zw);

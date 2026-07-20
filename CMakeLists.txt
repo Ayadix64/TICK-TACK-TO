@@ -10,7 +10,7 @@ find_package(glfw3 3.4 REQUIRED)
 find_package(GLEW REQUIRED)
 
 add_executable(main main.cpp src/core.cpp src/utils.cpp src/basics.cpp src/render.cpp src/text.cpp src/ui.cpp
- externel/imgui/imgui.cpp externel/imgui/imgui_demo.cpp externel/imgui/imgui_draw.cpp externel/imgui/imgui_tables.cpp externel/imgui/imgui_widgets.cpp externel/imgui/imgui_impl_glfw.cpp externel/imgui/imgui_impl_opengl3.cpp )
+ externel/imgui/imgui.cpp externel/imgui/imgui_demo.cpp externel/imgui/imgui_draw.cpp externel/imgui/imgui_tables.cpp externel/imgui/imgui_widgets.cpp externel/imgui/imgui_impl_glfw.cpp externel/imgui/imgui_impl_opengl3.cpp  src/externel/glad.c)
 
 
 target_link_libraries(main glfw)

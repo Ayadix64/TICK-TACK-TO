@@ -268,14 +268,14 @@ char TextBoxColour(u32 x , u32 y , u32 w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
 
 
-	if((g_defaultContext.lastkey>=32 || g_defaultContext.lastkey=='\t') && tbd->size < tbd->maxsize && slected){
+	if((g_defaultContext.key>=32 || g_defaultContext.key=='\t') && tbd->size < tbd->maxsize && slected){
 		size_t sz=tbd->size,usz=tbd->usedsize;
-		tbd->data=(char*)PushChar(g_defaultContext.lastkey, tbd->pos, &sz, (size_t*)&usz, tbd->data);
+		tbd->data=(char*)PushChar(g_defaultContext.key, tbd->pos, &sz, (size_t*)&usz, tbd->data);
 		tbd->size=sz;
 		tbd->usedsize=usz;
 		tbd->pos++;
 		u32 cw;
-		GetCharDemensions(g_defaultContext.lastkey, &cw, 0);
+		GetCharDemensions(g_defaultContext.key, &cw, 0);
 		if(curserpos+cw+30> w){
 			tbd->xoffset+=cw+DEF_XPADD;
 		}
@@ -398,24 +398,24 @@ char Slider(u32 x , u32 y , u32 w,  float* s){
 	u32 th=GetDefaultFont().linegap;
 	
 	float _s = *s>=0.0f?*s<=1.0f?*s:1.0f:0.0f;//very indrstundabel , cheks if 0.0 <= *s <= 1.0, if it isnt, set to eather 1.0 or 0.0
-	DrawRoundedRectangel(x, y+2, w, 6, 3, 30, {50,50,60,255}); //the slider
+	DrawRoundedRectangel(x+10, y+2, w-20, 6, 3, 30, {50,50,60,255}); //the slider
 	if(slected){
-		DrawEmptyCircle(x+_s*w, y+5, 10,1, 30,  g_defaultHoverColour);
+		DrawEmptyCircle(x+_s*(w-20)+10, y+5, 10,1, 30,  g_defaultHoverColour);
 	}
 
 	if(Hover(x, y, w, 20)){
-		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultHoverColour);
+		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultHoverColour);
 		preased|=2;
 	}else 	
-	if(Clicked(x, y, w, 10) || (slected && GetMouseClickes()&(1<<3)) /*aka, not realeased*/){
-		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultSlecetColour);
-		int offset = (int)GetMousePos().x - (int)x;
-		offset=offset>(int)w?(int)w: offset<=0?0:offset;
-		*s = ((float)(offset)/ (float)w);
+	if(Clicked(x, y, w, 20) || (slected && GetMouseClickes()&(1<<3)) /*aka, not realeased*/){
+		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultSlecetColour);
+		int offset = (int)GetMousePos().x - (int)(x+10);
+		offset=offset>(int)(w-20)?(int)(w-20): offset<=0?0:offset;
+		*s = ((float)(offset)/ (float)(w-20));
 		preased|=1;
 		
 	}else {
-		DrawCircle(x+_s*w, y+5, 10, 30,  g_defaultBackgroundColour);
+		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultBackgroundColour);
 		if(slected){
 			DiscardSelect(&g_defaultContext);
 			slected=false;

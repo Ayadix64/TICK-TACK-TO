@@ -430,6 +430,10 @@ void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h){
 	else if(c<font.maxChar && c>=32){
 		if(w)*w=font.CharcturesArray[c-32].w;
 		if(h)*h=font.CharcturesArray[c-32].h;
+	}else if(c>font.maxChar){
+		if(w)*w=font.CharcturesArray['?'-32].w;
+		if(h)*h=font.CharcturesArray['?'-32].h;
+
 	}
 
 	return;

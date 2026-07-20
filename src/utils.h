@@ -6,12 +6,11 @@
 #include <deque>
 #include <iostream>
 #include <fstream>
-//#ifndef GLAD_GL_IMPLEMENTATION 
-//	#define GLAD_GL_IMPLEMENTATION
-//	#include <glad/gl.h>
-//#endif
+#ifndef GLAD_GL_IMPLEMENTATION 
+	#define GLAD_GL_IMPLEMENTATION
+	#include "externel/glad.h"
+#endif
 
-#include <GL/glew.h>
 #include <GL/gl.h>
 
 #include <GLFW/glfw3.h>

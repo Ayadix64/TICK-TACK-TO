@@ -2,9 +2,11 @@
 #include <cstdio>
 #include <ctime>
 #include <iostream>
+#ifndef GLAD_GL_IMPLEMENTATION 
+	#define GLAD_GL_IMPLEMENTATION
+	#include "src/externel/glad.h"
+#endif
 
-#include <GL/glew.h>
-#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
 #include <cmath>
@@ -25,10 +27,10 @@ void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double th
 void Rotate(float& x,float& y,double xx,float yy,float theta);
 void Rotate(float& x,float& y,float&z,float xx,float yy,float zz,float theta,float theta2);
 
-
+/*
 void GlewInit(){
 	const char* runOnWayland = getenv("WAYLAND_DISPLAY");	
-
+	
 	GLenum glewVal = glewInit();
 	if(glewVal!=GLEW_OK){
 		if(!(glewVal == GLEW_ERROR_NO_GLX_DISPLAY && runOnWayland)){ // a linux guy was her
@@ -39,7 +41,7 @@ void GlewInit(){
 		}
 	}
 	return;
-}
+}*/
 void GoodOldTesting(){
 	u32 cl = 0xff0000ff;
 	float veteces[]{
@@ -154,8 +156,7 @@ int main()<%
 	TickInitWindowFlags();
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
-	GlewInit();
-	
+	gladLoadGL();	
 	// During init, enable debug output
 	//glEnable              ( GL_DEBUG_OUTPUT );
 	//glDebugMessageCallback( MessageCallback, 0 );
@@ -207,6 +208,7 @@ int main()<%
 	char FPS[100];
 	bool check;
 	float slid = 0.0f;
+	float counter = 0.0f;
 	while(!glfwWindowShouldClose(window) ){
 		
 		for(int i = 0 ; i < 255 ; i++ ){
@@ -263,7 +265,10 @@ int main()<%
 		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
 		DrawText(FPS, 0, 0);
-		DrawEmptyRoundedRectangel(300, 400, 90, 60, 30, 20, 90, {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter)*80.0, 400+sin(counter)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.5)*80.0, 400+sin(counter+3.14*1.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
 		TextBox( 20, 20, 200, &tbd);
 
 
@@ -274,15 +279,15 @@ int main()<%
 			printf("checked , slider : %f \n",slid);
 		}
 		Slider(200,500,300,&slid);
-		
+		//DrawCircle(GetMousePos().x, GetMousePos().y,5, 20, {0,255,0,255})	;
 
 		/******************** Render ********************/
 		TickRendre();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		tflf=glfwGetTime ();
-		
+		tflf=glfwGetTime () ;
+		counter+=2.0f*slid+(cos(counter))*0.2;	
 
 	}
 	ImGuiStop();
