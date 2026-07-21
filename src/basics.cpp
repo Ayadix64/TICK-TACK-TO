@@ -64,7 +64,7 @@ TickContext TickInit(GLFWwindow* window){
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (int*)&context.maxTexturesSlotsSepurted);//geting the maximum texture slots per texture
 	if(context.maxTexturesSlotsSepurted > TICK_MAX_TEXTURE_SLOTS_SEPURTED){ 
 		context.maxTexturesSlotsSepurted=TICK_MAX_TEXTURE_SLOTS_SEPURTED;
-			Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use "
+		Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use "
 			       +std::to_string(TICK_MAX_TEXTURE_SLOTS_SEPURTED)+" slots");
 	}
 
@@ -103,14 +103,13 @@ TickContext TickInit(GLFWwindow* window){
 	
 	
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 	return context;
 }
 
@@ -119,6 +118,7 @@ TickContext TickInit(GLFWwindow* window){
 void TickInitWindowFlags(){
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_SAMPLES, 8);
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -857,7 +857,7 @@ TickTexture2D LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContex
 	if(!notempty){
 		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
 	}
-	ret.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
+	
 	ret={.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot,
 	     .w=(u32)w,.h=(u32)h,.bpp=bpp};
 	return ret;//samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
@@ -1086,8 +1086,9 @@ void TickRendre_ctx(TickContext* ctx){
 	}else {
 		context.key=0;
 		double delta = glfwGetTime()-context.lastKeyPressTime;
-		if(delta>0.5 && !(((u32)(delta*10.0))%2)){
+		if(delta>0.5 /*&& !(((u32)(delta*10.0))%2)*/){
 			context.key=context.presskey;
+			context.lastKeyPressTime+=0.02;
 		}
 	}
 	

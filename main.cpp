@@ -2,13 +2,15 @@
 #include <cstdio>
 #include <ctime>
 #include <iostream>
+
+
 #ifndef GLAD_GL_IMPLEMENTATION 
-	#define GLAD_GL_IMPLEMENTATION
 	#include "src/externel/glad.h"
+	#define GLAD_GL_IMPLEMENTATION
 #endif
 
+#include <GL/gl.h>
 #include <GLFW/glfw3.h>
-
 #include <cmath>
 #include <cstdlib>
 #include "include/tick-tack-to.h"
@@ -20,6 +22,9 @@
 #include "include/tick-tack-to/ui.h"
 #include "utils.hpp"
 #include <unistd.h>
+
+
+
 
 void Rotate(double& x,double& y,double xx,double yy,double theta);
 void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
@@ -287,7 +292,7 @@ int main()<%
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		tflf=glfwGetTime () ;
-		counter+=2.0f*slid+(cos(counter))*0.2;	
+		counter+=2.0f*slid+(sin(counter))*0.1;
 
 	}
 	ImGuiStop();

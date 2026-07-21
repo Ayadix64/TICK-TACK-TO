@@ -24,8 +24,9 @@ typedef struct {
 
 void InitTextBoxData(TextBoxData* tbd,u32 maxsize);
 
-char Button  (const char* text,u32 x , u32 y ); //bit1: preased, bit2: hover
-char TextBox (u32 x , u32 y , u32 w, TextBoxData* tbd);
-void CheckBox(const char* bx ,u32 x , u32 y , char* b);
-char Slider(u32 x , u32 y , u32 w,  float* s);
+char Button  (const char* text,int x , int y ); //bit1: preased, bit2: hover
+char TextBox (int x , int y , int w, TextBoxData* tbd);
+char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl);
+void CheckBox(const char* bx ,int x , int y , char* b);
+char Slider(int x , int y , int w,  float* s);
 #endif
