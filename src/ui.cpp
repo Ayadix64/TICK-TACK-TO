@@ -102,7 +102,7 @@ bool DoubleClicked_ctx(int x , int y , int w , int h, TickContext* ctx){
 
 
 
-char Button(const char* text,u32 x , u32 y ){
+char Button(const char* text,int x , int y ){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -148,7 +148,7 @@ char Button(const char* text,u32 x , u32 y ){
 
 
 
-char ButtonColor(const char* text,u32 x , u32 y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
+char ButtonColor(const char* text,int x , int y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -203,7 +203,7 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 }
 
 
-char TextBoxColour(u32 x , u32 y , u32 w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
+char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
 	char preased = false;
 	bool highlited=false;
 	bool slected = IsSlected(&g_defaultContext);
@@ -321,7 +321,7 @@ char TextBoxColour(u32 x , u32 y , u32 w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 }
 
 
-char TextBox(u32 x , u32 y , u32 w, TextBoxData* tbd){
+char TextBox(int x , int y , int w, TextBoxData* tbd){
 	return TextBoxColour(x, y, w, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255});
 }
 
@@ -331,7 +331,7 @@ char TextBox(u32 x , u32 y , u32 w, TextBoxData* tbd){
 
 
 
-void CheckBox(const char* bx ,u32 x , u32 y , char* b){
+void CheckBox(const char* bx ,int x , int y , char* b){
 	char preased = false;
 	bool highlited=false;
 	
@@ -388,7 +388,7 @@ void CheckBox(const char* bx ,u32 x , u32 y , char* b){
 }
 
 
-char Slider(u32 x , u32 y , u32 w,  float* s){
+char Slider(int x , int y , int w,  float* s){
 	char preased = false;
 	bool highlited=false;
 		
