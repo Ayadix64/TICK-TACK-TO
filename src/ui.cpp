@@ -8,6 +8,7 @@
 #include "../include/tick-tack-to.h"
 extern "C" TickContext g_defaultContext;
 
+extern "C" TickFont g_defaultFont;
 #define DEF_XPADD 1
 #define DEF_YPADD 4
 
@@ -37,7 +38,6 @@ void SetDefaultUIColors(){
 void InitUI(){
 	SetDefaultUIColors();
 }
-
 
 bool IsSlected(TickContext* ctx){
 	return ctx->selectID==ctx->selectCount;
@@ -100,96 +100,111 @@ bool DoubleClicked_ctx(int x , int y , int w , int h, TickContext* ctx){
 
 
 
+/**************************************** BUTTONS ********************************************/
 
 
-char Button(const char* text,int x , int y ){
+
+
+
+char Button              (const char* text,int x , int y , int w /*0 or -1 for default*/ , int h /*0 or -1 for default*/)//bit1: preased, bit2: hover
+
+{
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
+} 
+char Button_ctx          (const char* text,int x , int y ,int w , int h ,TickContext* ctx)
+{
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
+
+} 
+char ButtonColour        (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg)
+{
+	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
+
+}
+char ButtonColour_ctx    (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext*ctx)
+{
+	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
+
+
+} 
+char ButtonFont          (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd)
+{
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+			font, xpadd, ypadd, &g_defaultContext);
+
+}
+char ButtonFont_ctx      (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd, TickContext*ctx)
+{
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+			font, xpadd, ypadd, ctx);
+
+} 
+char ButtonExtended      (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd ,u32 ypadd)
+{
+	ButtonExtended_ctx  (text,x , y , w , h ,dbg, hbg, sbg, font , xpadd, ypadd,&g_defaultContext);
+
+} 
+
+
+char ButtonExtended_ctx  (const char* text,int x , int y , int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd,TickContext*ctx)
+{
 	char preased = false;
 	bool highlited=false;
-	bool slected = IsSlected(&g_defaultContext);
+	bool slected = IsSlected(ctx);
 	if(slected){highlited=true;};
 	
-	u32 w , h;
 
-	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
+	u32* ww = (w&&w!=-1)?0:(u32*)&w;
+	u32 th = 0;//h?(h!=-1?0:(u32*)&h):(u32*)&h;
+	GetTextDemensionsExtended(text,xpadd,ypadd,ww, &th);
+	ww?w+=30:0;
+	(h==-1||!h)?h=th+30:0;
 	if(slected){
-		DrawEmptyRoundedRectangel(x-1, y-1, w + (32), h + (32), 10,2 ,90,  g_defaultHoverColour);
+		DrawEmptyRoundedRectangel_ctx(x-1, y-1, w + 2, h + 2, 10,2 ,90,  hbg,ctx);
 
 	}
 
-	if(Hover(x, y, w+30, h+30)){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultHoverColour);
+	if(Hover_ctx(x, y, w, h,ctx)){
+		DrawRoundedRectangel_ctx(x, y, w , h, 10, 90, hbg,ctx);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
+ 	else if(Clicked_ctx(x, y, w, h,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=2;
 		
 	}
-	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
+	if(ClickedAndReleased_ctx( x, y, w, h,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=1;
 	}
 	if(!preased) {
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultBackgroundColour);
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, dbg,ctx);
 
 	}
 	
-	if(!Clicked( x, y, w+30, h+30)&& GetMouseClickes()&1 && slected){
-		DiscardSelect(&g_defaultContext);
+	if(!Clicked_ctx( x, y, w, h,ctx)&& GetMouseClickes_ctx(ctx)&1 && slected){
+		DiscardSelect(ctx);
 		slected=false;
 	}
 	if(preased&1){slected=1;}	
-	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
-
-	UpdateSelect(slected&1, highlited, &g_defaultContext);
+	DrawTextFontExtended_ctx(text, x+15,  y+(h-th)/2,xpadd,ypadd,font,ctx);
+	
+	UpdateSelect(slected&1, highlited, ctx);
 	return preased;
 }
 
 
 
 
-char ButtonColor(const char* text,int x , int y , Vec4c bg , Vec4c hoverbg , Vec4c slectbg ){
-	char preased = false;
-	bool highlited=false;
-	bool slected = IsSlected(&g_defaultContext);
-	if(slected){highlited=true;};
-	u32 w , h;
-	GetTextDemensionsExtended(text,DEF_XPADD,DEF_YPADD,&w, &h);
-	
-	if(slected){
-		DrawEmptyRoundedRectangel(x-1, y-1, w + (32), h + (32), 10,2, 90,  hoverbg);
 
-	}
 
-	if(Hover(x, y, w+30, h+30)){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, hoverbg);
-		preased|=2;
-	}
-	else if(Clicked(x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, slectbg);
-		if(ClickedAndReleased( x, y, w+30, h+30)){
-			preased|=1;
-		}	
-	}
-	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, g_defaultSlecetColour);
-		preased|=1;
-	}
-	if(!preased) {
-		DrawRoundedRectangel(x, y, w + (30), h + (30), 10, 90, bg);
-	}
-	
-	if(!preased&& GetMouseClickes()&(1<<3) && slected){
-		DiscardSelect(&g_defaultContext);
-		slected=false;
-	}
-	if(preased&1){slected=1;}
-	DrawTextExtended(text, x+15,  y+15,DEF_XPADD,DEF_YPADD);
 
-	UpdateSelect(slected&1, highlited, &g_defaultContext);
-	return preased;
-}
 
+/***************************************  TEXTBOX ***********************************************/
 
 void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 	tbd->size=1024;
@@ -202,55 +217,90 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 	memset(tbd->data, 0, tbd->size);
 }
 
+char TextBox            (int x , int y , int w,int h/*0 or-1 for default*/,   TextBoxData* tbd)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
+}
+char TextBox_ctx        (int x , int y , int w , int h/*0 or-1 for default*/, TextBoxData* tbd,TickContext*ctx)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
-char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl){
+}
+char TextBoxColour      (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
+
+}
+char TextBoxColour_ctx  (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickContext*ctx)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
+
+}
+char TextBoxFont        (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+			font, xpadd, ypadd, &g_defaultContext);
+
+}
+char TextBoxFont_ctx    (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd, TickContext*ctx){
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+			font, xpadd, ypadd, ctx);
+
+}
+char TextBoxExtended    (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font, u32 xpadd, u32 ypadd)
+{
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+			font, xpadd, ypadd, &g_defaultContext);
+
+}
+
+
+char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font, u32 xpadd, u32 ypadd,TickContext*ctx)
+{
 	char preased = false;
 	bool highlited=false;
-	bool slected = IsSlected(&g_defaultContext);
+	bool slected = IsSlected(ctx);
 	if(slected){highlited=true;};
-	
-	u32 th=GetDefaultFont().linegap;
-	
+	if(!h || h==-1){	
+		h=font.linegap+30;
+	}
 	if(slected){
-		DrawRoundedRectangel(x-1, y-1, w+2, th +30+2, 10, 90,  hbg);
+		DrawRoundedRectangel_ctx(x-1, y-1, w+2, h +2, 10, 90,  hbg,ctx);
 
 	}
 
-	if(Hover(x, y, w, th+30)){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, hbg);
+	if(Hover(x, y, w, h+30)){
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, hbg,ctx);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, sbg);	
+	else if(Clicked(x, y, w, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);	
 		preased|=2;
 	}
-	if(ClickedAndReleased( x, y, w+30, th+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, sbg);
+	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=1;
 	}
 	if(!preased){
-		DrawRoundedRectangel(x, y, w , th + (30), 10, 90, bg);
+		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, bg,ctx);
 	}
 	
 	if(preased&1){slected=1;}	
-	if(!preased&& GetMouseClickes()&(1<<3) && slected){
-		DiscardSelect(&g_defaultContext);
+	if(!preased&& GetMouseClickes_ctx(ctx)&(1<<3) && slected){
+		DiscardSelect(ctx);
 		slected=false;
 	}
-	UpdateSelect(slected, highlited, &g_defaultContext);
+	UpdateSelect(slected, highlited, ctx);
 	
 
 	
 	u32 curserpos =0;
-	GetTextDemensionsExtendedSize(tbd->data, tbd->pos, DEF_XPADD, DEF_YPADD, &curserpos, 0);
+	GetFontTextDemensionsExtendedSize(tbd->data, tbd->pos, font,xpadd, ypadd, &curserpos, 0);
 	
-	/*
-	DrawRectangel(x+15, y+15-th, curserpos, th, {200,200,0,255});
-	
-	DrawRectangel(x+15, y+th+15, tbd->xoffset, th, {70,70,70,255});
-	DrawRectangel(x+15+tbd->xoffset, y+th+15, w-30, th, {200,0,0,255});
-
-	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15, y+15+th, 0, 0, 3000, th,DEF_XPADD,DEF_YPADD);// */
 
 
 
@@ -260,32 +310,35 @@ char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 	
 	if(slected){
 		if((u64)(glfwGetTime()*4.0)%2){ //aka; flicker evry half a secend
-			DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, cursurCl);
+			DrawRectangel_ctx(x+15+curserpos, y+ (h-font.linegap)/2 - 2, xpadd, font.linegap+4, cursurCl,ctx);
 		}	
 	}else {
-		DrawRectangel(x+15+curserpos, y+13, DEF_XPADD, th+4, {200,200,255,255}); //the cusrsure
+		DrawRectangel_ctx(x+15+curserpos, y+ (h-font.linegap)/2 - 2, xpadd, font.linegap+4, cursurCl,ctx);
 	}
-	DrawTextSegmentExtendedSize(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+15, tbd->xoffset, 0, w-30, th,DEF_XPADD,DEF_YPADD);
+	if(!tbd->flags.Password){
+		DrawTextSegmentExtendedFontSize_ctx(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+ (h-font.linegap)/2, tbd->xoffset, 0, w-30, h,xpadd,xpadd,font,ctx);
+	}else {
+		//TODO
+	}
 
-
-	if((g_defaultContext.key>=32 || g_defaultContext.key=='\t') && tbd->size < tbd->maxsize && slected){
+	if((ctx->key>=32 || ctx->key=='\t') && tbd->size < tbd->maxsize && slected){
 		size_t sz=tbd->size,usz=tbd->usedsize;
-		tbd->data=(char*)PushChar(g_defaultContext.key, tbd->pos, &sz, (size_t*)&usz, tbd->data);
+		tbd->data=(char*)PushChar(ctx->key, tbd->pos, &sz, (size_t*)&usz, tbd->data);
 		tbd->size=sz;
 		tbd->usedsize=usz;
 		tbd->pos++;
 		u32 cw;
-		GetCharDemensions(g_defaultContext.key, &cw, 0);
+		GetFontCharDemensions(ctx->key,font, &cw, 0);
 		if(curserpos+cw+30> w){
-			tbd->xoffset+=cw+DEF_XPADD;
+			tbd->xoffset+=cw+xpadd;
 		}
-	}else if(IsKeyPreased(GLFW_KEY_BACKSPACE) && tbd->pos&& slected){
+	}else if(IsKeyPreased_ctx(GLFW_KEY_BACKSPACE,ctx) && tbd->pos&& slected){
 		tbd->pos--;
 		u32 cw;
-		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
+		GetFontCharDemensions(tbd->data[tbd->pos],font, &cw, 0);
 		
-		if((int)(curserpos-(cw+DEF_XPADD)-w-30)<=0){	
-			tbd->xoffset-= min((cw+DEF_XPADD),tbd->xoffset);
+		if((int)(curserpos-(cw+xpadd)-w-30)<=0){	
+			tbd->xoffset-= min((cw+xpadd),tbd->xoffset);
 		}
 
 		size_t usz=tbd->usedsize;
@@ -298,8 +351,8 @@ char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 		
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
-		if((int)(curserpos-(cw+DEF_XPADD))<=0){
-			tbd->xoffset-= min((cw+DEF_XPADD),tbd->xoffset); // so we are not sub zero
+		if((int)(curserpos-(cw+xpadd))<=0){
+			tbd->xoffset-= min((cw+xpadd),tbd->xoffset); // so we are not sub zero
 		}
 
 		
@@ -308,8 +361,8 @@ char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
 		tbd->pos++;
-		if((int)(curserpos)>=(int)(w-cw-DEF_XPADD-30)){
-			tbd->xoffset+=cw+DEF_XPADD;// so we are not sub zero
+		if((int)(curserpos)>=(int)(w-cw-xpadd-30)){
+			tbd->xoffset+=cw+xpadd;// so we are not sub zero
 		}
 
 	}
@@ -321,103 +374,173 @@ char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg 
 }
 
 
-char TextBox(int x , int y , int w, TextBoxData* tbd){
-	return TextBoxColour(x, y, w, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255});
-}
 
 
 
+
+/***************************************** CheckBox *****************************************/
 
 
 
 
 void CheckBox(const char* bx ,int x , int y , char* b){
-	char preased = false;
-	bool highlited=false;
-	
-	bool slected = IsSlected(&g_defaultContext);
-	if(slected){highlited=true;};
-	
-	u32 th=GetDefaultFont().linegap;
-	
-	if(slected){
-		DrawRoundedRectangel(x-1, y-1, th+2, th+2, 5, 90,  g_defaultHoverColour);
-
-	}
-
-	if(Hover(x, y, th, th) && !*b){
-		DrawRoundedRectangel(x, y, th , th, 5, 90, g_defaultHoverColour);
-		preased|=2;
-	}
-	else if(Clicked(x, y, th, th) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, th ,th, 5, 90, g_defaultSlecetColour);
-		preased|=2;
-		
-	}
-	if(ClickedAndReleased( x, y, th, th) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
-		DrawRoundedRectangel(x, y, th ,th, 5, 90, g_defaultSlecetColour);
-		preased|=1;
-	}
-	if(!preased){
-		if(*b){
-			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultSlecetColour);
-			//DrawLine({x,y+th/2}, {x+th/2,y+th}, 2, {255,255,255,255});	
-			//DrawLine({x+th/2,y+th}, {x+th,y}, 2, {255,255,255,255});
-		}else {
-			DrawRoundedRectangel(x, y, th , th , 5, 90, g_defaultBackgroundColour);
-		}
-	}
-	
-	if(preased&1){slected=1;}	
-
-	if(!preased&& GetMouseClickes()&(1<<3) && slected){
-		DiscardSelect(&g_defaultContext);
-		slected=false;
-	}
-	UpdateSelect(slected, highlited, &g_defaultContext);
-	
-
-	DrawTextExtended(bx, x+10+th, y, DEF_XPADD, DEF_XPADD);
-	
-	if(preased&1){
-		*b=!*b;
-	}
-
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
+			, g_defaultHoverColour, g_defaultSlecetColour,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);	
 	
 	return;
 }
 
 
-char Slider(int x , int y , int w,  float* s){
+void CheckBox_ctx(const char* bx ,int x , int y , char* b,TickContext* ctx){
+		
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
+			, g_defaultHoverColour, g_defaultSlecetColour,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
+	
+	return;
+}
+
+
+void CheckBoxColour(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg){
+	CheckBoxExtended_ctx(bx, x, y, b, dbg
+			, hbg, sbg,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);
+
+	return;
+}
+
+
+void CheckBoxColour_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext* ctx){
+	CheckBoxExtended_ctx(bx, x, y, b, dbg
+			, hbg, sbg,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
+
+	return;
+}
+
+
+void CheckBoxFont(const char* bx ,int x , int y , char* b,TickFont font, u32 xpadd, u32 ypadd){
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
+			, g_defaultHoverColour, g_defaultSlecetColour,font , xpadd, ypadd, &g_defaultContext);
+
+	return;
+}
+
+
+void CheckBoxFont_ctx(const char* bx ,int x , int y , char* b,TickFont font, u32 xpadd, u32 ypadd,TickContext* ctx){
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
+			, g_defaultHoverColour, g_defaultSlecetColour,font , xpadd, ypadd, ctx);
+
+	return;
+}
+
+
+void CheckBoxExtended(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd){
+	CheckBoxExtended_ctx(bx ,x , y , b,dbg, hbg, sbg, font , xpadd, ypadd, &g_defaultContext);
+}
+
+
+void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd, TickContext* ctx){
+	char preased = false;
+	bool highlited=false;
+	
+	bool slected = IsSlected(ctx);
+	if(slected){highlited=true;};
+	
+	u32 th=font.linegap;
+	
+	if(slected){
+		DrawRoundedRectangel_ctx(x-1, y-1, th+2, th+2, 5, 90,  dbg,ctx);
+	}
+
+	if(Hover_ctx(x, y, th, th,ctx) && !*b){
+		DrawRoundedRectangel_ctx(x, y, th , th, 5, 90, hbg,ctx);
+		preased|=2;
+	}
+	else if(Clicked_ctx(x, y, th, th,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+		DrawRoundedRectangel_ctx(x, y, th ,th, 5, 90, sbg,ctx);
+		preased|=2;
+		
+	}
+	if(ClickedAndReleased_ctx( x, y, th, th,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+		DrawRoundedRectangel_ctx(x, y, th ,th, 5, 90, sbg,ctx);
+		preased|=1;
+	}
+	if(!preased){
+		if(*b){
+			DrawRoundedRectangel_ctx(x, y, th , th , 5, 90, sbg,ctx);
+		}else {
+			DrawRoundedRectangel_ctx(x, y, th , th , 5, 90, dbg,ctx);
+		}
+	}
+	
+	if(preased&1){slected=1;}	
+
+	if(!preased&& GetMouseClickes_ctx(ctx)&(1<<3) && slected){
+		DiscardSelect(ctx);
+		slected=false;
+	}
+	UpdateSelect(slected, highlited, ctx);
+	
+
+	//DrawTextExtended(bx, x+10+th, y, DEF_XPADD, DEF_XPADD);
+	DrawTextFontExtended(bx, x+th+10, y, xpadd, ypadd, font);
+	if(preased&1){
+		*b=!*b;
+	}
+
+	
+	return;	
+}
+
+
+
+
+/****************************************** Slider ************************************************/
+
+
+
+
+char Slider(int x , int y , int w,  float* s)
+{
+	return SliderColour_ctx(x, y, w, s, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, &g_defaultContext);
+}
+char Slider_ctx(int x , int y , int w,  float* s, TickContext* ctx)
+{
+	return SliderColour_ctx(x, y, w, s, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, ctx);
+}
+
+char SliderColour(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg){
+		return SliderColour_ctx(x, y, w, s, dbg, hbg, sbg, &g_defaultContext);
+}
+
+
+char SliderColour_ctx(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg , TickContext* ctx)
+{
 	char preased = false;
 	bool highlited=false;
 		
-	bool slected = IsSlected(&g_defaultContext);
+	bool slected = IsSlected(ctx);
 	if(slected){highlited=true;};
 	
-	u32 th=GetDefaultFont().linegap;
-	
 	float _s = *s>=0.0f?*s<=1.0f?*s:1.0f:0.0f;//very indrstundabel , cheks if 0.0 <= *s <= 1.0, if it isnt, set to eather 1.0 or 0.0
-	DrawRoundedRectangel(x+10, y+2, w-20, 6, 3, 30, {50,50,60,255}); //the slider
+	DrawRoundedRectangel_ctx(x+10, y+2, w-20, 6, 3, 30, {50,50,60,255},ctx); //the slider
 	if(slected){
-		DrawEmptyCircle(x+_s*(w-20)+10, y+5, 10,1, 30,  g_defaultHoverColour);
+		DrawEmptyCircle_ctx(x+_s*(w-20)+10, y+5, 10,1, 30,  hbg,ctx);
 	}
 
-	if(Hover(x, y, w, 20)){
-		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultHoverColour);
+	if(Hover_ctx(x, y, w, 20,ctx)){
+		DrawCircle_ctx(x+_s*(w-20)+10, y+5, 10, 30,  hbg,ctx);
 		preased|=2;
 	}else 	
-	if(Clicked(x, y, w, 20) || (slected && GetMouseClickes()&(1<<3)) /*aka, not realeased*/){
-		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultSlecetColour);
-		int offset = (int)GetMousePos().x - (int)(x+10);
+	if(Clicked_ctx(x, y, w, 20,ctx) || (slected && GetMouseClickes_ctx(ctx)&(1<<3)) /*aka, not realeased*/){
+		DrawCircle_ctx(x+_s*(w-20)+10, y+5, 10, 30,  sbg,ctx);
+		int offset = (int)GetMousePos_ctx(ctx).x - (int)(x+10);
 		offset=offset>(int)(w-20)?(int)(w-20): offset<=0?0:offset;
 		*s = ((float)(offset)/ (float)(w-20));
 		preased|=1;
 		
 	}else {
-		DrawCircle(x+_s*(w-20)+10, y+5, 10, 30,  g_defaultBackgroundColour);
+		DrawCircle_ctx(x+_s*(w-20)+10, y+5, 10, 30,  dbg,ctx);
 		if(slected){
-			DiscardSelect(&g_defaultContext);
+			DiscardSelect(ctx);
 			slected=false;
 		}
 	}
@@ -427,7 +550,7 @@ char Slider(int x , int y , int w,  float* s){
 
 	if(!preased&& GetMouseClickes()&(1<<3) && slected){
 	}
-	UpdateSelect(slected, highlited, &g_defaultContext);
+	UpdateSelect(slected, highlited, ctx);
 	
 
 	return preased;

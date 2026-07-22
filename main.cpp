@@ -258,7 +258,7 @@ int main()<%
 		
 		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y);
+		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y,0,200);
 
 		//Button("How is the dat of Kbnuib", 600, 600);
 		if(butnflags&1){
@@ -274,7 +274,7 @@ int main()<%
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.5)*80.0, 400+sin(counter+3.14*1.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
-		TextBox( 20, 20, 200, &tbd);
+		TextBox( 20, 20,200,0, &tbd);
 
 
 		CheckBox("Check Box Bora Broa Broa .", 20, 300, (char*)&check);
