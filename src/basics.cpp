@@ -1082,7 +1082,7 @@ void TickRendre_ctx(TickContext* ctx){
 	}
 	if(context.presskey!=lastKeyPress){
 		context.lastKeyPressTime=glfwGetTime();
-		context.key=context.presskey;
+		context.key=context.presskey ;
 	}else {
 		context.key=0;
 		double delta = glfwGetTime()-context.lastKeyPressTime;

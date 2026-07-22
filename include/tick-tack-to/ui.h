@@ -1,7 +1,10 @@
 #ifndef TICK_UI
 #define TICK_UI
 #include "utils.h"
+#include "basics.h"
+#include "text.h"
 #include <ctime>
+
 #define UI_DEFAULT_BACKGROUND_COLOR {0x9,0x16,0x56,0xff} //#091656
 #define UI_DEFAULT_HOUVER_COLOR     {0x12,0x2c,0xaf ,255} //#122caf
 #define UI_DEFAULT_SELECT_COLOR     {0x20,0x41,0xe8,255} //#2041e8
@@ -22,11 +25,49 @@ typedef struct {
 	char* data;
 }TextBoxData;
 
+
+
+
+char Button              (const char* text,int x , int y , int w /*0 or -1 for default*/ , int h /*0 or -1 for default*/); //bit1: preased, bit2: hover
+char Button_ctx          (const char* text,int x , int y ,int w , int h ,TickContext* ctx); 
+char ButtonColour        (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg); 
+char ButtonColour_ctx    (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext*ctx); 
+char ButtonFont          (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd);
+char ButtonFont_ctx      (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd, TickContext*ctx); 
+char ButtonExtended      (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd ,u32 ypadd); 
+char ButtonExtended_ctx  (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd ,u32 ypadd,TickContext*ctx);
+
+
+
+
 void InitTextBoxData(TextBoxData* tbd,u32 maxsize);
 
-char Button  (const char* text,int x , int y ); //bit1: preased, bit2: hover
-char TextBox (int x , int y , int w, TextBoxData* tbd);
-char TextBoxColour(int x , int y , int w, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl);
-void CheckBox(const char* bx ,int x , int y , char* b);
+char TextBox            (int x , int y , int w,int h/*0 or-1 for default*/,   TextBoxData* tbd);
+char TextBox_ctx        (int x , int y , int w , int h/*0 or-1 for default*/, TextBoxData* tbd,TickContext*ctx);
+char TextBoxColour      (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl);
+char TextBoxColour_ctx  (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickContext*ctx);
+char TextBoxFont        (int x , int y , int w , int h, TextBoxData* tbd, TickFont font ,u32 xpadd ,u32 ypadd);
+char TextBoxFont_ctx    (int x , int y , int w , int h, TextBoxData* tbd, TickFont font ,u32 xpadd ,u32 ypadd, TickContext*ctx);
+char TextBoxExtended    (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font , u32 xpadd, u32 ypadd);
+char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font , u32 xpadd, u32 ypadd,TickContext*ctx);
+
+
+
+
+void CheckBox            (const char* bx ,int x , int y , char* b);
+void CheckBox_ctx        (const char* bx ,int x , int y , char* b, TickContext* ctx);
+void CheckBoxColour      (const char* bx ,int x , int y , char* b, Vec4c dbg, Vec4c hbg, Vec4c sbg);
+void CheckBoxColour_ctx  (const char* bx ,int x , int y , char* b, Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext* ctx);
+void CheckBoxFont        (const char* bx ,int x , int y , char* b, TickFont font ,u32 xpadd, u32 ypadd);
+void CheckBoxFont_ctx    (const char* bx ,int x , int y , char* b, TickFont font ,u32 xpadd, u32 ypadd,TickContext* ctx);
+void CheckBoxExtended    (const char* bx ,int x , int y , char* b, Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd, u32 ypadd);
+void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b, Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd, u32 ypadd, TickContext* ctx);
+
+
+
 char Slider(int x , int y , int w,  float* s);
+char Slider_ctx(int x , int y , int w,  float* s, TickContext* ctx);
+char SliderColour(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg);
+char SliderColour_ctx(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg , TickContext* ctx);
+
 #endif
