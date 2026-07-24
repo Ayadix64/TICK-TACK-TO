@@ -60,20 +60,21 @@ typedef struct {
 	float Z; // the zed of elements; for evry element been drawn, this will enable drawing batching with drawing ordring for textures
 	
 	u32 mousex,mousey;
-
 	double lastClick;
-	
 	u8 mousemensions;//LeftC&Released , RightC&Released, LDouleClicked , LeftPress, RigthPress
 	
+	u32 lastKeyPress; //NOTE: this is NOT regsterd automaticly; 
+			  //this is the last key been used by GetKeyPress_ctx/GetPressKey and it used for repeat time , 
+			  //If you want to know the last key press, use the functions this lib provided / glfw provided, 
+			  //this valu is not what you need!
 	double lastKeyPressTime;
-	u32 presskey;
-	u32 key;
+	
+
 
 	char selectedInThisFaild;
 	u32  selectCount;
 	u32  selectID;
 	u32  highlightedElement;
-		
 
 }TickContext;
 
@@ -81,7 +82,7 @@ typedef struct {
 	u32 index , w , h , bpp;
 }TickTexture2D;
 
-
+/***************************Tick stuff******************************/
 TickContext TickInit(GLFWwindow* window);
 TickContext*GetDefaultContext();
 void TickInitWindowFlags();
@@ -99,6 +100,8 @@ void TickRendre_ctx(TickContext* ctx);
 void TickClose();
 void TickClose_ctx(TickContext* context);
 
+/*************************** Input ********************************/
+
 
 Vec2i GetMousePos();
 Vec2i GetMousePos_ctx(TickContext* ctx);
@@ -111,11 +114,13 @@ u32 GetMouseClickes_ctx(TickContext* ctx);/*bit1 LeftBClick, bit2 RightBClick, b
 u32 GetLastKey_ctx(TickContext* ctx);
 u32 GetLastKey();
 
-char IsKeyPreased(u32 k);
-char IsKeyPreased_ctx(u32 k,TickContext* ctx);
+char GetKeyPressed(u32 k);
+char GetKeyPressed_ctx(u32 k,TickContext* ctx);
+char IsKeyPressed(u32 k);
+char IsKeyPressed_ctx(u32 k,TickContext* ctx);
 
 
-
+/*************************** Scaling ******************************/
 void SetScaleX(float scale);
 void SetScaleY(float scale);
 void SetScaleXY( float scalex, float scaley);
@@ -126,7 +131,7 @@ void SetScaleY_ctx(TickContext* ctx, float scale);//the same thing
 void SetScaleXY_ctx(TickContext* ctx, float scalex, float scaley);//...
 void SetScale_ctx(TickContext* ctx, float scale);//...
 
-
+/*******************************************************************/
 
 
 void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1___v2

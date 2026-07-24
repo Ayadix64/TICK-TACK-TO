@@ -49,19 +49,18 @@ uniform sampler2D texture31;
 uniform sampler2D texture32;
 void main(){
 	
-	
 	if( (flags & 0x10u) > uint(0)){// it is a texture
 		int tex = int(color);
-		if (tex==0){outcl=texture(texture0,texCoord);return;}
-		if (tex==1){outcl=texture(texture1,texCoord);return;}
-		if (tex==2){outcl=texture(texture2,texCoord);return;}
-		if (tex==3){outcl=texture(texture3,texCoord);return;}
-		if (tex==4){outcl=texture(texture4,texCoord);return;}
-		if (tex==5){outcl=texture(texture5,texCoord);return;}
-		if (tex==6){outcl=texture(texture6,texCoord);return;}
-		if (tex==7){outcl=texture(texture7,texCoord);return;}
-		if (tex==8){outcl=texture(texture8,texCoord);return;}
-		if (tex==9){outcl=texture(texture9,texCoord);return;}
+		if (tex==0) {outcl=texture(texture0 ,texCoord);return;}
+		if (tex==1) {outcl=texture(texture1 ,texCoord);return;}
+		if (tex==2) {outcl=texture(texture2 ,texCoord);return;}
+		if (tex==3) {outcl=texture(texture3 ,texCoord);return;}
+		if (tex==4) {outcl=texture(texture4 ,texCoord);return;}
+		if (tex==5) {outcl=texture(texture5 ,texCoord);return;}
+		if (tex==6) {outcl=texture(texture6 ,texCoord);return;}
+		if (tex==7) {outcl=texture(texture7 ,texCoord);return;}
+		if (tex==8) {outcl=texture(texture8 ,texCoord);return;}
+		if (tex==9) {outcl=texture(texture9 ,texCoord);return;}
 		if (tex==10){outcl=texture(texture10,texCoord);return;}
 		if (tex==11){outcl=texture(texture11,texCoord);return;}
 		if (tex==12){outcl=texture(texture12,texCoord);return;}
