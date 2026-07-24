@@ -1,4 +1,5 @@
 #version 330 core
+
 layout(location=0) in vec4 position;
 layout(location=1) in uint inColor;
 layout(location=2) in uint Flags;
@@ -12,6 +13,7 @@ out vec4 pos;
 out vec2 texCoord;
 
 uniform mat4 u_MVP;
+
 
 vec2 Rotate(vec2 pos_,vec2 center,float theta){
 	float raduian=(theta*3.14159)/(180.0);

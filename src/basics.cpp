@@ -40,9 +40,15 @@ TickContext g_defaultContext;
 std::atomic<bool> g_LibraryHaveBeenInit=false;
 std::atomic_uint  g_doubleClickeDelaye=300;//in ms
 
+std::atomic_uint   g_pressedkey=0;//the last key been preased;
+std::atomic_size_t g_pressed_window=0; //This is a pointer , a GLFWwindow* , for the window tha been preased by the last key 
+
+
 
 void initDefautlFont();
 void InitUI();
+
+void keyboardPressReqaust(GLFWwindow* window, unsigned int codepoint);
 
 
 TickContext TickInit(GLFWwindow* window){
@@ -83,11 +89,13 @@ TickContext TickInit(GLFWwindow* window){
 	context.mousey=~0;
 	context.mousemensions=0;
 	context.selectID=-1;
-	
+	glfwSetCharCallback(window, keyboardPressReqaust);
+
+
 	if(!g_LibraryHaveBeenInit){
 		g_defaultContext=context;
 		initDefautlFont();
-		InitUI();	
+		InitUI();
 		g_LibraryHaveBeenInit=true;
 	}
 	glUseProgram(context.Shader2D);
@@ -126,16 +134,18 @@ void TickInitWindowFlags(){
 }
 
 
+
 TickContext* GetDefaultContext(){return &g_defaultContext;}
 
 
 void TickSetWindow(GLFWwindow* window){
-	g_defaultContext.window=window;
+	TickSetWindow_ctx(window, &g_defaultContext);
 }
 
 
 void TickSetWindow_ctx(GLFWwindow* window , TickContext* ctx){
 	ctx->window=window;
+	glfwSetCharCallback(window, keyboardPressReqaust);
 }
 
 
@@ -161,14 +171,75 @@ u32 GetMouseClickes_ctx(TickContext* ctx){
 }
 
 
-
-char IsKeyPreased(u32 k){
-	return (glfwGetKey(g_defaultContext.window, k)==GLFW_PRESS);
+/***************** Keyboard inputr *******************/
+char IsKeyPressed(u32 k){
+	return IsKeyPressed_ctx(k, &g_defaultContext);
 }
 
-char IsKeyPreased_ctx(u32 k,TickContext* ctx){
-	return (glfwGetKey(ctx->window, k)==GLFW_PRESS);
+char IsKeyPressed_ctx(u32 k,TickContext* ctx){
+	char ret = (glfwGetKey(ctx->window, k)==GLFW_PRESS);
+
+	if(ret){
+		ctx->lastKeyPress=k;
+	}
+	return ret;
 }
+
+
+u32 GetLastKey_ctx(TickContext* ctx){
+	if(g_pressed_window == (size_t)ctx->window){
+		return g_pressedkey;
+	}
+	return 0;
+}
+u32 GetLastKey(){
+	return GetLastKey_ctx(&g_defaultContext);
+}
+
+
+
+char GetKeyPressed(u32 k){
+	GetKeyPressed_ctx(k,&g_defaultContext);	
+
+	return 0;
+}
+
+char GetKeyPressed_ctx(u32 k,TickContext* ctx)//is it ugly?will...
+{
+	if(glfwGetKey(ctx->window, k) == GLFW_RELEASE){
+		return 0;
+	}
+
+	char ret = 0;
+	
+	
+	if(k!=ctx->lastKeyPress){
+		ctx->lastKeyPress=k;
+		ctx->lastKeyPressTime=glfwGetTime();
+		ret=true;
+	}else {
+		double delta = glfwGetTime()-ctx->lastKeyPressTime;
+		ret=false;
+		if(delta>0.5 ){
+			ret=true;
+			ctx->lastKeyPressTime+=delta-0.45;
+		}
+	}
+	return ret;
+}
+
+
+
+
+
+
+void keyboardPressReqaust(GLFWwindow* window, unsigned int codepoint)
+{
+	g_pressedkey=codepoint;
+	g_pressed_window=(size_t)window;
+}
+
+
 
 /************** Scale***************/
 
@@ -205,21 +276,6 @@ void SetScale_ctx(TickContext* ctx, float scale){
 	ctx->scaleX=scale;
 	ctx->scaleY=scale;
 }
-u32 GetLastKey_ctx(TickContext* ctx){
-	/*
-	if(glfwGetTime()-ctx->lastKeyPressTime <= 1/60.0){
-		return ctx->lastkey;
-	}
-	printf("def key t : %f\n",glfwGetTime()- ctx->lastKeyPressTime);
-	if((glfwGetTime()-ctx->lastKeyPressTime)>0.5 && !(((u32)((glfwGetTime()-ctx->lastKeyPressTime)*1000.0) )%3)){//reapet evry 300 ms
-		return ctx->lastkey;
-	}*/
-	return ctx->key;
-}
-u32 GetLastKey(){
-	return GetLastKey_ctx(&g_defaultContext);
-}
-
 /******************************** Shapes Drawing ***********************************/
 
 
@@ -1067,13 +1123,18 @@ void TickRendre_ctx(TickContext* ctx){
 	
 	context.mousemensions|= (((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !(mousebefaure&1))&1)<<2;
 	
-	u32 lastKeyPress=context.presskey;
-	context.presskey=0;
-	
 	if(context.mousemensions&1){
 		
 		context.lastClick=glfwGetTime();
 	}
+	
+	if(!glfwGetKey(context.window, context.lastKeyPress)){
+		context.lastKeyPress=0; //if it is not presed; why wild we repret it?
+	}
+
+	/*
+	u32 lastKeyPress=context.presskey;
+	context.presskey=0;
 	
 
 	for(int i = 0 ; i < 256 ; i++){
@@ -1086,12 +1147,14 @@ void TickRendre_ctx(TickContext* ctx){
 	}else {
 		context.key=0;
 		double delta = glfwGetTime()-context.lastKeyPressTime;
-		if(delta>0.5 /*&& !(((u32)(delta*10.0))%2)*/){
+		if(delta>0.5 /*&& !(((u32)(delta*10.0))%2)*){
 			context.key=context.presskey;
 			context.lastKeyPressTime+=0.02;
 		}
+	}*/
+	if((size_t)context.window==g_pressed_window){
+		g_pressedkey=0;
 	}
-	
 	
 
 	return;
@@ -1105,6 +1168,7 @@ void TickNewFrame_ctx(TickContext* context){
 	
 	context->Z=TICK_TOP_Z;
 	context->selectCount=0;
+	
 	return;
 }
 
@@ -1123,4 +1187,12 @@ void TickClose(){
 void TickClose_ctx(TickContext* context){
 	DeletRendrer(&context->Shape2D);
 	DeletRendrer(&context->ShapeCir2D);
+	for(int i =  0 ; i  < context->samplerCount ; i++){
+		DeletRendrer(&context->samplers[i].rendrer);
+		for(int ii = 0 ; ii < context->maxTexturesSlotsSepurted ; ii++){
+			if(context->samplers[i].texture[ii]){
+				DeletTexture(&context->samplers[i].texture[ii]);
+			}
+		}
+	}
 }

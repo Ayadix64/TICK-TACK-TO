@@ -80,7 +80,7 @@ int main(){
     while(!glfwWindowShouldClose(window) ){
         DrawText("the fast quick fox jump over the lazy slow dog", 300, 200);
         ReloadTexture(&animatedTextutr, image,300 , 250, 4);
-        char butnflags = DrawButton("Butto\nn", x, y);
+        char butnflags = DrawButton("Butto\nn", x, y,0,0);
         if(butnflags&1){
             printf("CLICKED!\n");
             fflush(stdout);
@@ -90,10 +90,7 @@ int main(){
         DrawRoundedRectangel(x+50, y+50, 100, 100, 30, 90, {0,0,255,255});
         DrawText("BOOM JUMP SCARE", x+70, y+70);
         DrawTextSegment("It wase trome outside, no budy can see the past or the feture ,"
-                        "\n bla bla too mush of a talk\nwho want 3.14 part of a tomato?", 100, 50, 20, 10, 400, 100);	
-
-
- 
+                        "\n bla bla too mush of a talk\nwho want 3.14 part of a tomato?", 100, 50, 20, 10, 400, 100);	 
 
         TickRendre();
 		glfwSwapBuffers(window);
@@ -111,9 +108,10 @@ This Library dosnt want to do any thing fancy
 it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a thing that i persounly wanted from a UI library
 
 This Library gives the issuntiol to build ,with the maximum effert to make never toch opengl and any rendrer  , impliminting that with a good prouformance Batch rendrer.
-## Known Bugs
+## Known Bugs & some isuus
 - transparncy dosnt work will
-
+- keyboard input not working that will
+- utf-8 is not sepurted (but is going to be at some point)
 ## AI Policy
 TLDR:NO.
 

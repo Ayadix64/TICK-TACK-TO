@@ -172,12 +172,12 @@ char ButtonExtended_ctx  (const char* text,int x , int y , int w , int h ,Vec4c 
 		DrawRoundedRectangel_ctx(x, y, w , h, 10, 90, hbg,ctx);
 		preased|=2;
 	}
- 	else if(Clicked_ctx(x, y, w, h,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+ 	else if(Clicked_ctx(x, y, w, h,ctx) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=2;
 		
 	}
-	if(ClickedAndReleased_ctx( x, y, w, h,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+	if(ClickedAndReleased_ctx( x, y, w, h,ctx) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=1;
 	}
@@ -277,11 +277,11 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, hbg,ctx);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+	else if(Clicked(x, y, w, h+30) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);	
 		preased|=2;
 	}
-	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPreased(GLFW_KEY_ENTER))){
+	if(ClickedAndReleased( x, y, w+30, h+30) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);
 		preased|=1;
 	}
@@ -320,19 +320,21 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 	}else {
 		//TODO
 	}
+	
+	u32 keypreased = GetLastKey_ctx(ctx);
 
-	if((ctx->key>=32 || ctx->key=='\t') && tbd->size < tbd->maxsize && slected){
+	if((keypreased>=32 || keypreased=='\t') && tbd->size < tbd->maxsize && slected){
 		size_t sz=tbd->size,usz=tbd->usedsize;
-		tbd->data=(char*)PushChar(ctx->key, tbd->pos, &sz, (size_t*)&usz, tbd->data);
+		tbd->data=(char*)PushChar(keypreased, tbd->pos, &sz, (size_t*)&usz, tbd->data);
 		tbd->size=sz;
 		tbd->usedsize=usz;
 		tbd->pos++;
 		u32 cw;
-		GetFontCharDemensions(ctx->key,font, &cw, 0);
+		GetFontCharDemensions(keypreased,font, &cw, 0);
 		if(curserpos+cw+30> w){
 			tbd->xoffset+=cw+xpadd;
 		}
-	}else if(IsKeyPreased_ctx(GLFW_KEY_BACKSPACE,ctx) && tbd->pos&& slected){
+	}else if(GetKeyPressed_ctx(GLFW_KEY_BACKSPACE,ctx) && tbd->pos&& slected){
 		tbd->pos--;
 		u32 cw;
 		GetFontCharDemensions(tbd->data[tbd->pos],font, &cw, 0);
@@ -344,7 +346,7 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		size_t usz=tbd->usedsize;
 		PopChar(tbd->pos, &usz, tbd->data);
 		tbd->usedsize=usz;
-	}else if(IsKeyPreased(GLFW_KEY_LEFT) && tbd->pos && slected){
+	}else if(GetKeyPressed_ctx(GLFW_KEY_LEFT,ctx) && tbd->pos && slected){
 		
 		tbd->pos--;
 		u32 cw;
@@ -356,7 +358,7 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		}
 
 		
-	}else if(IsKeyPreased(GLFW_KEY_RIGHT) && tbd->pos < tbd->usedsize && slected){
+	}else if(GetKeyPressed_ctx(GLFW_KEY_RIGHT,ctx) && tbd->pos < tbd->usedsize && slected){
 		u32 cw;
 		GetCharDemensions(tbd->data[tbd->pos], &cw, 0);
 		
@@ -454,12 +456,12 @@ void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec
 		DrawRoundedRectangel_ctx(x, y, th , th, 5, 90, hbg,ctx);
 		preased|=2;
 	}
-	else if(Clicked_ctx(x, y, th, th,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+	else if(Clicked_ctx(x, y, th, th,ctx)){
 		DrawRoundedRectangel_ctx(x, y, th ,th, 5, 90, sbg,ctx);
 		preased|=2;
 		
 	}
-	if(ClickedAndReleased_ctx( x, y, th, th,ctx) || (slected && IsKeyPreased_ctx(GLFW_KEY_ENTER,ctx))){
+	if(ClickedAndReleased_ctx( x, y, th, th,ctx) || (slected && GetKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, th ,th, 5, 90, sbg,ctx);
 		preased|=1;
 	}
