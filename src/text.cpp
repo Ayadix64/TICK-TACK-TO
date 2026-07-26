@@ -238,7 +238,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	int w =0, h=0 , y0=0,x0=0;
 
 
-	for(int i = 0 ; i < ENDPOINTS_SEPURTED - 32 && i < font.numGlyphs ; i++){
+	for(int i = 0 ;/* i < ENDPOINTS_SEPURTED - 32 &&*/ i < font.numGlyphs ; i++){
 		if(!i){
 			u32 advance,lsb;
 			stbtt_GetCodepointHMetrics(&font,i+32,(int*)&advance,(int*)&lsb);
@@ -278,7 +278,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	xoffset=yoffset=0;
 	u32 * texture = (u32*)malloc(texturewidth*textureheigth*sizeof(u32));
 	
-	for(int i = 1 ; i < ENDPOINTS_SEPURTED-32 && i < font.numGlyphs ; i++){
+	for(int i = 1 ;/* i < ENDPOINTS_SEPURTED-32 &&*/ i < font.numGlyphs ; i++){
 		int w , h;
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
 

@@ -1,5 +1,5 @@
 ## TODO List
-- extended font and implement UTF-8
-- Fix transparent Z-buffer
-- extende shapes
-- ui implemt
+- extended font and implement UTF-8 -TODO
+- Fix transparent Z-buffer -TODO
+- extende shapes --done
+- ui implemt -- done

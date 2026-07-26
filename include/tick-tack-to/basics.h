@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <ctime>
 
+
+
 #define TICK_TOP_Z 0.0f  //the top z level
 #define TICK_BUTTOM_Z -1.0f //the buttom z level
 //for some reasen, opengl can display negative z cordnat as long as they are greater than -1.0, i will not ask why.

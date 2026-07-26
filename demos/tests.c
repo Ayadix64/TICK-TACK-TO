@@ -14,13 +14,9 @@
 #include <cmath>
 #include <cstdlib>
 #include "include/tick-tack-to.h"
-#include "externel/imgui/imgui.h"
-#include "externel/imgui/imgui_impl_glfw.h"
-#include "externel/imgui/imgui_impl_opengl3.h"
 #include "include/tick-tack-to/basics.h"
 #include "include/tick-tack-to/text.h"
 #include "include/tick-tack-to/ui.h"
-#include "utils.hpp"
 #include <unistd.h>
 
 
@@ -32,21 +28,7 @@ void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double th
 void Rotate(float& x,float& y,double xx,float yy,float theta);
 void Rotate(float& x,float& y,float&z,float xx,float yy,float zz,float theta,float theta2);
 
-/*
-void GlewInit(){
-	const char* runOnWayland = getenv("WAYLAND_DISPLAY");	
-	
-	GLenum glewVal = glewInit();
-	if(glewVal!=GLEW_OK){
-		if(!(glewVal == GLEW_ERROR_NO_GLX_DISPLAY && runOnWayland)){ // a linux guy was her
-			//Eloge("GLEW not init");
-			std::cout << glewGetErrorString(glewVal)<<"\n";
-			quick_exit(0x1);
 
-		}
-	}
-	return;
-}*/
 void GoodOldTesting(){
 	u32 cl = 0xff0000ff;
 	float veteces[]{
@@ -124,40 +106,13 @@ MessageCallback( GLenum source,
 }
 
 
-bool DrawButton(const char* str , float x , float y,GLFWwindow* window){
-	u32 w , h;
-	GetTextDemensions(str, &w, &h);
-	//w+=10;
-	//h+=10;
-	double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-	bool clicked = false;
-
-	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS && (xpos >= x && xpos<=x+w && 
-	   ypos>= y && ypos <= y+h) ){
-		clicked=true;
-		printf("CLCD\n");
-	}
-	if(xpos >= x && xpos<=x+w && 
-	   ypos>= y && ypos <= y+h&& !clicked){
-		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {000,000,200,255});
-	}else if(xpos >= x && xpos<=x+w && 
-		ypos>= y && ypos <= y+h&& clicked){
-		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {50,50,250,255});
-	}else {
-		DrawRoundedRectangel(x-10, y-10, w+20, h+20,10,90, {0,0,100,255});
-	}
-	DrawText(str, x, y);
-	return clicked;
-}
-
-
 int main()<%
 	/****************************Init*************************/
 	if(!glfwInit()){
 		//Eloge("GLFW not init");
 		return 1;
 	}
+	
 	TickInitWindowFlags();
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
 	glfwMakeContextCurrent(window);
@@ -168,7 +123,6 @@ int main()<%
 
 	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
 	
-	ImGuiIO& io=*ImGuiInit(window);
 	
 	TickInit(window);
 	//glfwSwapInterval(0);
@@ -274,6 +228,8 @@ int main()<%
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.5)*80.0, 400+sin(counter+3.14*1.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
+		
+
 		TextBox( 20, 20,200,0, &tbd);
 
 
@@ -295,7 +251,6 @@ int main()<%
 		counter+=2.0f*slid+(sin(counter))*0.1;
 
 	}
-	ImGuiStop();
 	
 	glfwTerminate();
 %>

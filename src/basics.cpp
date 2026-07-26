@@ -3,7 +3,7 @@
 #include "shaders.h"
 #include "render.h"
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <cassert>
 #include <cmath>
@@ -17,8 +17,8 @@
 #include <strings.h>
 
 #include "externel/stb_image.h"
-#include "../include/tick-tack-to/basics.h"
 
+#include "../include/tick-tack-to.h"
 #define debugy(x) std::cout<<#x<<" : " << x<<"\n" ;
 
 
@@ -1132,26 +1132,6 @@ void TickRendre_ctx(TickContext* ctx){
 		context.lastKeyPress=0; //if it is not presed; why wild we repret it?
 	}
 
-	/*
-	u32 lastKeyPress=context.presskey;
-	context.presskey=0;
-	
-
-	for(int i = 0 ; i < 256 ; i++){
-		context.presskey=glfwGetKey(context.window, i)?i:0;
-		if(context.presskey)break;
-	}
-	if(context.presskey!=lastKeyPress){
-		context.lastKeyPressTime=glfwGetTime();
-		context.key=context.presskey ;
-	}else {
-		context.key=0;
-		double delta = glfwGetTime()-context.lastKeyPressTime;
-		if(delta>0.5 /*&& !(((u32)(delta*10.0))%2)*){
-			context.key=context.presskey;
-			context.lastKeyPressTime+=0.02;
-		}
-	}*/
 	if((size_t)context.window==g_pressed_window){
 		g_pressedkey=0;
 	}

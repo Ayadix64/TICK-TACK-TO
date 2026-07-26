@@ -1,6 +1,5 @@
-#include "core.h"
-
 #include "utils.h"
+#include "core.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
