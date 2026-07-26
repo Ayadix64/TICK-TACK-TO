@@ -1,7 +1,6 @@
 #ifndef TICK_CORE
 #define TICK_CORE
 #include "utils.h"
-#include <cassert>
 
 unsigned int CreatShader(const char* vert, const char* frag);
 unsigned int CompileShader(unsigned int type , const char* src);

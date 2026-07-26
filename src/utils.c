@@ -1,9 +1,8 @@
 #include "utils.h"
-#include <cstdarg>
-#include <cstddef>
-#include <cstdio>
+#include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
-void loge(std::string lg , std::string ms ){
+/*void loge(std::string lg , std::string ms ){
 	std::cout << "[" << lg << "] " << ms << ".\n";
 	return;
 }
@@ -31,7 +30,36 @@ void readFile(std::string path, std::string& data){
 		
 	return;
 }
+*/
 
+void loge (const char* lg ,const char* ms ,...)
+{
+	printf("[%s] ",lg);
+	va_list args;
+	va_start(args, ms);
+	vprintf(ms, args);
+	va_end(args);
+	printf(".\n");
+
+}
+void Eloge(const char* ms , ...)
+{
+	fprintf(stderr,"[ERORR] ");
+	va_list args;
+	va_start(args, ms);
+	vfprintf(stderr,ms, args);
+	va_end(args);
+	fprintf(stderr,".\n");
+}
+void Wloge(const char* ms , ...){
+	fprintf(stderr,"[WARNING] ");
+	va_list args;
+	va_start(args, ms);
+	vfprintf(stderr,ms, args);
+	va_end(args);
+	fprintf(stderr,".\n");
+
+}
 
 unsigned long GetFileSize(FILE* fl){
 	if(fl==NULL){

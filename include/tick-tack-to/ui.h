@@ -3,11 +3,16 @@
 #include "utils.h"
 #include "basics.h"
 #include "text.h"
-#include <ctime>
 
-#define UI_DEFAULT_BACKGROUND_COLOR {0x9,0x16,0x56,0xff} //#091656
-#define UI_DEFAULT_HOUVER_COLOR     {0x12,0x2c,0xaf ,255} //#122caf
-#define UI_DEFAULT_SELECT_COLOR     {0x20,0x41,0xe8,255} //#2041e8
+#define UI_DEFAULT_BACKGROUND_COLOR (Vec4c){0x9,0x16,0x56,0xff} //#091656
+#define UI_DEFAULT_HOUVER_COLOR     (Vec4c){0x12,0x2c,0xaf ,255} //#122caf
+#define UI_DEFAULT_SELECT_COLOR     (Vec4c){0x20,0x41,0xe8,255} //#2041e8
+
+typedef struct {
+	char EnableNumbers:1;
+	char EnbleCharctures:1;
+	char Password:1;
+} TickTextBoxFlags;
 
 typedef struct {
 	u32 size;
@@ -16,12 +21,8 @@ typedef struct {
 	
 	u32 pos;
 	u32 xoffset;
-	struct {
-		char EnableNumbers:1;
-		char EnbleCharctures:1;
-		char Password:1;
-	} flags;
-	
+
+	TickTextBoxFlags flags;
 	char* data;
 }TextBoxData;
 

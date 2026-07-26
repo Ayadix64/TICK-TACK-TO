@@ -1,14 +1,10 @@
 #include "utils.h"
 #include <GLFW/glfw3.h>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 #include "../include/tick-tack-to.h"
-extern "C" TickContext g_defaultContext;
+extern  TickContext g_defaultContext;
 
-extern "C" TickFont g_defaultFont;
+extern  TickFont g_defaultFont;
 #define DEF_XPADD 1
 #define DEF_YPADD 4
 
@@ -19,12 +15,6 @@ Vec4c g_defaultHoverColour;
 u32 g_Roundness=30;
 
 
-
-enum TickEventSource{
-	BUTTON,
-	TEXTBOX,
-	CHECKBOX,
-};
 
 
 
@@ -145,7 +135,7 @@ char ButtonFont_ctx      (const char* text,int x , int y ,int w , int h ,TickFon
 } 
 char ButtonExtended      (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd ,u32 ypadd)
 {
-	ButtonExtended_ctx  (text,x , y , w , h ,dbg, hbg, sbg, font , xpadd, ypadd,&g_defaultContext);
+	return ButtonExtended_ctx  (text,x , y , w , h ,dbg, hbg, sbg, font , xpadd, ypadd,&g_defaultContext);
 
 } 
 
@@ -210,7 +200,7 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 	tbd->size=1024;
 	tbd->pos=0;
 	tbd->maxsize=maxsize?maxsize:-1;
-	tbd->flags={.EnableNumbers=1,.EnbleCharctures=1};
+	tbd->flags=(TickTextBoxFlags){.EnableNumbers=1,.EnbleCharctures=1};
 	tbd->xoffset=0;
 	tbd->data=(char*)malloc(tbd->size);
 	tbd->usedsize=0;
@@ -219,12 +209,12 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 
 char TextBox            (int x , int y , int w,int h/*0 or-1 for default*/,   TextBoxData* tbd)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
 			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
 }
 char TextBox_ctx        (int x , int y , int w , int h/*0 or-1 for default*/, TextBoxData* tbd,TickContext*ctx)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
 			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
 }
@@ -242,12 +232,12 @@ char TextBoxColour_ctx  (int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 }
 char TextBoxFont        (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
 			font, xpadd, ypadd, &g_defaultContext);
 
 }
 char TextBoxFont_ctx    (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd, TickContext*ctx){
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, {255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
 			font, xpadd, ypadd, ctx);
 
 }
@@ -523,7 +513,7 @@ char SliderColour_ctx(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Ve
 	if(slected){highlited=true;};
 	
 	float _s = *s>=0.0f?*s<=1.0f?*s:1.0f:0.0f;//very indrstundabel , cheks if 0.0 <= *s <= 1.0, if it isnt, set to eather 1.0 or 0.0
-	DrawRoundedRectangel_ctx(x+10, y+2, w-20, 6, 3, 30, {50,50,60,255},ctx); //the slider
+	DrawRoundedRectangel_ctx(x+10, y+2, w-20, 6, 3, 30, (Vec4c){50,50,60,255},ctx); //the slider
 	if(slected){
 		DrawEmptyCircle_ctx(x+_s*(w-20)+10, y+5, 10,1, 30,  hbg,ctx);
 	}

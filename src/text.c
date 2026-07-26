@@ -1,19 +1,18 @@
 #include "utils.h"
 #include "../include/tick-tack-to.h"
 #include "render.h"
-#include <algorithm>
-#include <atomic>
 #define STB_TRUETYPE_IMPLEMENTATION  
 #include "externel/stb_truetype.h"
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#define ENDPOINTS_SEPURTED 5000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
+#include <stdatomic.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+//#define ENDPOINTS_SEPURTED 5000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 #define DEFAULTXPADD (u32)1
 #define DEFAULTYPADD (u32)3
-extern "C" TickContext g_defaultContext;
-std::atomic_uint g_tabSpaces = 5;
+extern TickContext g_defaultContext;
+atomic_uint g_tabSpaces = 5;
 
 unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
@@ -115,7 +114,8 @@ unsigned char defultFontBM[95][13] = {//thanks random persone on stackoverflow
 
 
 TickFont g_defaultFont;
-std::atomic_bool g_defaultFontSetToDefault;
+atomic_bool g_defaultFontSetToDefault;
+
 void initDefautlFont();
 void FontsInit(){
 	initDefautlFont();
@@ -214,7 +214,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
 	
 
-	ret.CharcturesArray = (typeof ret.CharcturesArray)malloc(((ENDPOINTS_SEPURTED-32))*sizeof(typeof(ret.CharcturesArray[0])));
+	ret.CharcturesArray = (typeof(ret.CharcturesArray))malloc(((font.numGlyphs-32))*sizeof(typeof(ret.CharcturesArray[0]))); //if somthing break, this may be it
 	
 	ret.size=scale;
 	ret.scalex=1.0f;
@@ -236,7 +236,6 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , Vec4c cl,TickContext* 
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0 ,yoffset=0;
 	int w =0, h=0 , y0=0,x0=0;
-
 
 	for(int i = 0 ;/* i < ENDPOINTS_SEPURTED - 32 &&*/ i < font.numGlyphs ; i++){
 		if(!i){

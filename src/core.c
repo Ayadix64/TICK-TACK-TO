@@ -1,10 +1,8 @@
 #include "utils.h"
 #include "core.h"
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "externel/stb_image.h"
 
@@ -216,7 +214,7 @@ void SetTexturDataFromeFile(const char* fileName){
 	int w,h,bpp;
 	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
 	if(!pb){
-		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		Eloge("Cant Load %s , %s" ,fileName , stbi_failure_reason());
 		return;
 	}	
 

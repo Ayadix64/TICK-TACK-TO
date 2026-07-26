@@ -2,7 +2,7 @@
 #include "core.h"
 #include "externel/stb_image.h"
 #include "../include/tick-tack-to/basics.h"
-#include <cstdio>
+#include <stdio.h>
 
 
 
@@ -157,7 +157,7 @@ void Render(TickRendrerStruct* rendrer){
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
 	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, NULL));
 }
 
 
@@ -173,7 +173,7 @@ void RenderExtended(TickRendrerStruct* rendrer){
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,rendrer->VertexBuffer));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,rendrer->IndexBuffer));
 	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, rendrer->indexbatchPtr, GL_UNSIGNED_INT, NULL));
 }
 
 
@@ -201,7 +201,7 @@ void RenderTexture(TickTextureRendrerStruct*texture){
 	CHECK_GL_ERORR(glBindBuffer(GL_ARRAY_BUFFER,texture->rendrer.VertexBuffer));
 	CHECK_GL_ERORR(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,texture->rendrer.IndexBuffer));
 	
-	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, texture->rendrer.indexbatchPtr, GL_UNSIGNED_INT, nullptr));
+	CHECK_GL_ERORR(glDrawElements(GL_TRIANGLES, texture->rendrer.indexbatchPtr, GL_UNSIGNED_INT, NULL));
 }
 
 
