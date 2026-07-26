@@ -1,42 +1,26 @@
-#include <cstddef>
-#include <cstdio>
-#include <ctime>
-#include <iostream>
+#include <stdio.h>
 
 
 #ifndef GLAD_GL_IMPLEMENTATION 
-	#include "src/externel/glad.h"
+	#include "../deps/glad/glad.h"
 	#define GLAD_GL_IMPLEMENTATION
 #endif
 
+#include "../include/tick-tack-to.h"
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
-#include <cmath>
-#include <cstdlib>
-#include "include/tick-tack-to.h"
-#include "include/tick-tack-to/basics.h"
-#include "include/tick-tack-to/text.h"
-#include "include/tick-tack-to/ui.h"
 #include <unistd.h>
-
-
-
-
-void Rotate(double& x,double& y,double xx,double yy,double theta);
-void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta,double theta2);
-
-void Rotate(float& x,float& y,double xx,float yy,float theta);
-void Rotate(float& x,float& y,float&z,float xx,float yy,float zz,float theta,float theta2);
-
+#include <stdbool.h>
+#include <math.h>
 
 void GoodOldTesting(){
 	u32 cl = 0xff0000ff;
-	float veteces[]{
+	float veteces[]={
 		0.0,100.0,*(float*)&cl,
 		100.0,0.0,*(float*)&cl,
 		100.0,100.0,*(float*)&cl
 	};
-	u32 indeces[]{0,1,2};
+	u32 indeces[]={0,1,2};
 	u32 vao;
 	glGenVertexArrays(1,&vao);
 	glBindVertexArray(vao);
@@ -61,12 +45,12 @@ void GoodOldTesting(){
 }
 void GoodOldTesting2(float z){
 	u32 cl = 0xffff00ff;
-	float veteces[]{
+	float veteces[]={
 		0.0,100.0,z,*(float*)&cl,
 		100.0,0.0,z,*(float*)&cl,
 		100.0,100.0,z,*(float*)&cl
 	};
-	u32 indeces[]{0,1,2};
+	u32 indeces[]={0,1,2};
 	u32 vao;
 	glGenVertexArrays(1,&vao);
 	glBindVertexArray(vao);
@@ -105,6 +89,10 @@ MessageCallback( GLenum source,
             type, severity, message );
 }
 
+int abs(int val){
+	return val & ~(1<<32);
+}
+
 
 int main()<%
 	/****************************Init*************************/
@@ -121,7 +109,7 @@ int main()<%
 	//glEnable              ( GL_DEBUG_OUTPUT );
 	//glDebugMessageCallback( MessageCallback, 0 );
 
-	std::cout<<"\nOpenGL Version : " << glGetString(GL_VERSION)<<"\n";
+	printf("\nOpenGL Version : %s\n" ,glGetString(GL_VERSION));
 	
 	
 	TickInit(window);
@@ -143,7 +131,7 @@ int main()<%
 	float x=20.0,y=400.0,z=1000.0f , r=2.0f, r2=0.0f;
 	float segments = 100.0;
 	float scale = 1.0f;
-	u32 image[320*255]{0xffffffff};
+	u32 image[320*255]={0xffffffff};
 	
 	for(int i = 0 ; i < 255 ; i++ ){
 			for(int ii = 0 ; ii < 320 ; ii++){
@@ -154,7 +142,7 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf",20 , {255,255,255,255});
+	TickFont fira = LoadFont("FiraCode.ttf",20 , (Vec4c){255,255,255,255});
 	
 	u8 animation=0;
 	int adder=1;
@@ -204,11 +192,11 @@ int main()<%
 		
 
 		DrawTexture(animatedTextutr, 0,0, 200, 200);
-		DrawLine({0.0f,0.0f}, {200.0f,200.0f}, 20.0,{0,0,255,255});
+		DrawLine((Vec2f){0.0f,0.0f}, (Vec2f){200.0f,200.0f}, 20.0,(Vec4c){0,0,255,255});
 		
-		DrawCircle(200.0f, 200.0f, 10, 20, {0,0,255,255});
+		DrawCircle(200.0f, 200.0f, 10, 20, (Vec4c){0,0,255,255});
 		
-		DrawLine({200.0f,200.0f}, {x,y}, 20.0,{255,255,255,20});
+		DrawLine((Vec2f){200.0f,200.0f}, (Vec2f){x,y}, 20.0,(Vec4c){255,255,255,20});
 		
 		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200);
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
@@ -224,10 +212,10 @@ int main()<%
 		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
 		DrawText(FPS, 0, 0);
-		DrawEmptyRoundedRectangel(300+cos(counter)*80.0, 400+sin(counter)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
-		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
-		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
-		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.5)*80.0, 400+sin(counter+3.14*1.5)*40.0, 60, 60, 30, 20, 90, {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter)*80.0, 400+sin(counter)*40.0, 60, 60, 30, 20, 90, (Vec4c){255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
+		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.5)*80.0, 400+sin(counter+3.14*1.5)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
 		
 
 		TextBox( 20, 20,200,0, &tbd);
@@ -257,41 +245,3 @@ int main()<%
 
 
 
-
-void Rotate(double& x,double& y,double xx,double yy,double theta){
-	double raduis=(theta*3.14159)/(180.0);
-	double X = x-xx;
-	double Y = y-yy;
-	x=xx+X*cos(raduis)-Y*sin(raduis);
-	y=yy+X*sin(raduis)+Y*cos(raduis);
-	return ;
-}
-
-
-
-void Rotate(double& x,double& y,double&z,double xx,double yy,double zz,double theta , double theta2){
-	Rotate(x,y,xx,yy,theta);
-	Rotate(z,y,zz,yy,theta2);
-}
-
-
-
-
-
-
-void Rotate(float& x,float& y,float xx,float yy,float theta){
-	float raduis=(theta*3.14159)/(180.0);
-	float X = x-xx;
-	float Y = y-yy;
-	x=xx+X*cos(raduis)-Y*sin(raduis);
-	y=yy+X*sin(raduis)+Y*cos(raduis);
-	return ;
-}
-
-
-
-void Rotate(float& x,float& y,float&z,float xx,float yy,float zz,float theta , float theta2){
-	Rotate(x,z,xx,zz,theta);
-	
-	Rotate(z,y,zz,yy,theta2);
-}

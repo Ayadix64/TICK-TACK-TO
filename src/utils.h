@@ -9,13 +9,20 @@
 
 
 
-#include <complex>
-#include <cstdlib>
-#include <deque>
-#include <iostream>
-#include <fstream>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+//#include <deque>
+//#include <iostream>
+//#include <fstream>
 #include <GLFW/glfw3.h>
-
+#ifndef __cplusplus
+#if __STDC_VERSION__ <= 201710L
+	typedef char bool;
+	#define false 0
+	#define true  1
+#endif
+#endif
 //#define DEBUG_MODE //debug mode, note that is a memory consuming
 
 typedef unsigned char  u8 ;
@@ -67,10 +74,16 @@ typedef struct {float x , y; u32 c;} VertexShape;
 #endif
 
 
-void loge(std::string lg , std::string ms = "");
-void Eloge(std::string ms);
-void Wloge(std::string ms);
-void readFile(std::string path, std::string& data);
+//void loge(std::string lg , std::string ms = "");
+//void Eloge(std::string ms);
+//void Wloge(std::string ms);
+//void readFile(std::string path, std::string& data);
+
+void loge (const char* lg ,const char* ms ,...);
+void Eloge(const char* ms , ...);
+void Wloge(const char* ms , ...);
+
+
 void* readFile(const char* fileName , unsigned long * sizeOUT);
 void tRotate(float* x,float* y,float xx,float yy,float theta);
 
@@ -78,7 +91,7 @@ char ReadBitmap(void* bm,u32 num);
 void SetBitmap(void* bm,u32 num, char val);
 
 u32 GetUnicode8Size(char* text,u32 size);//retutns the number of utf-8 charctures in the string (ASCII + utf8)
-u32 GetUnicode8(char* text, u32 number);//not safe! it dosnt try to be safe!
+u32 GetUnicode8(char* text, u32 number, char val);//not safe! it dosnt try to be safe!
 
 size_t minarg(u32 count ,...);
 u64 max(u64 v1 , u64 v2);

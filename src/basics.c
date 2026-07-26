@@ -5,27 +5,20 @@
 
 //#include <GL/gl.h>
 #include <GLFW/glfw3.h>
-#include <cassert>
-#include <cmath>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <atomic>
-#include <ctime>
-#include <string>
-#include <strings.h>
+#include <stdatomic.h>
+#include <string.h>
 
 #include "externel/stb_image.h"
 
 #include "../include/tick-tack-to.h"
-#define debugy(x) std::cout<<#x<<" : " << x<<"\n" ;
+#define debugy(x) printf("%d\n",x);
 
 
 typedef struct {float x,y;u32 c;} Vertex;
 
 #define VERTFG_TRINGELS 0
 #define VERTFG_CERCULS  1
+
 
 
 typedef struct {
@@ -37,12 +30,11 @@ typedef struct {
 
 TickContext g_defaultContext;
 
-std::atomic<bool> g_LibraryHaveBeenInit=false;
-std::atomic_uint  g_doubleClickeDelaye=300;//in ms
+atomic_bool g_LibraryHaveBeenInit=false;
+atomic_uint  g_doubleClickeDelaye=300;//in ms
 
-std::atomic_uint   g_pressedkey=0;//the last key been preased;
-std::atomic_size_t g_pressed_window=0; //This is a pointer , a GLFWwindow* , for the window tha been preased by the last key 
-
+atomic_uint   g_pressedkey=0;//the last key been preased;
+atomic_size_t g_pressed_window=0; //This is a pointer , a GLFWwindow* , for the window tha been preased by the last key 
 
 
 void initDefautlFont();
@@ -70,8 +62,7 @@ TickContext TickInit(GLFWwindow* window){
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (int*)&context.maxTexturesSlotsSepurted);//geting the maximum texture slots per texture
 	if(context.maxTexturesSlotsSepurted > TICK_MAX_TEXTURE_SLOTS_SEPURTED){ 
 		context.maxTexturesSlotsSepurted=TICK_MAX_TEXTURE_SLOTS_SEPURTED;
-		Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use "
-			       +std::to_string(TICK_MAX_TEXTURE_SLOTS_SEPURTED)+" slots");
+		Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use %d slots",TICK_MAX_TEXTURE_SLOTS_SEPURTED);
 	}
 
 	debugy(context.maxTexturesSlotsSepurted);
@@ -306,7 +297,7 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl)// v1__
 		
 }
 void DrawRectangel(float x, float y , float w , float h,Vec4c cl){
-	DrawQuadrilateral({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl);
+	DrawQuadrilateral((Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h},  cl);
 	return;
 }
 
@@ -319,8 +310,8 @@ void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl){
 
 
 
-void Draw2DVerteces(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl){
-	Draw2DVerteces_ctx(verteces,Vertecount,indeces,Indexcont,cl,&g_defaultContext);
+void Draw2DVertecesExt(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl){
+	Draw2DVertecesExt_ctx(verteces,Vertecount,indeces,Indexcont,cl,&g_defaultContext);
 	return;
 }
 
@@ -377,15 +368,15 @@ void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl, TickContext* ctx)
 {
 	
 	ctx->Z-=TICK_Z_OFSSET;
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;
-	float verteces[]{
+	float verteces[]={
 		v1.x,v1.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v2.x,v2.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v3.x,v3.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0
 	};
-	u32 indece[3]{0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
+	u32 indece[3]={0,(u32)1,(u32)2};//i know, this is reducled, but i am too lazy to think about a new way to do it with out a index count
 
 	//u32 verty , indexy;
 	//g_2DShapesBatchRen	derer->Push(verteces,9,indece,3);
@@ -402,16 +393,16 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 	if(v1.y == v2.y && v1.x == v2.x){
 		return;//wont draw any way lol
 	}else if(v1.y==v2.y){
-		DrawQuadrilateral_ctx({v1.x,v1.y-offsetFromeTheSenter}, {v2.x,v2.y-offsetFromeTheSenter}, {v1.x,v1.y+offsetFromeTheSenter} , {v2.x,v2.y+offsetFromeTheSenter},  cl,ctx);
+		DrawQuadrilateral_ctx((Vec2f){v1.x,v1.y-offsetFromeTheSenter}, (Vec2f){v2.x,v2.y-offsetFromeTheSenter}, (Vec2f){v1.x,v1.y+offsetFromeTheSenter} , (Vec2f){v2.x,v2.y+offsetFromeTheSenter},  cl,ctx);
 	}else if(v1.x==v2.x){
-		DrawQuadrilateral_ctx({v1.x-offsetFromeTheSenter,v1.y}, {v2.x-offsetFromeTheSenter,v2.y}, {v1.x+offsetFromeTheSenter,v1.y} , {v2.x+offsetFromeTheSenter,v2.y},  cl,ctx);
+		DrawQuadrilateral_ctx((Vec2f){v1.x-offsetFromeTheSenter,v1.y}, (Vec2f){v2.x-offsetFromeTheSenter,v2.y}, (Vec2f){v1.x+offsetFromeTheSenter,v1.y} , (Vec2f){v2.x+offsetFromeTheSenter,v2.y},  cl,ctx);
 	}//we wont lose profourmence becuse the user want a renamed rectangel are we?
 	else {
 		float a = (v1.x-v2.x)/(v2.y-v1.y);//basicly we the  perpendicular line of the line to make a line with in the line
 		
 		float x_ = sqrtf((offsetFromeTheSenter*offsetFromeTheSenter)/(a*a+1.0)) ;//with some maths, and some deep think, l plk sio ak opopjr ,jdn :kdll k [Segmentation Fult (core dump)]
 		float y_ = x_*a ; //the y is bascily f(x);
-		DrawQuadrilateral_ctx({v1.x-x_,v1.y-y_}, {v2.x-x_,v2.y-y_}, {v1.x+x_,v1.y+y_} , {v2.x+x_,v2.y+y_},  cl,ctx);
+		DrawQuadrilateral_ctx((Vec2f){v1.x-x_,v1.y-y_}, (Vec2f){v2.x-x_,v2.y-y_}, (Vec2f){v1.x+x_,v1.y+y_} , (Vec2f){v2.x+x_,v2.y+y_},  cl,ctx);
 	}
 	
 	return;	
@@ -423,15 +414,15 @@ void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* c
 
 void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, TickContext* ctx)
 {
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
-	u32 indeces[6]{
+	u32 indeces[6]={
 		0,1,2,
 		2,3,1
 	};
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
-	float verteces[]{ 
+	float verteces[]={ 
 		v1.x,v1.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v2.x,v2.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v3.x,v3.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
@@ -442,14 +433,14 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 	
 }
 void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx){
-	DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
+	DrawQuadrilateral_ctx((Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h},  cl,ctx);
 	return;
 }
 
 
 
 void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 
@@ -494,8 +485,8 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext*
 
 
 
-void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl,TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
+void Draw2DVertecesExt_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Indexcont, Vec4c cl,TickContext* ctx){
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 
@@ -522,15 +513,15 @@ void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces,u32 Index
 
 
 void DrawCircle_ctx(float x , float y , float r, float segments , Vec4c cl, TickContext* ctx){
-	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
-	float verteces[24]{x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+	float verteces[24]={x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
 		 	   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
 			   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,360.0f/segments};
-	u32 indeces[3]{0,1,2};
+	u32 indeces[3]={0,1,2};
 	BatcheRendrerAdd2DShape(verteces, 24, indeces, 3,8, &ctx->Shape2D);
 	
 	for(int i = 1; i < segments ; i++){
@@ -564,15 +555,15 @@ void DrawCircleSector_ctx(float x , float y , float r, float segmetDegree , floa
  * 	x
  * hope that this is straid forwared*/
 
-	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
-	float verteces[24]{x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+	float verteces[24]={x,y  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
 		 	   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmentsDegreeStart,
 			   x,y-r,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmetDegree/segments+segmentsDegreeStart};
-	u32 indeces[3]{0,1,2};
+	u32 indeces[3]={0,1,2};
 	BatcheRendrerAdd2DShape(verteces, 24, indeces, 3,8, &ctx->Shape2D);
 	
 	for(int i = 1; i < segments ; i++){
@@ -598,14 +589,14 @@ void DrawCircleSector_ctx(float x , float y , float r, float segmetDegree , floa
 
 
 void DrawEmptyCircle_ctx(float x , float y , float r,float thicknis, float segments, Vec4c cl, TickContext* ctx){ //if you have a butter name let me know
-	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
-	float verteces[16]{x,y-r           ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
+	float verteces[16]={x,y-r           ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f,
 		 	   x,y-r+thicknis  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,0.0f};
-	u32 indeces[6]{0,1,2};
+	u32 indeces[6]={0,1,2};
 	BatcheRendrerAdd2DShape(verteces, 16, indeces, 0,8, &ctx->Shape2D);
 	
 	for(int i = 0; i < segments ; i++){
@@ -652,14 +643,14 @@ void DrawEmptyCircle_ctx(float x , float y , float r,float thicknis, float segme
 void DrawEmptyCircleSector_ctx(float x , float y , float r,float thicknis, 
 		float segmetDegree, float segmentsDegreeStart ,float segments , Vec4c cl, TickContext* ctx)
 {
-	VertexFlags flage{.Practicul=VERTFG_CERCULS,.Enbletextures=false};
+	VertexFlags flage={.Practicul=VERTFG_CERCULS,.Enbletextures=false};
 	
 	ctx->Z-=TICK_Z_OFSSET;
 	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
 	
-	float verteces[16]{x,y-r           ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmentsDegreeStart,
+	float verteces[16]={x,y-r           ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmentsDegreeStart,
 		 	   x,y-r+thicknis  ,ctx->Z,*(float*)&c,*(float*)&flage,x,y,segmentsDegreeStart};
-	u32 indeces[6]{0,1,2};
+	u32 indeces[6]={0,1,2};
 	BatcheRendrerAdd2DShape(verteces, 16, indeces, 0,8, &ctx->Shape2D);
 	
 	for(int i = 0; i < segments ; i++){
@@ -707,7 +698,7 @@ void DrawEmptyCircleSector_ctx(float x , float y , float r,float thicknis,
 
 void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , float segments ,Vec4c cl,TickContext* ctx){
 	if(!r){
-		DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
+		DrawQuadrilateral_ctx((Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h},  cl,ctx);
 		return;
 	}
 	DrawRectangel_ctx(x, y+r, r, h-r*2, cl,ctx);
@@ -725,7 +716,7 @@ void DrawRoundedRectangel_ctx(float x, float y , float w , float h,float r , flo
 void DrawEmptyRoundedRectangel_ctx(float x, float y , float w , float h,float r , float thickness, float segments ,Vec4c cl,TickContext* ctx)
 {
 	if(!r){
-		DrawQuadrilateral_ctx({x,y}, {x+w,y}, {x,y+h}, {x+w,y+h},  cl,ctx);
+		DrawQuadrilateral_ctx((Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h},  cl,ctx);
 		return;
 	}
 	
@@ -807,12 +798,12 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
-	u32 indeces[6]{
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	u32 indeces[6]={
 		0,1,2,
 		2,3,1
 	};
-	float verteces[]{ 
+	float verteces[]={ 
 		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,0.0f, 
 		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,1.0f, 
 		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,0.0f,
@@ -827,7 +818,7 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 
 
 void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx){
-	DrawTextureSegmentExtended_ctx(texture, {x,y}, {x+w,y},{x,y+h}, {x+w,y+h}, {xx,yy}, {xx+ww,yy}, {xx,yy+hh}, {xx+ww,yy+hh}, ctx);		
+	DrawTextureSegmentExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y},(Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec2f){xx,yy}, (Vec2f){xx+ww,yy}, (Vec2f){xx,yy+hh}, (Vec2f){xx+ww,yy+hh}, ctx);		
 }
 
 
@@ -845,8 +836,8 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  ,
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	VertexFlags flage{.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
-	u32 indeces[6]{
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	u32 indeces[6]={
 		0,1,2,
 		2,3,1
 	};
@@ -854,7 +845,7 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  ,
 				  {tc2.x/(float)texture.w,tc2.y/(float)texture.h},
 				  {tc3.x/(float)texture.w,tc3.y/(float)texture.h},
 				  {tc4.x/(float)texture.w,tc4.y/(float)texture.h}};
-	float verteces[]{ 
+	float verteces[]={ 
 		v1.x,v1.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
 		v2.x,v2.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
 		v3.x,v3.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
@@ -914,7 +905,7 @@ TickTexture2D LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContex
 		InitlizeRendrer(&ctx->samplers[samplerNumber].rendrer);
 	}
 	
-	ret={.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot,
+	ret=(TickTexture2D){.index=samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot,
 	     .w=(u32)w,.h=(u32)h,.bpp=bpp};
 	return ret;//samplerNumber*ctx->maxTexturesSlotsSepurted + textureSlot;
 }
@@ -924,7 +915,7 @@ TickTexture2D LoadTexture_ctx(void* bitmap,float w, float h, u32 bpp, TickContex
 
 TickTexture2D LoadTextureFromeFile_ctx(const char * fileName, TickContext *ctx){
 	int w,h,bpp;
-	TickTexture2D ret{.index=(u32)-1};
+	TickTexture2D ret={.index=(u32)-1};
 	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
 	if(!pb){
 		//Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
@@ -979,7 +970,7 @@ void ReloadTextureFromeFile_ctx(TickTexture2D* texture, const char* fileName, Ti
 	int w,h,bpp;
 	u8* pb = stbi_load((const char*)fileName, (int*)&w, (int*)&h, (int*)&bpp, (int)4);
 	if(!pb){
-		Eloge("Cant Load "+ std::string(fileName)+" , "+std::string(stbi_failure_reason()));
+		Eloge("Cant Load \"%s\" , %s",fileName,stbi_failure_reason());
 		return;
 	}
 	ReloadTexture_ctx(texture, pb,  w, h, 4, ctx);
@@ -1013,7 +1004,7 @@ void RemoveTexture_ctx(TickTexture2D* texture, TickContext* ctx){
 	if(!notempty){
 		DeletRendrer(&ctx->samplers[sampler].rendrer);
 	}
-	*texture={(u32)-1,(u32)-1,(u32)-1,(u32)-1};
+	*texture=(TickTexture2D){(u32)-1,(u32)-1,(u32)-1,(u32)-1};
 	//we cant reorginaze them becuse we have to reindex all of them, at the same time we cant 
 	//return a texture object becuse we want to use all the avliable slots for max profourmence
 	//it is a traide of betwen gpu profourmence and tiny system memory
@@ -1050,9 +1041,8 @@ void TickNewFrame(){
 
 
 void TickRendre_ctx(TickContext* ctx){
-	TickContext& context = *ctx;
 	if(ctx->Z<=TICK_BUTTOM_Z){
-		Eloge("Z <=  "+std::to_string(TICK_BUTTOM_Z)+" you draw too much and part of that will not been rendred!");
+		Eloge("Z <=  %d you draw too much and part of that will not been rendred!",TICK_BUTTOM_Z);
 	}
 	
 	if(!g_LibraryHaveBeenInit){
@@ -1069,10 +1059,10 @@ void TickRendre_ctx(TickContext* ctx){
 	//if the window changed, update the mvp
 	int real_w=0, real_h=0;
 	glfwGetFramebufferSize(ctx->window, &real_w, &real_h);
-	int window_w= (int)(((float)real_w)/context.scaleX);
-	int window_h= (int)(((float)real_h)/context.scaleY);
+	int window_w= (int)(((float)real_w)/ctx->scaleX);
+	int window_h= (int)(((float)real_h)/ctx->scaleY);
 	static float iw = 0.0;
-	if(window_w!=context.window_w || window_h!=context.window_h){
+	if(window_w!=ctx->window_w || window_h!=ctx->window_h){
 		float proj[4][4] ;
 		memset(&proj[0][0],0,sizeof(proj));
 		proj[0][0] = 2.0f / (float)window_w;
@@ -1083,56 +1073,56 @@ void TickRendre_ctx(TickContext* ctx){
 		proj[3][3] = 1.0f;
 
 		glViewport(0,0,real_w,real_h);
-		glUniformMatrix4fv(context.uniform2DMvp,1,GL_FALSE,&proj[0][0]);
-		context.window_w=window_w;
-		context.window_h=window_h;
+		glUniformMatrix4fv(ctx->uniform2DMvp,1,GL_FALSE,&proj[0][0]);
+		ctx->window_w=window_w;
+		ctx->window_h=window_h;
 	}
-	Render(&context.Shape2D);
-	for(int i = 0 ; i < context.samplerPtr ; i++){
+	Render(&ctx->Shape2D);
+	for(int i = 0 ; i < ctx->samplerPtr ; i++){
 		//printf("\n**************** texture %d ***********************\n",i);
-		RenderTexture(&context.samplers[i]);
+		RenderTexture(&ctx->samplers[i]);
 	}
 	
 	double xmouse,ymouse;
 	
 	glfwGetCursorPos(ctx->window, &xmouse, &ymouse);	
 	
-	context.mousex=xmouse/context.scaleX;
-	context.mousey=ymouse/context.scaleY;
+	ctx->mousex=xmouse/ctx->scaleX;
+	ctx->mousey=ymouse/ctx->scaleY;
 	if(glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE){
-		context.mousemensions&=~1;
+		ctx->mousemensions&=~1;
 	} 
 	
 	if(glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)!=GLFW_RELEASE){
-		context.mousemensions&=~2;
+		ctx->mousemensions&=~2;
 	}
 	
 	
-	char mousebefaure = context.mousemensions;
-	context.mousemensions=0;
+	char mousebefaure = ctx->mousemensions;
+	ctx->mousemensions=0;
 	
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)!=GLFW_PRESS) && (mousebefaure&(1<<3));
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)!=GLFW_PRESS && (mousebefaure&(1<<4)))<<1;
+	ctx->mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)!=GLFW_PRESS) && (mousebefaure&(1<<3));
+	ctx->mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)!=GLFW_PRESS && (mousebefaure&(1<<4)))<<1;
 		
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS  ) <<3;
-	context.mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS ) <<4;
+	ctx->mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS  ) <<3;
+	ctx->mousemensions |= (glfwGetMouseButton(ctx->window, GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS ) <<4;
 	
 
 	
-	u64 deley = (u64)((glfwGetTime() - context.lastClick)*1000.0);
+	u64 deley = (u64)((glfwGetTime() - ctx->lastClick)*1000.0);
 	
-	context.mousemensions|= (((deley <= g_doubleClickeDelaye)&&(context.mousemensions&1) && !(mousebefaure&1))&1)<<2;
+	ctx->mousemensions|= (((deley <= g_doubleClickeDelaye)&&(ctx->mousemensions&1) && !(mousebefaure&1))&1)<<2;
 	
-	if(context.mousemensions&1){
+	if(ctx->mousemensions&1){
 		
-		context.lastClick=glfwGetTime();
+		ctx->lastClick=glfwGetTime();
 	}
 	
-	if(!glfwGetKey(context.window, context.lastKeyPress)){
-		context.lastKeyPress=0; //if it is not presed; why wild we repret it?
+	if(!glfwGetKey(ctx->window, ctx->lastKeyPress)){
+		ctx->lastKeyPress=0; //if it is not presed; why wild we repret it?
 	}
 
-	if((size_t)context.window==g_pressed_window){
+	if((size_t)ctx->window==g_pressed_window){
 		g_pressedkey=0;
 	}
 	

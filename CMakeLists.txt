@@ -8,11 +8,14 @@ set(CMAKE_BUILD_TYPE Debug) #remeber to delet this if you want a user app, this 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.4 REQUIRED)
 
-add_library(ticktackto src/core.cpp src/utils.cpp src/basics.cpp src/render.cpp src/text.cpp src/ui.cpp src/externel/glad.c)
+add_library(ticktackto src/core.c src/utils.c src/basics.c src/render.c src/text.c src/ui.c src/externel/glad.c)
 
 # im gui  externel/imgui/imgui.cpp externel/imgui/imgui_demo.cpp externel/imgui/imgui_draw.cpp externel/imgui/imgui_tables.cpp externel/imgui/imgui_widgets.cpp externel/imgui/imgui_impl_glfw.cpp externel/imgui/imgui_impl_opengl3.cpp 
 
 include_directories(include/)
 
 
-target_link_libraries(ticktackto glfw)
+target_link_libraries(ticktackto glfw3)
+
+
+
