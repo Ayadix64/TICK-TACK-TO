@@ -1,23 +1,22 @@
+
 #ifndef UTILS_TICKTACKTO_CORE
 #define UTILS_TICKTACKTO_CORE
+
+#ifndef GLAD_GL_IMPLEMENTATION 
+	#define GLAD_GL_IMPLEMENTATION
+	#include "externel/glad.h"
+#endif
+
+
 
 #include <complex>
 #include <cstdlib>
 #include <deque>
 #include <iostream>
 #include <fstream>
-#ifndef GLAD_GL_IMPLEMENTATION 
-	#define GLAD_GL_IMPLEMENTATION
-	#include "externel/glad.h"
-#endif
-
 #include <GLFW/glfw3.h>
 
-
-//#define TEXTURES_MAX_SLOT 32
-
-
-//#define DEBUG_MODE //if you want to dosnt enter debug mod and save memory , comment this
+//#define DEBUG_MODE //debug mode, note that is a memory consuming
 
 typedef unsigned char  u8 ;
 typedef unsigned short u16;
