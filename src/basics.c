@@ -65,7 +65,6 @@ TickContext TickInit(GLFWwindow* window){
 		Wloge("The maximum Textures slots sepurted ny your GPU is more than what TICK-TACK-TO can handel, so it will use %d slots",TICK_MAX_TEXTURE_SLOTS_SEPURTED);
 	}
 
-	debugy(context.maxTexturesSlotsSepurted);
 	
 	context.samplerCount=0;
 	context.samplerPtr=0;
@@ -102,7 +101,6 @@ TickContext TickInit(GLFWwindow* window){
 	
 	
 
-	//glfwWindowHint(GLFW_SAMPLES, 4);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
@@ -267,6 +265,44 @@ void SetScale_ctx(TickContext* ctx, float scale){
 	ctx->scaleX=scale;
 	ctx->scaleY=scale;
 }
+
+
+u32 GetScaleX()
+{
+	return  g_defaultContext.scaleX;
+}
+u32 GetScaleY()
+{
+	return  g_defaultContext.scaleY;
+}
+
+
+u32 GetScaleX_ctx(TickContext* ctx)
+{
+	return ctx->scaleX;
+}
+u32 GetScaleY_ctx(TickContext* ctx)
+{
+	return ctx->scaleY;
+}
+
+u32 GetWindowW()
+{
+	return g_defaultContext.window_w;
+}
+u32 GetWindowH()
+{
+	return g_defaultContext.window_h;
+}
+u32 GetWindowW_ctx(TickContext* ctx)
+{
+	return ctx->window_w;
+}
+u32 GetWindowH_ctx(TickContext* ctx)
+{
+	return ctx->window_h;
+}
+
 /******************************** Shapes Drawing ***********************************/
 
 

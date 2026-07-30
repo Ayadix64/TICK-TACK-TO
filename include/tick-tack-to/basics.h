@@ -131,6 +131,15 @@ void SetScaleY_ctx(TickContext* ctx, float scale);//the same thing
 void SetScaleXY_ctx(TickContext* ctx, float scalex, float scaley);//...
 void SetScale_ctx(TickContext* ctx, float scale);//...
 
+u32 GetScaleX();
+u32 GetScaleY();
+u32 GetScaleX_ctx(TickContext* ctx);
+u32 GetScaleY_ctx(TickContext* ctx);
+
+u32 GetWindowW();
+u32 GetWindowH();
+u32 GetWindowW_ctx(TickContext* ctx);
+u32 GetWindowH_ctx(TickContext* ctx);
 /*******************************************************************/
 
 
