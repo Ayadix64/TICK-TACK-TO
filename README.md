@@ -25,8 +25,6 @@ i think that i allways want a multiplafourm good loking library that is eazy to 
 this library is still in devoloping, so you may meet some litel goohy things, hope you dont,
 
 
-NOTE: THIS IS NOT A GAME LIBRARY
-
 
 
 ##  Ok, how can i use it?
@@ -121,6 +119,10 @@ this project is targeting old systems ; and even some critcule system use , a bu
 I dont have that much of time , and sending a AI-genrated code will not help me nether the goals of this project; 
 
 With that been sed, no AI-code pleas, thank you for indrstanding, have a nice day.
+
+## Nots
+- THIS IS NOT A GAME LIBRARY
+- this project is at its statrt, a feturs break ecpected
 
 ## Fear Allah in your work
 ## Have a nice day
