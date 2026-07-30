@@ -5,7 +5,7 @@
 
 *yes i know that i miss prounsed it.*
 
-A fast & minmul proufourmence first UI library build on opengl and C++ for C/C++ applications
+A fast & minmul proufourmence first UI library build on opengl and C for C/C++ applications
 
 
 ## Depdences
@@ -112,13 +112,11 @@ This Library gives the issuntiol to build ,with the maximum effert to make never
 - keyboard input not working that will
 - utf-8 is not sepurted (but is going to be at some point)
 ## AI Policy
-TLDR:NO.
+TLDR:;NO.
 
-this project is targeting a old systems; and even some critcule system use , a bug can be the difrunts betwen a satisfaide user and a sad one
+this project is targeting old systems ; and even some critcule system use , a bug can be the difrunts betwen a satisfaide user and a sad one,
 
 I dont have that much of time , and sending a AI-genrated code will not help me nether the goals of this project; 
-
-You can use it for naming varuables / searching / gramer curaction, as long as it is been revude by you
 
 With that been sed, no AI-code pleas, thank you for indrstanding, have a nice day.
 
