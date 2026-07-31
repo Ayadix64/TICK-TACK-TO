@@ -121,8 +121,8 @@ I dont have that much of time , and sending a AI-genrated code will not help me 
 With that been sed, no AI-code pleas, thank you for indrstanding, have a nice day.
 
 ## Nots
-- THIS IS NOT A GAME LIBRARY
-- this project is at its statrt, a feturs break ecpected
-
+- THIS IS NOT A GAME LIBRARY.
+- this project is at its start, a feturs break expected.
+- hmmm note
 ## Fear Allah in your work
 ## Have a nice day
