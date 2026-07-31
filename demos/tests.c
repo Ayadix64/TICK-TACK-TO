@@ -142,7 +142,7 @@ int main()<%
 	
 	TickTexture2D otherertheRise = LoadTextureFromeFile("art002e009287~large.jpg");
 	TickTexture2D animatedTextutr=LoadTexture(image, 320, 200, 4);
-	TickFont fira = LoadFont("FiraCode.ttf",20 , (Vec4c){255,255,255,255});
+	TickFont fira = LoadFont("FiraCode.ttf",20);
 	
 	u8 animation=0;
 	int adder=1;
@@ -198,7 +198,7 @@ int main()<%
 		
 		DrawLine((Vec2f){200.0f,200.0f}, (Vec2f){x,y}, 20.0,(Vec4c){255,255,255,20});
 		
-		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200);
+		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200,(Vec4c){255,255,255,255});
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y,0,200);
 
@@ -211,7 +211,7 @@ int main()<%
 		}
 		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
-		DrawText(FPS, 0, 0);
+		DrawText(FPS, 0, 0,(Vec4c){255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter)*80.0, 400+sin(counter)*40.0, 60, 60, 30, 20, 90, (Vec4c){255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});

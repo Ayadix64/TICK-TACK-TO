@@ -796,9 +796,14 @@ void DrawTexture(TickTexture2D texture,float x , float y , float w,  float h )
 	return;
 }
 
-void DrawTextureExtended(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask)
+void DrawTextureMask(TickTexture2D texture,float x , float y , float w , float h ,Vec4c mask)
 {
-	return DrawTextureExtended_ctx(texture, x, y, w, h, mask, &g_defaultContext);
+	return DrawTextureMask_ctx(texture, x, y, w, h, mask, &g_defaultContext);
+}
+
+void DrawTextureExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2 , Vec2f v3,  Vec2f v4,Vec4c mask)
+{
+	return DrawTextureExtended_ctx(texture, v1, v2, v3, v4, mask, &g_defaultContext);
 }
 
 void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh )
@@ -806,6 +811,10 @@ void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, floa
 	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defaultContext);//heh, did you know that you can do that?
 }
 
+void DrawTextureSegmentMask             (TickTexture2D texture,float x , float y , float w , float h , float xx , float yy , float ww , float hh ,Vec4c mask)
+{
+	return DrawTextureSegmentMask_ctx(texture, x, y, w, h, xx, yy, ww, hh, mask, &g_defaultContext);
+}
 void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 ,Vec2f v2 ,Vec2f v3 ,Vec2f v4 ,Vec2f tc1 , Vec2f tc2 ,Vec2f tc3 ,Vec2f tc4,Vec4c mask )
 {
 	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4,mask, &g_defaultContext);
@@ -841,11 +850,17 @@ void ReloadTexture(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bpp ){
 
 
 void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h , TickContext* ctx){
-	return DrawTextureExtended_ctx(texture, x, y, w, h, (Vec4c){255,255,255,255}, ctx);
+	return DrawTextureExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec4c){255,255,255,255}, ctx);
+}
+
+void DrawTextureMask_ctx(TickTexture2D texture,float x , float y , float w , float h , Vec4c mask , TickContext* ctx)
+
+{
+	return DrawTextureExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h},mask, ctx);
 }
 
 
-void DrawTextureExtended_ctx(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask, TickContext* ctx){
+void DrawTextureExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2 , Vec2f v3,  Vec2f v4,Vec4c mask, TickContext* ctx){
 	if(texture.index==-1){
 		Eloge("Texture is not valide");
 		return;
@@ -869,10 +884,10 @@ void DrawTextureExtended_ctx(TickTexture2D texture,float x , float y , float w, 
 		2,3,1
 	};
 	float verteces[]={ 
-		x,y    ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,0.0f, 
-		x,y+h  ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,1.0f, 
-		x+w,y  ,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,0.0f,
-		x+w,y+h,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,1.0f 
+		v1.x, v1.y ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,0.0f, 
+		v2.x, v2.y ,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,0.0f, 
+		v3.x, v3.y ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,1.0f,
+		v4.x, v4.y ,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,1.0f 
 	};
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
 	
@@ -884,6 +899,12 @@ void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, 
 	DrawTextureSegmentExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y},(Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec2f){xx,yy}, (Vec2f){xx+ww,yy}, (Vec2f){xx,yy+hh}, (Vec2f){xx+ww,yy+hh} , (Vec4c){255,255,255	,255}, ctx);
 }
 
+void DrawTextureSegmentMask_ctx(TickTexture2D texture,float x , float y , float w , float h ,
+			float xx  , float yy ,  float ww,  float hh ,Vec4c mask , TickContext* ctx)
+
+{
+	return DrawTextureSegmentExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y}, (Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec2f){xx,yy}, (Vec2f){xx+ww,yy}, (Vec2f){xx,yy+hh}, (Vec2f){xx+ww,yy+hh} ,mask, ctx);
+}
 
 
 void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , 
@@ -911,9 +932,9 @@ void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  ,
 		2,3,1
 	};
 	const Vec2f segmentveteces[4]= {{tc1.x/(float)texture.w,tc1.y/(float)texture.h},
-				  {tc2.x/(float)texture.w,tc2.y/(float)texture.h},
-				  {tc3.x/(float)texture.w,tc3.y/(float)texture.h},
-				  {tc4.x/(float)texture.w,tc4.y/(float)texture.h}};
+				  	{tc2.x/(float)texture.w,tc2.y/(float)texture.h},
+				  	{tc3.x/(float)texture.w,tc3.y/(float)texture.h},
+				  	{tc4.x/(float)texture.w,tc4.y/(float)texture.h}};
 	float verteces[]={ 
 		v1.x,v1.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
 		v2.x,v2.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 

@@ -9,9 +9,10 @@ extern  TickFont g_defaultFont;
 #define DEF_YPADD 4
 
 
-Vec4c g_defaultBackgroundColour;
-Vec4c g_defaultSlecetColour;
-Vec4c g_defaultHoverColour;
+Vec4c g_defaultBackgroundColor;
+Vec4c g_defaultSlecetColor;
+Vec4c g_defaultHoverColor;
+Vec4c g_defaultFontColor;
 u32 g_Roundness=30;
 
 
@@ -19,10 +20,10 @@ u32 g_Roundness=30;
 
 
 void SetDefaultUIColors(){
-	g_defaultBackgroundColour = UI_DEFAULT_BACKGROUND_COLOR;
-	g_defaultHoverColour      = UI_DEFAULT_HOUVER_COLOR;
-	g_defaultSlecetColour     = UI_DEFAULT_SELECT_COLOR;
-
+	g_defaultBackgroundColor = UI_DEFAULT_BACKGROUND_COLOR;
+	g_defaultHoverColor      = UI_DEFAULT_HOUVER_COLOR    ;
+	g_defaultSlecetColor     = UI_DEFAULT_SELECT_COLOR    ;
+	g_defaultFontColor       = UI_DEFAULT_FONT_COLOR      ;
 };
 
 void InitUI(){
@@ -99,48 +100,48 @@ bool DoubleClicked_ctx(int x , int y , int w , int h, TickContext* ctx){
 char Button              (const char* text,int x , int y , int w /*0 or -1 for default*/ , int h /*0 or -1 for default*/)//bit1: preased, bit2: hover
 
 {
-	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
 } 
 char Button_ctx          (const char* text,int x , int y ,int w , int h ,TickContext* ctx)
 {
-	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
 } 
-char ButtonColour        (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg)
+char ButtonColor        (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc)
 {
-	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,
+	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,tc,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
 
 }
-char ButtonColour_ctx    (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext*ctx)
+char ButtonColor_ctx    (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc,TickContext*ctx)
 {
-	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,
+	return ButtonExtended_ctx(text, x,y, w, h, dbg, hbg, sbg,tc,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
 
 } 
 char ButtonFont          (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd)
 {
-	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,
 			font, xpadd, ypadd, &g_defaultContext);
 
 }
 char ButtonFont_ctx      (const char* text,int x , int y ,int w , int h ,TickFont font ,u32 xpadd, u32 ypadd, TickContext*ctx)
 {
-	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour,
+	return ButtonExtended_ctx(text, x,y, w, h, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,
 			font, xpadd, ypadd, ctx);
 
 } 
-char ButtonExtended      (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font ,u32 xpadd ,u32 ypadd)
+char ButtonExtended      (const char* text,int x , int y ,int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc, TickFont font ,u32 xpadd ,u32 ypadd)
 {
-	return ButtonExtended_ctx  (text,x , y , w , h ,dbg, hbg, sbg, font , xpadd, ypadd,&g_defaultContext);
+	return ButtonExtended_ctx  (text,x , y , w , h ,dbg, hbg, sbg,tc, font , xpadd, ypadd,&g_defaultContext);
 
 } 
 
 
-char ButtonExtended_ctx  (const char* text,int x , int y , int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd,TickContext*ctx)
+char ButtonExtended_ctx  (const char* text,int x , int y , int w , int h ,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc, TickFont font , u32 xpadd, u32 ypadd,TickContext*ctx)
 {
 	char preased = false;
 	bool highlited=false;
@@ -181,7 +182,7 @@ char ButtonExtended_ctx  (const char* text,int x , int y , int w , int h ,Vec4c 
 		slected=false;
 	}
 	if(preased&1){slected=1;}	
-	DrawTextFontExtended_ctx(text, x+15,  y+(h-th)/2,xpadd,ypadd,font,ctx);
+	DrawTextFontExtended_ctx(text, x+15,  y+(h-th)/2,xpadd,ypadd,tc,font,ctx);
 	
 	UpdateSelect(slected&1, highlited, ctx);
 	return preased;
@@ -209,47 +210,47 @@ void InitTextBoxData(TextBoxData* tbd,u32 maxsize){
 
 char TextBox            (int x , int y , int w,int h/*0 or-1 for default*/,   TextBoxData* tbd)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, (Vec4c){255,255,255,255},g_defaultFontColor,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
 }
 char TextBox_ctx        (int x , int y , int w , int h/*0 or-1 for default*/, TextBoxData* tbd,TickContext*ctx)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, (Vec4c){255,255,255,255},g_defaultFontColor,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
 }
-char TextBoxColour      (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl)
+char TextBoxColor      (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,Vec4c tc)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,tc,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, &g_defaultContext);
 
 }
-char TextBoxColour_ctx  (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickContext*ctx)
+char TextBoxColor_ctx  (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,Vec4c tc,TickContext*ctx)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,tc,
 			g_defaultFont, DEF_XPADD, DEF_YPADD, ctx);
 
 }
 char TextBoxFont        (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, (Vec4c){255,255,255,255},g_defaultFontColor,
 			font, xpadd, ypadd, &g_defaultContext);
 
 }
 char TextBoxFont_ctx    (int x , int y , int w , int h, TextBoxData* tbd, TickFont font, u32 xpadd, u32 ypadd, TickContext*ctx){
-	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, (Vec4c){255,255,255,255},
+	return TextBoxExtended_ctx(x, y, w, h, tbd, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, (Vec4c){255,255,255,255},g_defaultFontColor,
 			font, xpadd, ypadd, ctx);
 
 }
-char TextBoxExtended    (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font, u32 xpadd, u32 ypadd)
+char TextBoxExtended    (int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg,Vec4c tc, Vec4c cursurCl,TickFont font, u32 xpadd, u32 ypadd)
 {
-	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,
+	return TextBoxExtended_ctx(x, y, w, h, tbd, bg, hbg, sbg, cursurCl,g_defaultFontColor,
 			font, xpadd, ypadd, &g_defaultContext);
 
 }
 
 
-char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,TickFont font, u32 xpadd, u32 ypadd,TickContext*ctx)
+char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c bg, Vec4c hbg , Vec4c sbg, Vec4c cursurCl,Vec4c tc,TickFont font, u32 xpadd, u32 ypadd,TickContext*ctx)
 {
 	char preased = false;
 	bool highlited=false;
@@ -306,7 +307,7 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		DrawRectangel_ctx(x+15+curserpos, y+ (h-font.linegap)/2 - 2, xpadd, font.linegap+4, cursurCl,ctx);
 	}
 	if(!tbd->flags.Password){
-		DrawTextSegmentExtendedFontSize_ctx(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+ (h-font.linegap)/2, tbd->xoffset, 0, w-30, h,xpadd,xpadd,font,ctx);
+		DrawTextSegmentExtendedFontSize_ctx(tbd->data, tbd->usedsize, x+15-tbd->xoffset, y+ (h-font.linegap)/2, tbd->xoffset, 0, w-30, h,xpadd,xpadd,tc,font,ctx);
 	}else {
 		//TODO
 	}
@@ -376,8 +377,8 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 
 
 void CheckBox(const char* bx ,int x , int y , char* b){
-	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
-			, g_defaultHoverColour, g_defaultSlecetColour,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);	
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColor,
+			g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);	
 	
 	return;
 }
@@ -385,51 +386,51 @@ void CheckBox(const char* bx ,int x , int y , char* b){
 
 void CheckBox_ctx(const char* bx ,int x , int y , char* b,TickContext* ctx){
 		
-	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
-			, g_defaultHoverColour, g_defaultSlecetColour,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColor,
+			g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
 	
 	return;
 }
 
 
-void CheckBoxColour(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg){
-	CheckBoxExtended_ctx(bx, x, y, b, dbg
-			, hbg, sbg,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);
+void CheckBoxColor(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc){
+	CheckBoxExtended_ctx(bx, x, y, b, dbg,
+			hbg, sbg,tc,g_defaultFont , DEF_XPADD, DEF_YPADD, &g_defaultContext);
 
 	return;
 }
 
 
-void CheckBoxColour_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,TickContext* ctx){
-	CheckBoxExtended_ctx(bx, x, y, b, dbg
-			, hbg, sbg,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
+void CheckBoxColor_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc,TickContext* ctx){
+	CheckBoxExtended_ctx(bx, x, y, b, dbg,tc,
+			 hbg, sbg,g_defaultFont , DEF_XPADD, DEF_YPADD, ctx);
 
 	return;
 }
 
 
 void CheckBoxFont(const char* bx ,int x , int y , char* b,TickFont font, u32 xpadd, u32 ypadd){
-	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
-			, g_defaultHoverColour, g_defaultSlecetColour,font , xpadd, ypadd, &g_defaultContext);
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColor
+			, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,font , xpadd, ypadd, &g_defaultContext);
 
 	return;
 }
 
 
 void CheckBoxFont_ctx(const char* bx ,int x , int y , char* b,TickFont font, u32 xpadd, u32 ypadd,TickContext* ctx){
-	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColour
-			, g_defaultHoverColour, g_defaultSlecetColour,font , xpadd, ypadd, ctx);
+	CheckBoxExtended_ctx(bx, x, y, b, g_defaultBackgroundColor
+			, g_defaultHoverColor, g_defaultSlecetColor,g_defaultFontColor,font , xpadd, ypadd, ctx);
 
 	return;
 }
 
 
-void CheckBoxExtended(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd){
-	CheckBoxExtended_ctx(bx ,x , y , b,dbg, hbg, sbg, font , xpadd, ypadd, &g_defaultContext);
+void CheckBoxExtended(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc, TickFont font , u32 xpadd, u32 ypadd){
+	CheckBoxExtended_ctx(bx ,x , y , b,dbg, hbg, sbg,tc, font , xpadd, ypadd, &g_defaultContext);
 }
 
 
-void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg, TickFont font , u32 xpadd, u32 ypadd, TickContext* ctx){
+void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec4c hbg, Vec4c sbg,Vec4c tc, TickFont font , u32 xpadd, u32 ypadd, TickContext* ctx){
 	char preased = false;
 	bool highlited=false;
 	
@@ -473,7 +474,7 @@ void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec
 	
 
 	//DrawTextExtended(bx, x+10+th, y, DEF_XPADD, DEF_XPADD);
-	DrawTextFontExtended(bx, x+th+10, y, xpadd, ypadd, font);
+	DrawTextFontExtended(bx, x+th+10, y, xpadd, ypadd, tc,font);
 	if(preased&1){
 		*b=!*b;
 	}
@@ -492,19 +493,19 @@ void CheckBoxExtended_ctx(const char* bx ,int x , int y , char* b,Vec4c dbg, Vec
 
 char Slider(int x , int y , int w,  float* s)
 {
-	return SliderColour_ctx(x, y, w, s, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, &g_defaultContext);
+	return SliderColor_ctx(x, y, w, s, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, &g_defaultContext);
 }
 char Slider_ctx(int x , int y , int w,  float* s, TickContext* ctx)
 {
-	return SliderColour_ctx(x, y, w, s, g_defaultBackgroundColour, g_defaultHoverColour, g_defaultSlecetColour, ctx);
+	return SliderColor_ctx(x, y, w, s, g_defaultBackgroundColor, g_defaultHoverColor, g_defaultSlecetColor, ctx);
 }
 
-char SliderColour(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg){
-		return SliderColour_ctx(x, y, w, s, dbg, hbg, sbg, &g_defaultContext);
+char SliderColor(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg){
+		return SliderColor_ctx(x, y, w, s, dbg, hbg, sbg, &g_defaultContext);
 }
 
 
-char SliderColour_ctx(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg , TickContext* ctx)
+char SliderColor_ctx(int x , int y , int w,  float* s ,Vec4c dbg, Vec4c hbg, Vec4c sbg , TickContext* ctx)
 {
 	char preased = false;
 	bool highlited=false;
