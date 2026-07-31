@@ -48,49 +48,56 @@ uniform sampler2D texture30;
 uniform sampler2D texture31;
 uniform sampler2D texture32;
 void main(){
-	
-	if( (flags & 0x10u) > uint(0)){// it is a texture
-		int tex = int(color);
-		if (tex==0) {outcl=texture(texture0 ,texCoord);return;}
-		if (tex==1) {outcl=texture(texture1 ,texCoord);return;}
-		if (tex==2) {outcl=texture(texture2 ,texCoord);return;}
-		if (tex==3) {outcl=texture(texture3 ,texCoord);return;}
-		if (tex==4) {outcl=texture(texture4 ,texCoord);return;}
-		if (tex==5) {outcl=texture(texture5 ,texCoord);return;}
-		if (tex==6) {outcl=texture(texture6 ,texCoord);return;}
-		if (tex==7) {outcl=texture(texture7 ,texCoord);return;}
-		if (tex==8) {outcl=texture(texture8 ,texCoord);return;}
-		if (tex==9) {outcl=texture(texture9 ,texCoord);return;}
-		if (tex==10){outcl=texture(texture10,texCoord);return;}
-		if (tex==11){outcl=texture(texture11,texCoord);return;}
-		if (tex==12){outcl=texture(texture12,texCoord);return;}
-		if (tex==13){outcl=texture(texture13,texCoord);return;}
-		if (tex==14){outcl=texture(texture14,texCoord);return;}
-		if (tex==15){outcl=texture(texture15,texCoord);return;}
-		if (tex==16){outcl=texture(texture16,texCoord);return;}
-		if (tex==17){outcl=texture(texture17,texCoord);return;}
-		if (tex==18){outcl=texture(texture18,texCoord);return;}
-		if (tex==19){outcl=texture(texture19,texCoord);return;}
-		if (tex==20){outcl=texture(texture20,texCoord);return;}
-		if (tex==21){outcl=texture(texture21,texCoord);return;}
-		if (tex==22){outcl=texture(texture22,texCoord);return;}
-		if (tex==23){outcl=texture(texture23,texCoord);return;}
-		if (tex==24){outcl=texture(texture24,texCoord);return;}
-		if (tex==25){outcl=texture(texture25,texCoord);return;}
-		if (tex==26){outcl=texture(texture26,texCoord);return;}
-		if (tex==27){outcl=texture(texture27,texCoord);return;}
-		if (tex==28){outcl=texture(texture28,texCoord);return;}
-		if (tex==29){outcl=texture(texture29,texCoord);return;}
-		if (tex==30){outcl=texture(texture30,texCoord);return;}
-		if (tex==31){outcl=texture(texture31,texCoord);return;}
-		//yeah that is auto generated, i know that this is not the best way to make it, opengl is aginst me rigth know
-		//TODO: i dont even have to tell you what to do, bruh
-		return;	
-	}
 	float r = float((color>>24)&0xffu)/255.0;
 	float g = float((color>>16)&0xffu)/255.0;
 	float b = float((color>>8)&0xffu)/255.0;
 	float a = float(color&0xffu)/255.0;
+	
+	if( (flags & 0x10u) > uint(0)){// it is a texture
+		int tex = int((flags>>5)&0x1fu);
+		if      (tex==0)  {outcl=texture(texture0  ,texCoord);}
+		else if (tex==1)  {outcl=texture(texture1  ,texCoord);}
+		else if (tex==2)  {outcl=texture(texture2  ,texCoord);}
+		else if (tex==3)  {outcl=texture(texture3  ,texCoord);}
+		else if (tex==4)  {outcl=texture(texture4  ,texCoord);}
+		else if (tex==5)  {outcl=texture(texture5  ,texCoord);}
+		else if (tex==6)  {outcl=texture(texture6  ,texCoord);}
+		else if (tex==7)  {outcl=texture(texture7  ,texCoord);}
+		else if (tex==8)  {outcl=texture(texture8  ,texCoord);}
+		else if (tex==9)  {outcl=texture(texture9  ,texCoord);}
+		else if (tex==10) {outcl=texture(texture10 ,texCoord);}
+		else if (tex==11) {outcl=texture(texture11 ,texCoord);}
+		else if (tex==12) {outcl=texture(texture12 ,texCoord);}
+		else if (tex==13) {outcl=texture(texture13 ,texCoord);}
+		else if (tex==14) {outcl=texture(texture14 ,texCoord);}
+		else if (tex==15) {outcl=texture(texture15 ,texCoord);}
+		else if (tex==16) {outcl=texture(texture16 ,texCoord);}
+		else if (tex==17) {outcl=texture(texture17 ,texCoord);}
+		else if (tex==18) {outcl=texture(texture18 ,texCoord);}
+		else if (tex==19) {outcl=texture(texture19 ,texCoord);}
+		else if (tex==20) {outcl=texture(texture20 ,texCoord);}
+		else if (tex==21) {outcl=texture(texture21 ,texCoord);}
+		else if (tex==22) {outcl=texture(texture22 ,texCoord);}
+		else if (tex==23) {outcl=texture(texture23 ,texCoord);}
+		else if (tex==24) {outcl=texture(texture24 ,texCoord);}
+		else if (tex==25) {outcl=texture(texture25 ,texCoord);}
+		else if (tex==26) {outcl=texture(texture26 ,texCoord);}
+		else if (tex==27) {outcl=texture(texture27 ,texCoord);}
+		else if (tex==28) {outcl=texture(texture28 ,texCoord);}
+		else if (tex==29) {outcl=texture(texture29 ,texCoord);}
+		else if (tex==30) {outcl=texture(texture30 ,texCoord);}
+		else if (tex==31) {outcl=texture(texture31 ,texCoord);}
+		
+		outcl.r*=r;
+		outcl.g*=g;
+		outcl.b*=b;
+		outcl.a*=a;
+		
+		//outcl.a=outcl.a*a+a*(1.0-a);
+		//yeah that is auto generated, i know that this is not the best way to make it, opengl is aginst me rigth know
+		//TODO: i dont even have to tell you what to do, bruh
+		return;	
+	}
 	
 	outcl =vec4(r,g,b,a);
 	

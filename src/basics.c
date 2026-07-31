@@ -24,7 +24,8 @@ typedef struct {float x,y;u32 c;} Vertex;
 typedef struct {
 	char Practicul:4;
 	bool Enbletextures:1;
-	int rsv:27;
+	u32 textslot:5;
+	int rsv:22;
 }__attribute__((packed)) VertexFlags;
 
 
@@ -775,56 +776,83 @@ void DrawEmptyRoundedRectangel_ctx(float x, float y , float w , float h,float r 
 
 
 
-/************************************** Textures ***************************************/
+/******************************************* Textures *********************************************/
 
 
 
-
-
-
-
-TickTexture2D LoadTexture(void* bitmap,float w, float h, u32 bpp){
+TickTexture2D LoadTexture(void* bitmap,float w, float h, u32 bpp)
+{
 	return LoadTexture_ctx(bitmap,w, h, bpp, &g_defaultContext);
 }
-TickTexture2D LoadTextureFromeFile(const char * fileName){
+TickTexture2D LoadTextureFromeFile(const char * fileName)
+{
 	return LoadTextureFromeFile_ctx(fileName, &g_defaultContext);
 }
-void DrawTexture(TickTexture2D index,float x , float y , float w,  float h ){
-	DrawTexture_ctx(index, x, y, w,  h, &g_defaultContext);
+
+
+void DrawTexture(TickTexture2D texture,float x , float y , float w,  float h )
+{
+	DrawTexture_ctx(texture, x, y, w,  h, &g_defaultContext);
 	return;
 }
-void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh ){
+
+void DrawTextureExtended(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask)
+{
+	return DrawTextureExtended_ctx(texture, x, y, w, h, mask, &g_defaultContext);
+}
+
+void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh )
+{
 	return DrawTextureSegment_ctx(texture, x, y,  w,  h, xx, yy,  ww,  hh, &g_defaultContext);//heh, did you know that you can do that?
 }
-void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4, Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 ){
-	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4, &g_defaultContext);
+
+void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 ,Vec2f v2 ,Vec2f v3 ,Vec2f v4 ,Vec2f tc1 , Vec2f tc2 ,Vec2f tc3 ,Vec2f tc4,Vec4c mask )
+{
+	return DrawTextureSegmentExtended_ctx(texture,v1, v2, v3, v4,tc1,tc2,tc3,tc4,mask, &g_defaultContext);
+}
+
+void DrawVertcesTexture(TickTexture2D texture, Vec2f* verteces ,  Vec2f* texturepos,u32 vetexCount, u32* indeces, u32 indexCount, Vec4c mask)
+{
+	return; DrawVertcesTexture_ctx(texture, verteces, texturepos, vetexCount, indeces, indexCount, mask, &g_defaultContext);
 }
 
 
 
-void RemoveTexture(TickTexture2D* index){
-	RemoveTexture_ctx(index, &g_defaultContext);
+
+void RemoveTexture(TickTexture2D* texture){
+	RemoveTexture_ctx(texture, &g_defaultContext);
 	return;
 }
 
-void ReloadTextureFromeFile(TickTexture2D* index, const char* fileName){
-	ReloadTextureFromeFile_ctx(index, fileName, &g_defaultContext);
+void ReloadTextureFromeFile(TickTexture2D* texture, const char* fileName){
+	ReloadTextureFromeFile_ctx(texture, fileName, &g_defaultContext);
 	return;
 }
 
-void ReloadTexture(TickTexture2D* index, void* data,u32 w , u32 h , u32 bpp ){
-	ReloadTexture_ctx(index, data, w, h, bpp, &g_defaultContext);
+void ReloadTexture(TickTexture2D* texture, void* data,u32 w , u32 h , u32 bpp ){
+	ReloadTexture_ctx(texture, data, w, h, bpp, &g_defaultContext);
 	return;
 }
 
 
-
+//////////////context texture function
 
 
 
 
 void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h , TickContext* ctx){
-	
+	return DrawTextureExtended_ctx(texture, x, y, w, h, (Vec4c){255,255,255,255}, ctx);
+}
+
+
+void DrawTextureExtended_ctx(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask, TickContext* ctx){
+	if(texture.index==-1){
+		Eloge("Texture is not valide");
+		return;
+	}
+
+
+	u32 c = (mask.r&0xff)<<24 | (mask.g&0xff)<<16| (mask.b&0xff)<<8 | mask.a&0xff;
 	ctx->Z-=TICK_Z_OFSSET;
 	int sampler = texture.index/ctx->maxTexturesSlotsSepurted;
 	int slot = texture.index%ctx->maxTexturesSlotsSepurted;
@@ -834,16 +862,17 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true,.textslot=slot};
+	
 	u32 indeces[6]={
 		0,1,2,
 		2,3,1
 	};
 	float verteces[]={ 
-		x,y    ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,0.0f, 
-		x,y+h  ,ctx->Z ,*(float*)&slot,*(float*)&flage,0.0f,1.0f, 
-		x+w,y  ,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,0.0f,
-		x+w,y+h,ctx->Z ,*(float*)&slot,*(float*)&flage,1.0f,1.0f 
+		x,y    ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,0.0f, 
+		x,y+h  ,ctx->Z ,*(float*)&c,*(float*)&flage,0.0f,1.0f, 
+		x+w,y  ,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,0.0f,
+		x+w,y+h,ctx->Z ,*(float*)&c,*(float*)&flage,1.0f,1.0f 
 	};
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
 	
@@ -851,45 +880,88 @@ void DrawTexture_ctx(TickTexture2D texture,float x , float y , float w,  float h
 
 
 
-
-
 void DrawTextureSegment_ctx(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx){
-	DrawTextureSegmentExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y},(Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec2f){xx,yy}, (Vec2f){xx+ww,yy}, (Vec2f){xx,yy+hh}, (Vec2f){xx+ww,yy+hh}, ctx);		
+	DrawTextureSegmentExtended_ctx(texture, (Vec2f){x,y}, (Vec2f){x+w,y},(Vec2f){x,y+h}, (Vec2f){x+w,y+h}, (Vec2f){xx,yy}, (Vec2f){xx+ww,yy}, (Vec2f){xx,yy+hh}, (Vec2f){xx+ww,yy+hh} , (Vec4c){255,255,255	,255}, ctx);
 }
 
 
 
 void DrawTextureSegmentExtended_ctx(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , 
-		                    Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 , TickContext* ctx)
+		                    Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4 ,Vec4c mask, TickContext* ctx)
 
 {
+	if(texture.index==-1){
+		Eloge("Texture is not valide");
+		return;
+	}
+
 	ctx->Z-=TICK_Z_OFSSET;
 	int sampler = texture.index/ctx->maxTexturesSlotsSepurted;
 	int slot = texture.index%ctx->maxTexturesSlotsSepurted;
+	u32 c = (mask.r&0xff)<<24 | (mask.g&0xff)<<16| (mask.b&0xff)<<8 | mask.a&0xff;
 	if(texture.index==-1 || 
 	  sampler >= ctx->samplerPtr ||
 	  !(ctx->samplers[sampler].texture[slot])){
 		Eloge("Unvaliad Texture");
 		return;
 	}
-	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true};
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true,.textslot=slot&0x1f};
 	u32 indeces[6]={
 		0,1,2,
 		2,3,1
 	};
-	Vec2f segmentveteces[4]= {{tc1.x/(float)texture.w,tc1.y/(float)texture.h},
+	const Vec2f segmentveteces[4]= {{tc1.x/(float)texture.w,tc1.y/(float)texture.h},
 				  {tc2.x/(float)texture.w,tc2.y/(float)texture.h},
 				  {tc3.x/(float)texture.w,tc3.y/(float)texture.h},
 				  {tc4.x/(float)texture.w,tc4.y/(float)texture.h}};
 	float verteces[]={ 
-		v1.x,v1.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
-		v2.x,v2.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
-		v3.x,v3.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
-		v4.x,v4.y,ctx->Z ,*(float*)&slot,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
+		v1.x,v1.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[0].x,segmentveteces[0].y, 
+		v2.x,v2.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[1].x,segmentveteces[1].y, 
+		v3.x,v3.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[2].x,segmentveteces[2].y,
+		v4.x,v4.y,ctx->Z ,*(float*)&c,*(float*)&flage,segmentveteces[3].x,segmentveteces[3].y, 
 	};//textures are weard, they are truely are
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float),indeces, sizeof(indeces)/sizeof(u32),7,&ctx->samplers[sampler].rendrer);
 	
 	
+}
+
+
+
+
+void DrawVertcesTexture_ctx(TickTexture2D texture, Vec2f* verteces ,  Vec2f* texturepos,u32 vetexCount, u32* indeces, u32 indexCount, Vec4c mask, TickContext* ctx) //nevr found a better name
+{
+	if(!indexCount ||!vetexCount || !texture.index || texture.index==-1){
+		Eloge("Texture is not valide");
+		return;
+	}
+	
+	ctx->Z-=TICK_Z_OFSSET;
+	int sampler = texture.index/ctx->maxTexturesSlotsSepurted;
+	int slot = texture.index%ctx->maxTexturesSlotsSepurted;
+	u32 c = (mask.r&0xff)<<24 | (mask.g&0xff)<<16| (mask.b&0xff)<<8 | mask.a&0xff;
+	if(texture.index==-1 || 
+			sampler >= ctx->samplerPtr ||
+			!(ctx->samplers[sampler].texture[slot])){
+		Eloge("Unvaliad Texture");
+		return;
+	}
+	VertexFlags flage={.Practicul=VERTFG_TRINGELS,.Enbletextures=true,.textslot=slot&0x1f};
+
+	float* vertexdata = malloc(vetexCount*7*sizeof(float));
+
+	for(u32 i = 0 ; i < vetexCount ; i++){
+		vertexdata[i*7]=verteces[i].x;
+		vertexdata[i*7+1]=verteces[i].y;
+		vertexdata[i*7+2]=ctx->Z;
+		vertexdata[i*7+3]=*(float*)&c;
+		vertexdata[i*7+4]=*(float*)&flage;
+		vertexdata[i*7+5]=texturepos[i].x/(float)texture.w;
+		vertexdata[i*7+6]=texturepos[i].y/(float)texture.h;
+	}
+	BatcheRendrerAdd2DShape(vertexdata,vetexCount*7,indeces, indexCount,7,&ctx->samplers[sampler].rendrer);
+
+	free(vertexdata);
+	return;
 }
 
 
@@ -1115,7 +1187,6 @@ void TickRendre_ctx(TickContext* ctx){
 	}
 	Render(&ctx->Shape2D);
 	for(int i = 0 ; i < ctx->samplerPtr ; i++){
-		//printf("\n**************** texture %d ***********************\n",i);
 		RenderTexture(&ctx->samplers[i]);
 	}
 	
