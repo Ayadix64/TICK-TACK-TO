@@ -48,7 +48,7 @@ int main(){
 		TickNewFrame();//you have to call this in evry frime; or you will have a bed time!
 
 		
-		DrawText("Hello World!, World Hello! , whozl[fkgopjg]", 300, 20);
+		DrawText("Hello World!, World Hello! , whozl[fkgopjg]", 300, 20,(Vec4c){255,255,255,255});
 		char butnflags = Button("Hello World\nBoom!", 50, 400,200,0);
 
 		//Button("How is the dat of Kbnuib", 600, 600)
@@ -60,7 +60,7 @@ int main(){
 		}
 		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
-		DrawText(FPS,0, GetWindowH()-20);
+		DrawText(FPS,0, GetWindowH()-20,(Vec4c){0,255,0,255});
 
 		TextBox( 400, 400,200,0, &tbd);
 

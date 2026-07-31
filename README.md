@@ -109,7 +109,6 @@ it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a
 This Library gives the issuntiol to build ,with the maximum effert to make never toch opengl and any rendrer  , impliminting that with a good prouformance Batch rendrer.
 ## Known Bugs & some isuus
 - transparncy dosnt work will
-- keyboard input not working that will
 - utf-8 is not sepurted (but is going to be at some point)
 ## AI Policy
 TLDR:;NO.

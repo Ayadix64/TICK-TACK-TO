@@ -147,13 +147,13 @@ void DrawQuadrilateral(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl);// v1_
 									  //  |   |
 									  //  |   |
 									  // v3"""v4
-void DrawTriangle(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl);
-void DrawRectangel(float x, float y , float w , float h,Vec4c cl);
-void DrawLine(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
-void Draw2DVerteces(Vec2f* verteces , u32 Vertecount , Vec4c cl);
-void Draw2DVertecesExt(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
-void DrawCircle(float x , float y , float r, float segments , Vec4c cl);
-void DrawCircleSector(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl);
+void DrawTriangle      (Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl);
+void DrawRectangel     (float x, float y , float w , float h,Vec4c cl);
+void DrawLine          (Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl);
+void Draw2DVerteces    (Vec2f* verteces , u32 Vertecount , Vec4c cl);
+void Draw2DVertecesExt (Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl);
+void DrawCircle        (float x , float y , float r, float segments , Vec4c cl);
+void DrawCircleSector  (float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl);
 /*	startDegree (0° on this case)
  *      __
  *      | ^,   the segmentDgree(90° in this case)
@@ -162,22 +162,22 @@ void DrawCircleSector(float x , float y , float r, float segmetDegree , float se
  * 	x
  * hope that this is straid forwared*/
 
-void DrawEmptyCircle(float x , float y , float r,float thicknis, float segments , Vec4c cl);
-void DrawEmptyCircleSector(float x , float y , float r,float thicknis, float segmetDegree, float segmentsDegreeStart ,float segments , Vec4c cl);
-void DrawRoundedRectangel(float x, float y , float w , float h,float r , float segments ,Vec4c cl);
-void DrawEmptyRoundedRectangel(float x, float y , float w , float h,float r , float thickness, float segments ,Vec4c cl);
+void DrawEmptyCircle           (float x , float y , float r,float thicknis, float segments , Vec4c cl);
+void DrawEmptyCircleSector     (float x , float y , float r,float thicknis, float segmetDegree, float segmentsDegreeStart ,float segments , Vec4c cl);
+void DrawRoundedRectangel      (float x, float y , float w , float h,float r , float segments ,Vec4c cl);
+void DrawEmptyRoundedRectangel (float x, float y , float w , float h,float r , float thickness, float segments ,Vec4c cl);
 
 
 
 
-void DrawTriangle_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl,TickContext* ctx);
-void DrawRectangel_ctx(float x, float y , float w , float h,Vec4c cl,TickContext* ctx);
-void DrawLine_ctx(Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* ctx);
-void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,TickContext* ctx);
-void Draw2DVerteces_ctx(Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
-void Draw2DVertecesExt_ctx(Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
-void DrawCircle_ctx(float x , float y , float r, float segments , Vec4c cl,TickContext* ctx);
-void DrawCircleSector_ctx(float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl, TickContext* ctx);
+void DrawTriangle_ctx      (Vec2f v1 , Vec2f v2, Vec2f v3 ,Vec4c cl,TickContext* ctx);
+void DrawRectangel_ctx     (float x, float y , float w , float h,Vec4c cl,TickContext* ctx);
+void DrawLine_ctx          (Vec2f v1 , Vec2f v2 , float thicknis , Vec4c cl,TickContext* ctx);
+void DrawQuadrilateral_ctx (Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl,TickContext* ctx);
+void Draw2DVerteces_ctx    (Vec2f* verteces , u32 Vertecount , Vec4c cl,TickContext* ctx);
+void Draw2DVertecesExt_ctx (Vec2f* verteces , u32 Vertecount ,u32* indeces , u32 Indexcount , Vec4c cl,TickContext* ctx);
+void DrawCircle_ctx        (float x , float y , float r, float segments , Vec4c cl,TickContext* ctx);
+void DrawCircleSector_ctx  (float x , float y , float r, float segmetDegree , float segmentsDegreeStart, float segments , Vec4c cl, TickContext* ctx);
 /*	startDegree (0° on this case)
  *      __
  *      | ^,   the segmentDgree(90° in this case)
@@ -200,16 +200,21 @@ TickTexture2D LoadTexture_ctx           (void* bitmap,float w, float h, u32 bpp,
 TickTexture2D LoadTextureFromeFile_ctx  (const char * fileName, TickContext *ctx);
 
 
-void DrawTexture(TickTexture2D texture,float x , float y , float w,  float h );
-void DrawTextureExtended(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask);
-void DrawTextureSegment(TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh );
-void DrawTextureSegmentExtended(TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 , Vec2f tc1 , Vec2f tc2 , Vec2f tc3 ,Vec2f tc4,Vec4c mask);
-void DrawVertcesTexture(TickTexture2D texture, Vec2f* verteces ,  Vec2f* texturepos,u32 vetexCount, u32* indeces, u32 indexCount, Vec4c mask);
+void DrawTexture                        (TickTexture2D texture,float x , float y , float w , float h );
+void DrawTextureMask                    (TickTexture2D texture,float x , float y , float w , float h ,Vec4c mask);
+void DrawTextureExtended                (TickTexture2D texture,Vec2f v1, Vec2f v2, Vec2f v3, Vec2f v4, Vec4c mask);
+void DrawTextureSegment                 (TickTexture2D texture,float x , float y , float w , float h , float xx , float yy , float ww , float hh );
+void DrawTextureSegmentMask             (TickTexture2D texture,float x , float y , float w , float h , float xx , float yy , float ww , float hh ,Vec4c mask);
+void DrawTextureSegmentExtended         (TickTexture2D texture,Vec2f v1, Vec2f v2, Vec2f v3, Vec2f v4, Vec2f tc1, Vec2f tc2, Vec2f tc3, Vec2f tc4,Vec4c mask);
+void DrawVertcesTexture                 (TickTexture2D texture, Vec2f* verteces ,  Vec2f* texturepos,u32 vetexCount, u32* indeces, u32 indexCount, Vec4c mask);
 
-void DrawTexture_ctx           (TickTexture2D texture,float x , float y , float w,  float h , TickContext* ctx);
-void DrawTextureExtended_ctx(TickTexture2D texture,float x , float y , float w,  float h ,Vec4c mask, TickContext* ctx);
-void DrawTextureSegment_ctx    (TickTexture2D texture,float x , float y  , float w, float h ,float xx , float yy ,  float ww,  float hh , TickContext* ctx);
-void DrawTextureSegmentExtended_ctx     (TickTexture2D texture,Vec2f v1 , Vec2f v2  , Vec2f v3, Vec2f v4 ,
+
+void DrawTexture_ctx                    (TickTexture2D texture,float x , float y , float w , float h , TickContext* ctx);
+void DrawTextureMask_ctx                (TickTexture2D texture,float x , float y , float w , float h ,Vec4c mask,TickContext* ctx);
+void DrawTextureExtended_ctx            (TickTexture2D texture,Vec2f v1, Vec2f v2, Vec2f v3, Vec2f v4, Vec4c mask, TickContext* ctx);
+void DrawTextureSegment_ctx             (TickTexture2D texture,float x , float y , float w , float h , float xx  , float yy ,  float ww,  float hh , TickContext* ctx);
+void DrawTextureSegmentMask_ctx         (TickTexture2D texture,float x , float y , float w , float h , float xx  , float yy ,  float ww,  float hh ,Vec4c mask , TickContext* ctx);
+void DrawTextureSegmentExtended_ctx     (TickTexture2D texture,Vec2f v1, Vec2f v2, Vec2f v3, Vec2f v4,
 					 Vec2f tc1 , Vec2f tc2 , Vec2f tc3 , Vec2f tc4,Vec4c mask,TickContext* ctx);
 void DrawVertcesTexture_ctx(TickTexture2D texture, Vec2f* verteces ,  Vec2f* texturepos,u32 vetexCount, u32* indeces, u32 indexCount, Vec4c mask, TickContext* ctx);
 
