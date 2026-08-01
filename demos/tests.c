@@ -198,7 +198,7 @@ int main()<%
 		
 		DrawLine((Vec2f){200.0f,200.0f}, (Vec2f){x,y}, 20.0,(Vec4c){255,255,255,20});
 		
-		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200,(Vec4c){255,255,255,255});
+		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200,(Vec4c){255,255,255,animation});
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y,0,200);
 
