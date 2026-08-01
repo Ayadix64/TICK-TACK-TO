@@ -19,16 +19,29 @@ u32 g_Roundness=30;
 
 
 
-void SetDefaultUIColors(){
+void ResetDefaultUIColors(){
 	g_defaultBackgroundColor = UI_DEFAULT_BACKGROUND_COLOR;
 	g_defaultHoverColor      = UI_DEFAULT_HOUVER_COLOR    ;
 	g_defaultSlecetColor     = UI_DEFAULT_SELECT_COLOR    ;
 	g_defaultFontColor       = UI_DEFAULT_FONT_COLOR      ;
 };
 
+
+
+
 void InitUI(){
-	SetDefaultUIColors();
+	ResetDefaultUIColors();
 }
+
+
+void SetDefaultUIColors(Vec4c dbg, Vec4c hc, Vec4c sc , Vec4c fc){
+	g_defaultBackgroundColor=dbg;
+	g_defaultHoverColor=hc;
+	g_defaultSlecetColor=sc;
+	g_defaultFontColor=fc;
+
+}
+
 
 bool IsSlected(TickContext* ctx){
 	return ctx->selectID==ctx->selectCount;
@@ -264,11 +277,11 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 
 	}
 
-	if(Hover(x, y, w, h+30)){
+	if(Hover(x, y, w, h)){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, hbg,ctx);
 		preased|=2;
 	}
-	else if(Clicked(x, y, w, h+30) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
+	else if(Clicked(x, y, w, h) || (slected && IsKeyPressed_ctx(GLFW_KEY_ENTER,ctx))){
 		DrawRoundedRectangel_ctx(x, y, w , h , 10, 90, sbg,ctx);	
 		preased|=2;
 	}
