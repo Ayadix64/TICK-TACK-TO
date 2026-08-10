@@ -113,7 +113,8 @@ TickContext TickInit(GLFWwindow* window){
 
 
 
-void TickInitWindowFlags(){
+void TickInitWindowFlags()
+{
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_SAMPLES, 8);
 
@@ -1169,6 +1170,20 @@ void TickNewFrame(){
 }
 
 
+void TickNewFrame_ctx(TickContext* context){
+	ResetRendrer(&context->Shape2D);
+	ResetRendrer(&context->ShapeCir2D);
+	for(int i = 0 ; i < context->samplerPtr ; i++){
+		ResetRendrer(&context->samplers[i].rendrer);
+	}
+	
+	context->Z=TICK_TOP_Z;
+	context->selectCount=0;
+	
+	return;
+}
+
+
 void TickRendre_ctx(TickContext* ctx){
 	if(ctx->Z<=TICK_BUTTOM_Z){
 		Eloge("Z <=  %d you draw too much and part of that will not been rendred!",TICK_BUTTOM_Z);
@@ -1257,18 +1272,9 @@ void TickRendre_ctx(TickContext* ctx){
 
 	return;
 }
-void TickNewFrame_ctx(TickContext* context){
-	ResetRendrer(&context->Shape2D);
-	ResetRendrer(&context->ShapeCir2D);
-	for(int i = 0 ; i < context->samplerPtr ; i++){
-		ResetRendrer(&context->samplers[i].rendrer);
-	}
-	
-	context->Z=TICK_TOP_Z;
-	context->selectCount=0;
-	
-	return;
-}
+
+
+
 
 
 void TickClose(){

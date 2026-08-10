@@ -1,10 +1,10 @@
 static const char* g_2DShape_vertexshader = 
-	"#version 330 core\n"
+	"#version 150 core\n"
 	"\n"
-	"layout(location=0) in vec4 position;\n"
-	"layout(location=1) in uint inColor;\n"
-	"layout(location=2) in uint Flags;\n"
-	"layout(location=3) in vec3 location3; // cneter of the cercul / texture \n"
+	"/*(location=0)*/ in vec4 position;\n"
+	"/*(location=1)*/ in uint inColor;\n"
+	"/*(location=2)*/ in uint Flags;\n"
+	"/*(location=3)*/ in vec3 location3; // cneter of the cercul / texture \n"
 	"// so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs\n"
 	"\n"
 	"//out pos;\n"
@@ -43,8 +43,8 @@ static const char* g_2DShape_vertexshader =
 
 /********************************************g_2DShape_fragmentshader***********************************************/
 static const char* g_2DShape_fragmentshader = 
-	"#version 330 core\n"
-	"layout(location=0) out vec4 outcl;\n"
+	"#version 150 core\n"
+	"out vec4 outcl;\n"
 	"\n"
 	"\n"
 	"flat in uint color;\n"

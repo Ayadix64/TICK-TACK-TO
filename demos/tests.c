@@ -7,7 +7,6 @@
 #endif
 
 #include "../include/tick-tack-to.h"
-#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -97,12 +96,17 @@ int abs(int val){
 int main()<%
 	/****************************Init*************************/
 	if(!glfwInit()){
-		//Eloge("GLFW not init");
+		fprintf(stderr , "[ERORR] GLFW INIT BREAKS\n");
 		return 1;
 	}
 	
 	TickInitWindowFlags();
 	GLFWwindow* window = glfwCreateWindow(800, 600, "window", NULL, NULL);
+	if(!window){
+		fprintf(stderr , "[ERORR] WINDOW INIT BREAKS\n");
+		return 1;
+	}
+
 	glfwMakeContextCurrent(window);
 	gladLoadGL();	
 	// During init, enable debug output

@@ -707,22 +707,21 @@ GLAPI struct gladGLversionStruct GLVersion;
 GLAPI int gladLoadGL(void);
 
 GLAPI int gladLoadGLLoader(GLADloadproc);
-
-#include <KHR/khrplatform.h>
+#include <stdlib.h>
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
 typedef unsigned int GLbitfield;
 typedef void GLvoid;
-typedef khronos_int8_t GLbyte;
-typedef khronos_uint8_t GLubyte;
-typedef khronos_int16_t GLshort;
-typedef khronos_uint16_t GLushort;
+typedef __int8_t GLbyte;
+typedef unsigned char GLubyte;
+typedef __int16_t GLshort;
+typedef unsigned short GLushort;
 typedef int GLint;
 typedef unsigned int GLuint;
-typedef khronos_int32_t GLclampx;
+typedef __int32_t GLclampx;
 typedef int GLsizei;
-typedef khronos_float_t GLfloat;
-typedef khronos_float_t GLclampf;
+typedef float GLfloat;
+typedef float GLclampf;
 typedef double GLdouble;
 typedef double GLclampd;
 typedef void *GLeglClientBufferEXT;
@@ -734,17 +733,17 @@ typedef void *GLhandleARB;
 #else
 typedef unsigned int GLhandleARB;
 #endif
-typedef khronos_uint16_t GLhalf;
-typedef khronos_uint16_t GLhalfARB;
-typedef khronos_int32_t GLfixed;
-typedef khronos_intptr_t GLintptr;
-typedef khronos_intptr_t GLintptrARB;
-typedef khronos_ssize_t GLsizeiptr;
-typedef khronos_ssize_t GLsizeiptrARB;
-typedef khronos_int64_t GLint64;
-typedef khronos_int64_t GLint64EXT;
-typedef khronos_uint64_t GLuint64;
-typedef khronos_uint64_t GLuint64EXT;
+typedef unsigned short GLhalf;
+typedef unsigned short GLhalfARB;
+typedef __int32_t GLfixed;
+typedef signed long int GLintptr;
+typedef signed long int GLintptrARB;
+typedef signed long int GLsizeiptr;
+typedef signed long int GLsizeiptrARB;
+typedef __int64_t GLint64;
+typedef __int64_t GLint64EXT;
+typedef unsigned long long GLuint64;
+typedef unsigned long long GLuint64EXT;
 typedef struct __GLsync *GLsync;
 struct _cl_context;
 struct _cl_event;

@@ -1,9 +1,9 @@
-#version 330 core
+#version 150 core
 
-layout(location=0) in vec4 position;
-layout(location=1) in uint inColor;
-layout(location=2) in uint Flags;
-layout(location=3) in vec3 location3; // cneter of the cercul / texture 
+/*(location=0)*/ in vec4 position;
+/*(location=1)*/ in uint inColor;
+/*(location=2)*/ in uint Flags;
+/*(location=3)*/ in vec3 location3; // cneter of the cercul / texture 
 // so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs
 
 //out pos;
