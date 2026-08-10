@@ -1,5 +1,5 @@
-#version 330 core
-layout(location=0) out vec4 outcl;
+#version 150 core
+out vec4 outcl;
 
 
 flat in uint color;

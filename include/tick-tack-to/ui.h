@@ -7,7 +7,7 @@
 #define UI_DEFAULT_BACKGROUND_COLOR (Vec4c){0x9,0x16,0x56,0xff} //#091656
 #define UI_DEFAULT_HOUVER_COLOR     (Vec4c){0x05,0x14,0xb8 ,255} //#0514B8
 #define UI_DEFAULT_SELECT_COLOR     (Vec4c){0x20,0x41,0xe8,255} //#2041e8
-#define UI_DEFAULT_FONT_COLOR       (Vec4c){0xff,0xff,0xff,0xb0} 
+#define UI_DEFAULT_FONT_COLOR       (Vec4c){0xff,0xff,0xff,0xff} 
 
 
 typedef struct {

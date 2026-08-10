@@ -13,7 +13,6 @@
 #endif
 
 #include "../include/tick-tack-to.h"
-#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <unistd.h>
 #include <stdbool.h>
