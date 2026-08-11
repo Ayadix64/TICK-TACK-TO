@@ -1,4 +1,4 @@
-#version 150 core
+#version 140
 out vec4 outcl;
 
 
@@ -46,7 +46,6 @@ uniform sampler2D texture28;
 uniform sampler2D texture29;
 uniform sampler2D texture30;
 uniform sampler2D texture31;
-uniform sampler2D texture32;
 void main(){
 	float r = float((color>>24)&0xffu)/255.0;
 	float g = float((color>>16)&0xffu)/255.0;
@@ -87,7 +86,7 @@ void main(){
 		else if (tex==29) {outcl=texture(texture29 ,texCoord);}
 		else if (tex==30) {outcl=texture(texture30 ,texCoord);}
 		else if (tex==31) {outcl=texture(texture31 ,texCoord);}
-		
+		else {return;}	
 		outcl.r*=r;
 		outcl.g*=g;
 		outcl.b*=b;

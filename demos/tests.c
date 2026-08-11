@@ -196,7 +196,7 @@ int main()<%
 		
 
 		DrawTexture(animatedTextutr, 0,0, 200, 200);
-		DrawLine((Vec2f){0.0f,0.0f}, (Vec2f){200.0f,200.0f}, 20.0,(Vec4c){0,0,255,255});
+		DrawLine((Vec2f){0.0f,0.0f}, (Vec2f){200.0f,200.0f}, animation,(Vec4c){0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, (Vec4c){0,0,255,255});
 		
@@ -215,7 +215,6 @@ int main()<%
 		}
 		
 		sprintf(FPS, "FPS: %d." , (u32)(1.0/((glfwGetTime()-tflf))));
-		DrawText(FPS, 0, 0,(Vec4c){255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter)*80.0, 400+sin(counter)*40.0, 60, 60, 30, 20, 90, (Vec4c){255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*0.5)*80.0, 400+sin(counter+3.14*0.5)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
 		DrawEmptyRoundedRectangel(300+cos(counter+3.14*1.0)*80.0, 400+sin(counter+3.14*1.0)*40.0, 60, 60, 30, 20, 90,(Vec4c) {255,255,0,255});
@@ -233,7 +232,8 @@ int main()<%
 		}
 		Slider(200,500,300,&slid);
 		//DrawCircle(GetMousePos().x, GetMousePos().y,5, 20, {0,255,0,255})	;
-
+		
+		DrawText(FPS, 0-200+x, 0-200+y,(Vec4c){0,255,0,255});
 		/******************** Render ********************/
 		TickRendre();
 		glfwSwapBuffers(window);

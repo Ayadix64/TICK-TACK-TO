@@ -54,8 +54,7 @@ unsigned int CreatShader(const char* vert, const char* frag){
 int GetUniform(const char* uniform, u32 shader){
 	int uniformLocation=glGetUniformLocation(shader,uniform);
 	if(uniformLocation==-1){
-		//Wloge("uniform \""+std::string(uniform)+"\" never found");
-		fprintf(stderr,"[WARNING] unifor \"%s\" never found",uniform);
+		Wloge("uniform \"%s\" never found",uniform);
 	}
 	return uniformLocation;
 }
