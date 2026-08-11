@@ -1,10 +1,10 @@
-#version 150 core
+#version 140
 
-/*(location=0)*/ in vec4 position;
-/*(location=1)*/ in uint inColor;
-/*(location=2)*/ in uint Flags;
-/*(location=3)*/ in vec3 location3; // cneter of the cercul / texture 
-// so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs
+in vec4 position;
+in uint inColor;
+in uint Flags;
+in vec3 location3; // cneter of the cercul / texture 
+// so , what ever tringel it passed; all what we will do is rotate it, whet ever position, to save the poor cpu frome some procesing cyculs
 
 //out pos;
 flat out uint color;

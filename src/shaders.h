@@ -1,10 +1,10 @@
 static const char* g_2DShape_vertexshader = 
-	"#version 150 core\n"
+	"#version 140\n"
 	"\n"
-	"/*(location=0)*/ in vec4 position;\n"
-	"/*(location=1)*/ in uint inColor;\n"
-	"/*(location=2)*/ in uint Flags;\n"
-	"/*(location=3)*/ in vec3 location3; // cneter of the cercul / texture \n"
+	"in vec4 position;\n"
+	"in uint inColor;\n"
+	"in uint Flags;\n"
+	"in vec3 location3; // cneter of the cercul / texture \n"
 	"// so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs\n"
 	"\n"
 	"//out pos;\n"
@@ -43,7 +43,7 @@ static const char* g_2DShape_vertexshader =
 
 /********************************************g_2DShape_fragmentshader***********************************************/
 static const char* g_2DShape_fragmentshader = 
-	"#version 150 core\n"
+	"#version 140\n"
 	"out vec4 outcl;\n"
 	"\n"
 	"\n"
@@ -91,7 +91,6 @@ static const char* g_2DShape_fragmentshader =
 	"uniform sampler2D texture29;\n"
 	"uniform sampler2D texture30;\n"
 	"uniform sampler2D texture31;\n"
-	"uniform sampler2D texture32;\n"
 	"void main(){\n"
 	"	float r = float((color>>24)&0xffu)/255.0;\n"
 	"	float g = float((color>>16)&0xffu)/255.0;\n"
@@ -132,7 +131,7 @@ static const char* g_2DShape_fragmentshader =
 	"		else if (tex==29) {outcl=texture(texture29 ,texCoord);}\n"
 	"		else if (tex==30) {outcl=texture(texture30 ,texCoord);}\n"
 	"		else if (tex==31) {outcl=texture(texture31 ,texCoord);}\n"
-	"		\n"
+	"		else {return;}	\n"
 	"		outcl.r*=r;\n"
 	"		outcl.g*=g;\n"
 	"		outcl.b*=b;\n"

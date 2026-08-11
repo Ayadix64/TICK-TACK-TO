@@ -24,8 +24,8 @@ typedef struct {float x,y;u32 c;} Vertex;
 typedef struct {
 	char Practicul:4;
 	bool Enbletextures:1;
-	u32 textslot:5;
-	int rsv:22;
+	u32 textslot:6;
+	int rsv:21;
 }__attribute__((packed)) VertexFlags;
 
 
@@ -117,7 +117,7 @@ void TickInitWindowFlags()
 {
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_SAMPLES, 8);
-
+	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -459,12 +459,12 @@ void DrawQuadrilateral_ctx(Vec2f v1 , Vec2f v2, Vec2f v3 , Vec2f v4,Vec4c cl, Ti
 		0,1,2,
 		2,3,1
 	};
-	u32 c = cl.r << 24 | cl.g<<16 | cl.b << 8 | cl.a;	
+	u32 c = (cl.r&0xff) << 24 | (cl.g&0xff) <<16 | (cl.b&0xff) << 8 | cl.a&0xff;	
 	float verteces[]={ 
 		v1.x,v1.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v2.x,v2.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 		v3.x,v3.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
-		v4.x,v4.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0
+		v4.x,v4.y,ctx->Z,*(float*)&c,*(float*)&flage,0,0,0,
 	};
 
 	BatcheRendrerAdd2DShape(verteces, sizeof(verteces)/sizeof(float), indeces, sizeof(indeces)/sizeof(u32),8, &ctx->Shape2D);
