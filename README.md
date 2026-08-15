@@ -123,6 +123,7 @@ With that been sed, no AI-code pleas, thank you for indrstanding, have a nice da
 - THIS IS NOT A GAME LIBRARY.
 - this project is at its start, a feturs break expected.
 - In the main time, this project is using opengl 3.3 core,if your gpu dosnt sepurt that you may run into a problams, a futer downgrade is expected
+- The UTF-8 sepurt is fanky, so make that in minde
 - hmmm note
 ## Fear Allah in your work
 ## Have a nice day

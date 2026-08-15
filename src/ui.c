@@ -336,6 +336,7 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		u32 cw;
 		GetFontCharDemensions(keypreased,font, &cw, 0);
 		if(curserpos+cw+30> w){
+
 			tbd->xoffset+=cw+xpadd;
 		}
 	}else if(GetKeyPressed_ctx(GLFW_KEY_BACKSPACE,ctx) && tbd->pos&& slected){
@@ -343,7 +344,7 @@ char TextBoxExtended_ctx(int x , int y , int w , int h, TextBoxData* tbd, Vec4c 
 		u32 cw;
 		GetFontCharDemensions(tbd->data[tbd->pos],font, &cw, 0);
 		
-		if((int)(curserpos-(cw+xpadd)-w-30)<=0){	
+		if((int)(curserpos-(cw+xpadd))<=5){ // to show if the user delet all or still
 			tbd->xoffset-= min((cw+xpadd),tbd->xoffset);
 		}
 
