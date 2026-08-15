@@ -5,7 +5,7 @@ static const char* g_2DShape_vertexshader =
 	"in uint inColor;\n"
 	"in uint Flags;\n"
 	"in vec3 location3; // cneter of the cercul / texture \n"
-	"// so , what ever tringel it passed; all what we will do is ortate it, whet ever position, to save the poor cpu frome some procesing cyculs\n"
+	"// so , what ever tringel it passed; all what we will do is rotate it, whet ever position, to save the poor cpu frome some procesing cyculs\n"
 	"\n"
 	"//out pos;\n"
 	"flat out uint color;\n"

@@ -89,7 +89,7 @@ MessageCallback( GLenum source,
 }
 
 int abs(int val){
-	return val & ~(1<<32);
+	return val & ~(1<<31);
 }
 
 
@@ -118,6 +118,7 @@ int main()<%
 	
 	TickInit(window);
 	//glfwSwapInterval(0);
+	
 	
 
 
@@ -195,14 +196,14 @@ int main()<%
 		glfwMakeContextCurrent(window);
 		
 
-		DrawTexture(animatedTextutr, 0,0, 200, 200);
+		DrawTexture(animatedTextutr, x,y, 200, 400);
 		DrawLine((Vec2f){0.0f,0.0f}, (Vec2f){200.0f,200.0f}, animation,(Vec4c){0,0,255,255});
 		
 		DrawCircle(200.0f, 200.0f, 10, 20, (Vec4c){0,0,255,255});
 		
 		DrawLine((Vec2f){200.0f,200.0f}, (Vec2f){x,y}, 20.0,(Vec4c){255,255,255,20});
 		
-		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ?", 300, 200,(Vec4c){255,255,255,animation});
+		DrawText("the fast quick fox jump over the lazy slow\n--> ** dog **, or is it ? é?", 300, 200,(Vec4c){255,255,255,animation});
 		ReloadTexture(&animatedTextutr, image,300 , 250, 4);
 		char butnflags = Button("Button\nThis is a hello world button\nor is it?", x, y,0,200);
 

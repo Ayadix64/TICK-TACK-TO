@@ -219,6 +219,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 	ret.size=scale;
 	ret.scalex=1.0f;
 	ret.scaley=1.0f;
+	ret.maxChar = font.numGlyphs;
 	const u32 c = 0xffffffff;
 	
 	
@@ -231,12 +232,12 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 	int maxdemensions=0;    //maximum texture demensions (i.e 13060x13060)
  	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxdemensions);   //Returns 1 value
 
-
+	printf("**** GLO %d ****\n", font.numGlyphs);
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0 ,yoffset=0;
 	int w =0, h=0 , y0=0,x0=0;
 
-	for(int i = 0 ; i < font.numGlyphs ; i++){
+	for(int i = 0 ; i < font.numGlyphs-32  ; i++){
 		if(!i){
 			u32 advance,lsb;
 			stbtt_GetCodepointHMetrics(&font,i+32,(int*)&advance,(int*)&lsb);
@@ -276,7 +277,7 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 	xoffset=yoffset=0;
 	u32 * texture = (u32*)malloc(texturewidth*textureheigth*sizeof(u32));
 	
-	for(int i = 1 ; i < font.numGlyphs ; i++){
+	for(int i = 1 ; i < font.numGlyphs-32 ; i++){
 		int w , h;
 		u8* bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, scale), i+32, &w, &h, 0,0);
 
@@ -286,7 +287,8 @@ TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 					if(bitmap[y*w+x]){
 						//c&=~(0xff<<24);
 						//c|=(((bitmap[y*w+x]*cl.a)/255)&0xff)<<24;
-						texture[(y+yoffset)*texturewidth+x+xoffset]=c&~0xff|bitmap[y*w+x];
+						
+						texture[(y+yoffset)*texturewidth+x+xoffset]=(c&~(0xff<<24) | (((bitmap[y*w+x]*255)/255)&0xff)<<24) ;
 					}else{
 						texture[(y+yoffset)*texturewidth+x+xoffset]=0;
 					}
@@ -446,47 +448,47 @@ void GetFontCharDemensions(u32 c,  TickFont font ,u32* w, u32* h){
 
 
 
-void DrawText(const char* text , u32 x, u32 y,Vec4c cl ){
+void DrawText(const char* text , int x,int y,Vec4c cl ){
 	DrawTextFont_ctx(text, x, y, cl,g_defaultFont, &g_defaultContext);	
 	return;
 }
 
 
-void DrawText_ctx(const char* text , u32 x, u32 y,Vec4c cl ,TickContext* ctx){
+void DrawText_ctx(const char* text , int x,int y,Vec4c cl ,TickContext* ctx){
 	DrawTextFont_ctx(text, x, y,cl, g_defaultFont, ctx);	
 	return;
 }
 
 
 
-void DrawTextFont(const char* text , u32 x, u32 y,Vec4c cl ,TickFont font){
+void DrawTextFont(const char* text , int x,int y,Vec4c cl ,TickFont font){
 	DrawTextFont_ctx(text, x, y, cl,font,&g_defaultContext);
 	return;
 }
-void DrawTextFont_ctx(const char* text , u32 x, u32 y,Vec4c cl ,TickFont font,TickContext* ctx){
+void DrawTextFont_ctx(const char* text , int x,int y,Vec4c cl ,TickFont font,TickContext* ctx){
 	DrawTextFontExtended_ctx(text, x, y, DEFAULTXPADD, DEFAULTYPADD, cl,g_defaultFont, ctx);
 	return;
 }
 
 
-void DrawTextExtended(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,Vec4c cl ){
+void DrawTextExtended(const char* text , int x,int y,u32 xpaading ,u32 ypadding ,Vec4c cl ){
 	DrawTextExtended_ctx(text,  x, y, xpaading, ypadding,cl, &g_defaultContext);
 }
 
 
-void DrawTextExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickContext* ctx){
+void DrawTextExtended_ctx(const char* text , int x,int y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickContext* ctx){
 	 DrawTextFontExtended_ctx(text , x, y,xpaading ,ypadding ,cl,g_defaultFont, ctx);
 }
 
 
 
 
-void DrawTextFontExtended(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font){
+void DrawTextFontExtended(const char* text , int x,int y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font){
 	DrawTextFontExtended_ctx(text, x, y, xpaading, ypadding,cl, font, &g_defaultContext);
 }
 
 
-void DrawTextFontExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font,TickContext* ctx){
+void DrawTextFontExtended_ctx(const char* text , int x,int y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font,TickContext* ctx){
 	DrawTextFontExtendedSize_ctx(text, (u32)strlen(text), x, y, xpaading, ypadding, cl,font, ctx);
 	return;
 }
@@ -494,11 +496,11 @@ void DrawTextFontExtended_ctx(const char* text , u32 x, u32 y,u32 xpaading ,u32 
 
 
 
-void DrawTextSegment(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl){
+void DrawTextSegment(const char* text , int x,int y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl){
 	DrawTextSegment_ctx(text, x, y, xx, yy, w, h, cl,&g_defaultContext);
 }
 
-void DrawTextSegment_ctx(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ,TickContext* ctx){
+void DrawTextSegment_ctx(const char* text , int x,int y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ,TickContext* ctx){
 	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD,cl ,g_defaultFont, &g_defaultContext);
 
 	return;
@@ -506,12 +508,12 @@ void DrawTextSegment_ctx(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32
 
 
 
-void DrawTextSegmentExtended(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd,Vec4c cl ){
+void DrawTextSegmentExtended(const char* text , int x,int y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd,Vec4c cl ){
 	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, cl,g_defaultFont, &g_defaultContext);
 	return;
 }
 
-void DrawTextSegmentExtended_ctx(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,Vec4c cl ,TickContext* ctx){
+void DrawTextSegmentExtended_ctx(const char* text , int x,int y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,Vec4c cl ,TickContext* ctx){
 	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd,cl, g_defaultFont, ctx);
 	return;
 }
@@ -519,14 +521,14 @@ void DrawTextSegmentExtended_ctx(const char* text , u32 x, u32 y , u32 xx , u32 
 
 
 
-void DrawTextSegmentExtendedFont(const char* text , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd ,Vec4c cl , TickFont font){
+void DrawTextSegmentExtendedFont(const char* text , int x,int y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd ,Vec4c cl , TickFont font){
 	DrawTextSegmentExtendedFont_ctx(text, x, y, xx, yy, w, h, xpadd, ypadd, cl,font, &g_defaultContext);
 	return;
 }
 
 
 
-void DrawTextSegmentExtendedFont_ctx(const char* text , u32 x, u32 y ,
+void DrawTextSegmentExtendedFont_ctx(const char* text , int x,int y ,
 					u32 xx , u32 yy ,
 					u32 w , u32 h,
 					u32 xpadd, u32 ypadd ,Vec4c cl ,
@@ -545,53 +547,53 @@ void DrawTextSegmentExtendedFont_ctx(const char* text , u32 x, u32 y ,
 
 
 
-void DrawTextSize(const char* text , u32 size , u32 x, u32 y,Vec4c cl ){
+void DrawTextSize(const char* text , u32 size , int x,int y,Vec4c cl ){
 	DrawTextFontSize_ctx(text,size, x, y, cl,g_defaultFont, &g_defaultContext);
 	return;
 }
 
 
-void DrawTextSize_ctx(const char* text , u32 size , u32 x, u32 y,Vec4c cl ,TickContext* ctx){
+void DrawTextSize_ctx(const char* text , u32 size , int x,int y,Vec4c cl ,TickContext* ctx){
 	DrawTextFontSize_ctx(text,size, x, y,cl, g_defaultFont, ctx);	
 	return;
 }
 
 
 
-void DrawTextFontSize(const char* text , u32 size , u32 x, u32 y,Vec4c cl ,TickFont font){
+void DrawTextFontSize(const char* text , u32 size , int x,int y,Vec4c cl ,TickFont font){
 	DrawTextFontSize_ctx(text,size, x, y, cl,font, &g_defaultContext);
 	return;
 }
-void DrawTextFontSize_ctx(const char* text , u32 size , u32 x, u32 y,Vec4c cl ,TickFont font,TickContext* ctx){
+void DrawTextFontSize_ctx(const char* text , u32 size , int x,int y,Vec4c cl ,TickFont font,TickContext* ctx){
 	DrawTextFontExtendedSize_ctx(text,size, x, y, DEFAULTXPADD, DEFAULTYPADD,cl ,g_defaultFont, ctx);
 	return;
 }
 
 
-void DrawTextExtendedSize(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding,Vec4c cl  ){
+void DrawTextExtendedSize(const char* text , u32 size , int x,int y,u32 xpaading ,u32 ypadding,Vec4c cl  ){
 	DrawTextExtendedSize_ctx(text,size,  x, y, xpaading, ypadding, cl,&g_defaultContext);
 }
 
 
-void DrawTextExtendedSize_ctx(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding,Vec4c cl ,TickContext* ctx){
+void DrawTextExtendedSize_ctx(const char* text , u32 size , int x,int y,u32 xpaading ,u32 ypadding,Vec4c cl ,TickContext* ctx){
 	 DrawTextFontExtendedSize_ctx(text ,  size , x, y,xpaading ,ypadding ,cl,g_defaultFont, ctx);
 }
 
 
 
 
-void DrawTextFontExtendedSize(const char* text , u32 size , u32 x, u32 y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font){
+void DrawTextFontExtendedSize(const char* text , u32 size , int x,int y,u32 xpaading ,u32 ypadding ,Vec4c cl ,TickFont font){
 	DrawTextFontExtendedSize_ctx(text,size, x, y, xpaading, ypadding,cl, font, &g_defaultContext);
 }
 
 
 
 
-void DrawTextSegmentSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ){
+void DrawTextSegmentSize(const char* text , u32 size , int x,int y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ){
 	DrawTextSegmentSize_ctx(text,size, x, y, xx, yy, w, h,cl, &g_defaultContext);
 }
 
-void DrawTextSegmentSize_ctx(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ,TickContext* ctx){
+void DrawTextSegmentSize_ctx(const char* text , u32 size , int x,int y , u32 xx , u32 yy , u32 w , u32 h,Vec4c cl ,TickContext* ctx){
 	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, DEFAULTXPADD, DEFAULTYPADD,cl, g_defaultFont, &g_defaultContext);
 
 	return;
@@ -599,12 +601,12 @@ void DrawTextSegmentSize_ctx(const char* text , u32 size , u32 x, u32 y , u32 xx
 
 
 
-void DrawTextSegmentExtendedSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd,Vec4c cl ){
+void DrawTextSegmentExtendedSize(const char* text , u32 size , int x,int y , u32 xx , u32 yy , u32 w , u32 h,u32 xpadd, u32 ypadd,Vec4c cl ){
 	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd,cl, g_defaultFont, &g_defaultContext);
 	return;
 }
 
-void DrawTextSegmentExtendedSize_ctx(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,Vec4c cl ,TickContext* ctx){
+void DrawTextSegmentExtendedSize_ctx(const char* text , u32 size , int x,int y , u32 xx , u32 yy , u32 w , u32 h , u32 xpadd, u32 ypadd,Vec4c cl ,TickContext* ctx){
 	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd,cl, g_defaultFont, ctx);
 	return;
 }
@@ -612,7 +614,7 @@ void DrawTextSegmentExtendedSize_ctx(const char* text , u32 size , u32 x, u32 y 
 
 
 
-void DrawTextSegmentExtendedFontSize(const char* text , u32 size , u32 x, u32 y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd,Vec4c cl  , TickFont font){
+void DrawTextSegmentExtendedFontSize(const char* text , u32 size , int x,int y , u32 xx , u32 yy , u32 w , u32 h, u32 xpadd , u32 ypadd,Vec4c cl  , TickFont font){
 	DrawTextSegmentExtendedFontSize_ctx(text,size, x, y, xx, yy, w, h, xpadd, ypadd,cl, font, &g_defaultContext);
 	return;
 }
@@ -622,41 +624,68 @@ void DrawTextSegmentExtendedFontSize(const char* text , u32 size , u32 x, u32 y 
 
 
 
-void DrawTextFontExtendedSize_ctx(const char* text , u32 size,u32 x, u32 y,u32 xpaading ,u32 ypadding,Vec4c cl  ,TickFont font,TickContext* ctx)
+void DrawTextFontExtendedSize_ctx(const char* text , u32 size,int x,int y,u32 xpaading ,u32 ypadding,Vec4c cl  ,TickFont font,TickContext* ctx)
 {
-	u32 xx = x;
+	int xx = x;
 	u32 ww=0,hh=0,tcx=0,tcy=0;
 	int yoff=0;
-	
+	u32 c=0;
+	u32 utf8left=0;
 	for(int i = 0 ; i< size; i++){
-		if(text[i]>=32 && text[i]<font.maxChar){
-			ww   = font.CharcturesArray[text[i]-32].w      ;
-			hh   = font.CharcturesArray[text[i]-32].h      ;
-			tcx  = font.CharcturesArray[text[i]-32].tcx    ;
-			tcy  = font.CharcturesArray[text[i]-32].tcy    ;
-			yoff = font.CharcturesArray[text[i]-32].yoffset;
+
+		if((((u8)text[i]) & 0x80 )== 0){
+			c=text[i];
+			utf8left=0;
+		}
+		else {
+
+			u8 cc = text[i];
+			bool addtoleft = !utf8left;
+			if(!utf8left){
+				c=0;
+			}
+			int ii=7;
+			for ( ; ii >= 0 ; ii--){
+
+				if( !(cc & (1<<ii))){
+					break;
+				}
+				if(addtoleft){utf8left++;}
+			} 
+			c<<=ii;
+			c|=cc & ~(0xff<<ii);
+
+			utf8left--;
+			if(utf8left){continue;}
+		}
+		if(c>=32 && c<font.maxChar){
+			ww   = font.CharcturesArray[c-32].w      ;
+			hh   = font.CharcturesArray[c-32].h      ;
+			tcx  = font.CharcturesArray[c-32].tcx    ;
+			tcy  = font.CharcturesArray[c-32].tcy    ;
+			yoff = font.CharcturesArray[c-32].yoffset;
 		}else {
 			ww=hh=tcx=tcy=yoff=0;
 		}
-		if(text[i]== '\n'){
+		if(c== '\n'){
 			y+=font.linegap*font.scaley+ypadding;
 			xx=x;
 			continue;
 		}
-		else if(text[i]=='\t'){
+		else if(c=='\t'){
 			xx+=font.CharcturesArray[0].w*g_tabSpaces;
 			continue;
 		}
-		else if(text[i]== ' '){
+		else if(c== ' '){
 			xx+=ww*font.scalex;
 			continue;
 		}
-		else if(text[i]>font.maxChar){
+		else if(c>font.maxChar){
 			ww = font.CharcturesArray['?'-32].w;
 			hh = font.CharcturesArray['?'-32].h;
 			tcx= font.CharcturesArray['?'-32].tcx;
 
-		}else if(text[i]<32){continue;}
+		}else if(c<32){continue;}
 		else {
 			DrawTextureSegmentMask_ctx(font.texture, xx, y+yoff, ww*font.scalex, hh*font.scaley, tcx, tcy, ww, hh,cl,ctx);
 		}
@@ -668,46 +697,75 @@ void DrawTextFontExtendedSize_ctx(const char* text , u32 size,u32 x, u32 y,u32 x
 
 
 
-void DrawTextSegmentExtendedFontSize_ctx(const char* text ,u32 size, u32 x, u32 y ,
+void DrawTextSegmentExtendedFontSize_ctx(const char* text ,u32 size, int x,int y ,
 					u32 xx , u32 yy ,
 					u32 w , u32 h,
 					u32 xpadd, u32 ypadd,Vec4c cl ,
 					TickFont font,TickContext* ctx) //bor is it a long name
 {
-	u32 xpos = x;
-	u32 ypos = y;
+	int xpos = x;
+	int ypos = y;
 	u32 fcxoff=0;//first charceture x offset
 	u32 lcxoff=0;//last  ...
 	u32 fcyoff=0;//first charceture y offset
 	u32 lcyoff=0;//last  ...
 	u32 ww=0,hh=0,tcx=0,tcy=0,yoff=0;
-
+	u32 c = 0;
+	u32 utf8left=0;
+	
 	for(int i = 0 ; i<size; i++,xpos+=ww*font.scalex+xpadd){
-		if(text[i]>=32){
-			ww = font.CharcturesArray[text[i]-32].w;
-			hh = font.CharcturesArray[text[i]-32].h;
-			tcx = font.CharcturesArray[text[i]-32].tcx;
-			tcy = font.CharcturesArray[text[i]-32].tcy;
-			yoff = font.CharcturesArray[text[i]-32].yoffset;
+		/************** utf8 char decide ***************/
+		if((((u8)text[i]) & 0x80 )== 0){
+			c=text[i];
+			utf8left=0;
+		}
+		else {
+
+			u8 cc = text[i];
+			bool addtoleft = !utf8left;
+			if(!utf8left){
+				c=0;
+			}
+			int ii=7;
+			for ( ; ii >= 0 ; ii--){
+
+				if( !(cc & (1<<ii))){
+					break;
+				}
+				if(addtoleft){utf8left++;}
+			} 
+			c<<=ii;
+			c|=cc & ~(0xff<<ii);
+
+			utf8left--;
+			if(utf8left){continue;}
+		}
+		/***********************************************/
+		if(c>=32 && c<font.maxChar){
+			ww   = font.CharcturesArray[c-32].w;
+			hh   = font.CharcturesArray[c-32].h;
+			tcx  = font.CharcturesArray[c-32].tcx;
+			tcy  = font.CharcturesArray[c-32].tcy;
+			yoff = font.CharcturesArray[c-32].yoffset;
 		}else{
 			ww=hh=tcx=tcy=yoff=0;
 		}
 		
-		if(text[i]== '\n'){
+		if(c== '\n'){
 			ypos+=font.linegap*font.scaley+ypadd;
 			xpos=x-(ww)*font.scalex-xpadd;//this is all will automaticly aded
 			continue;
 		}
-		else if(text[i]=='\t'){
-			ww=font.CharcturesArray[0].w*g_tabSpaces;
+		else if(c=='\t'){
+			ww=font.CharcturesArray[0].w*g_tabSpaces; 
 			continue;
 		}
-		else if(text[i]>font.maxChar){
+		else if(c>font.maxChar){
 			ww = font.CharcturesArray['?'-32].w;
 			hh = font.CharcturesArray['?'-32].h;
 			tcx= font.CharcturesArray['?'-32].tcx;
 		}
-		else if(text[i]<=32){continue;}
+		else if(c<=32){continue;}
 		if(xpos-x+ww<xx || xpos-x>xx+w || ypos+yoff-y+hh<yy || ypos+yoff-y>yy+h){continue;}
 		
 		fcxoff = xpos-x<xx?xx-(xpos-x):0;
