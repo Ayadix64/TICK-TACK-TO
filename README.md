@@ -22,13 +22,13 @@ i dont know, i am not even a ui programing fan,
 i think that i allways want a multiplafourm good loking library that is eazy to use, i liked Dear imGui, so i want to make a gui library with the same idea
 
 
-this library is still in devoloping, so you may meet some litel goohy things, hope you dont,
+this library is still in devoloping , so you may meet some little goofy things, hope you dont,
 
-
+but if you did , pleas let me know
 
 
 ##  Ok, how can i use it?
-this library is a glfw library, you have to know how to init a window in glfw and then use it,
+this library is a glfw based library, so you have to know how to init a window in glfw and then use it,
 
 ```cpp
 #include <GL/glew.h>
@@ -104,7 +104,7 @@ int main(){
 ## Philosophy
 This Library dosnt want to do any thing fancy
 
-it may, but not traing to do. it is more of "DO IT YOUR SELFE" style, wisch is a thing that i persounly wanted from a UI library
+it may, but not trying to . it is more of "DO IT YOUR SELFE" style, wich is a thing that i persounly wanted from a UI library
 
 This Library gives the issuntiol to build ,with the maximum effert to make never toch opengl and any rendrer  , impliminting that with a good prouformance Batch rendrer.
 ## Known Bugs & some isuus
