@@ -3,9 +3,8 @@ project(ticktackto)
 
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE Debug) #remeber to delet this if you want a user app, this increase the app length to better debug
+#set(CMAKE_BUILD_TYPE Debug) #remeber to delet this if you want a user app, this increase the app length to better debug
 
-find_package(OpenGL REQUIRED)
 find_package(glfw3 3.4 REQUIRED)
 
 add_library(ticktackto src/core.c src/utils.c src/basics.c src/render.c src/text.c src/ui.c)
@@ -25,5 +24,3 @@ if (install)
             ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()
-project(demos)
-
