@@ -197,18 +197,18 @@ TickFont LoadFont_ctx(const char* filen,u32 scale,TickContext* ctx){
 		fprintf(stderr, "[ERORR] cant load font \"%s\", file curepted or not exiset or not allawed to use it.\n",filen);
 		return g_defaultFont;
 	}
-	ret = LoadMemFont_ctx(data, lng, scale,ctx);
+	ret = LoadFontMem_ctx(data, lng, scale,ctx);
 	free(data);
 	return ret;
 }
 
 
-TickFont LoadMemFont(void* fontData, u32 size, u32 scale ){
-	return LoadMemFont_ctx(fontData,size,scale, &g_defaultContext);
+TickFont LoadFontMem(void* fontData, u32 size, u32 scale ){
+	return LoadFontMem_ctx(fontData,size,scale, &g_defaultContext);
 }
 
 
-TickFont LoadMemFont_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
+TickFont LoadFontMem_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 	TickFont ret;
 	stbtt_fontinfo font;
 	stbtt_InitFont(&font, (u8*)data, 0/*stbtt_GetFontOffsetForIndex(data,0)*/);
