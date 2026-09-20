@@ -11,6 +11,7 @@
 //#define ENDPOINTS_SEPURTED 5000 //never make it under 32; it will subtract by 32, yeah, you will get a bad time
 #define DEFAULTXPADD (u32)1
 #define DEFAULTYPADD (u32)3
+//#define FONT_PRINT_NONFOUND_ENDPONTS // uncoment this to find if a endpont is not sepurted
 extern TickContext g_defaultContext;
 atomic_uint g_tabSpaces = 5;
 
@@ -285,9 +286,6 @@ TickFont LoadFontMem_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 			for(int y = 0 ; y < h ; y++){
 				for(int x = 0 ; x < w ; x++){
 					if(bitmap[y*w+x]){
-						//c&=~(0xff<<24);
-						//c|=(((bitmap[y*w+x]*cl.a)/255)&0xff)<<24;
-						
 						texture[(y+yoffset)*texturewidth+x+xoffset]=(c&~(0xff<<24) | (((bitmap[y*w+x]*255)/255)&0xff)<<24) ;
 					}else{
 						texture[(y+yoffset)*texturewidth+x+xoffset]=0;
@@ -303,7 +301,9 @@ TickFont LoadFontMem_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 			}
 			free(bitmap);
 		}else {
+#ifdef FONT_PRINT_NONFOUND_ENDPONTS
 			fprintf(stderr,"[ERORR] cant finde chartcture codepoint %d\n",i);
+#endif
 		}
 	}
 	ret.texture = LoadTexture_ctx(texture, texturewidth, textureheigth, 4,ctx);
