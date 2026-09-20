@@ -157,6 +157,8 @@ int main()<%
 	double tflf = glfwGetTime ();
 	TextBoxData tbd;
 	InitTextBoxData(&tbd, 0);
+
+	tbd.flags.EnbleCharctures=false;
 	char FPS[100];
 	bool check;
 	float slid = 0.0f;
