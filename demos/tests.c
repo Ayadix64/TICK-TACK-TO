@@ -157,6 +157,10 @@ int main()<%
 	double tflf = glfwGetTime ();
 	TextBoxData tbd;
 	InitTextBoxData(&tbd, 0);
+	
+	TextBoxData tbd2;
+	InitTextBoxData(&tbd2, 0);
+
 
 	tbd.flags.EnbleCharctures=false;
 	char FPS[100];
@@ -225,7 +229,8 @@ int main()<%
 		
 
 		TextBox( 20, 20,200,0, &tbd);
-
+		
+		TextBox( 20, 60,200,0, &tbd2);
 
 		CheckBox("Check Box Bora Broa Broa .", 20, 300, (char*)&check);
 		
