@@ -233,7 +233,6 @@ TickFont LoadFontMem_ctx(void* data,u32 size, u32 scale , TickContext* ctx){
 	int maxdemensions=0;    //maximum texture demensions (i.e 13060x13060)
  	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxdemensions);   //Returns 1 value
 
-	printf("**** GLO %d ****\n", font.numGlyphs);
 	u32 texturewidth=0, textureheigth=0;
 	u32 xoffset=0 ,yoffset=0;
 	int w =0, h=0 , y0=0,x0=0;
